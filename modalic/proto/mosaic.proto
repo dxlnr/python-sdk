@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package mosaic;
+
+service Communication {
+  rpc GetGlobalModel(ClientMessage) returns (ServerModel);
+  rpc Update(ClientUpdate) returns (ServerMessage);
+}
+
+message Parameters {
+  bytes tensor = 1;
+  string data_type = 2;
+  uint32 model_version = 3;
+}
+
+message ServerMessage {
+  uint32 status = 1;
+}
+
+message ServerModel {
+  Parameters parameters = 1;
+  uint32 id = 2;
+}
+
+message ClientMessage {
+  uint32 id = 1;
+}
+
+message ClientUpdate {
+  uint32 id = 1;
+  Parameters parameters = 2;
+}
