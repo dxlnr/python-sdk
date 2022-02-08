@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 from modalic.utils import protocol
 
 class CommunicationLayer(ABC):
@@ -23,7 +24,7 @@ class Communicator(CommunicationLayer):
     which will be inherited by some client class object.
 
     Args
-    ----------
+    ------------------------------------------------------------
     """
     def __init__(self):
         pass
@@ -37,3 +38,28 @@ class Communicator(CommunicationLayer):
     def get_weights(self) -> protocol.Weights:
         r"""Get model weights as a list of NumPy ndarrays."""
         raise NotImplementedError()
+
+    def grpc_connection(self,
+                        server_address: str,
+                        max_message_length: int = 536870912,
+                        root_certificates: Optional[bytes] = None):
+        r"""Establishes a grpc connection to the server.
+            Returns:
+                (channel, stub): Tuple containing the thread-safe grpc channel
+                to server & the grpc stub.
+        """
+        channel_options = [
+            ("grpc.max_send_message_length", max_message_length),
+            ("grpc.max_receive_message_length", max_message_length),
+        ]
+
+        if root_certificates is not None:
+            ssl_channel_credentials = grpc.ssl_channel_credentials(root_certificates)
+            channel = grpc.secure_channel(
+                server_address, ssl_channel_credentials, options=channel_options
+            )
+            # log(INFO, "Opened secure gRPC connection using certificates.")
+        else:
+            channel = grpc.insecure_channel(server_address, options=channel_options)
+            # log(INFO, "Opened insecure gRPC connection.")
+        return (channel, CommunicationStub(channel))

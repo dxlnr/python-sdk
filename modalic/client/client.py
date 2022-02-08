@@ -7,7 +7,7 @@ class Client(Communicator):
     Federated Learning process without designing the endpoints.
 
     Args
-    ----------
+    ------------------------------------------------------------
 
     """
     def __init__(self):

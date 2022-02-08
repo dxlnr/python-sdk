@@ -10,9 +10,6 @@ from google.protobuf import symbol_database as _symbol_database
 
 _sym_db = _symbol_database.Default()
 
-
-
-
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='mosaic.proto',
   package='mosaic',
@@ -21,9 +18,6 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   create_key=_descriptor._internal_create_key,
   serialized_pb=b'\n\x0cmosaic.proto\x12\x06mosaic\"F\n\nParameters\x12\x0e\n\x06tensor\x18\x01 \x01(\x0c\x12\x11\n\tdata_type\x18\x02 \x01(\t\x12\x15\n\rmodel_version\x18\x03 \x01(\r\"\x1f\n\rServerMessage\x12\x0e\n\x06status\x18\x01 \x01(\r\"A\n\x0bServerModel\x12&\n\nparameters\x18\x01 \x01(\x0b\x32\x12.mosaic.Parameters\x12\n\n\x02id\x18\x02 \x01(\r\"\x1b\n\rClientMessage\x12\n\n\x02id\x18\x01 \x01(\r\"B\n\x0c\x43lientUpdate\x12\n\n\x02id\x18\x01 \x01(\r\x12&\n\nparameters\x18\x02 \x01(\x0b\x32\x12.mosaic.Parameters2\x84\x01\n\rCommunication\x12<\n\x0eGetGlobalModel\x12\x15.mosaic.ClientMessage\x1a\x13.mosaic.ServerModel\x12\x35\n\x06Update\x12\x14.mosaic.ClientUpdate\x1a\x15.mosaic.ServerMessageb\x06proto3'
 )
-
-
-
 
 _PARAMETERS = _descriptor.Descriptor(
   name='Parameters',
@@ -257,7 +251,6 @@ ClientUpdate = _reflection.GeneratedProtocolMessageType('ClientUpdate', (_messag
 _sym_db.RegisterMessage(ClientUpdate)
 
 
-
 _COMMUNICATION = _descriptor.ServiceDescriptor(
   name='Communication',
   full_name='mosaic.Communication',
@@ -292,5 +285,3 @@ _COMMUNICATION = _descriptor.ServiceDescriptor(
 _sym_db.RegisterServiceDescriptor(_COMMUNICATION)
 
 DESCRIPTOR.services_by_name['Communication'] = _COMMUNICATION
-
-# @@protoc_insertion_point(module_scope)
