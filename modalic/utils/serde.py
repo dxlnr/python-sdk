@@ -7,20 +7,6 @@ import itertools
 
 from modalic.utils import protocol
 
-from modalic.client.proto.mosaic_pb2 import (
-    ClientMessage,
-    Parameters,
-)
-
-def parameters_to_proto(parameters: protocol.Parameters) -> Parameters:
-    r"""."""
-    return Parameters(tensor=parameters.tensor, data_type=parameters.data_type, model_version=parameters.model_version)
-
-def parameters_from_proto(msg: Parameters) -> protocol.Parameters:
-    r"""."""
-    tensor: List[bytes] = list(msg.parameters.tensor)
-    return protocol.Parameters(tensor=tensor, data_type=msg.parameters.data_type, model_version=msg.parameters.model_version)
-
 def weights_to_parameters(weights: protocol.Weights, dtype: str, model_version: int) -> protocol.Parameters:
     r"""Convert NumPy weights to parameters object."""
     tensor = weights_to_bytes(weights, dtype_to_struct(dtype))
