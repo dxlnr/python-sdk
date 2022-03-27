@@ -1,3 +1,4 @@
+from typing import Optional, Dict
 import io
 from minio import Minio
 from minio.error import S3Error

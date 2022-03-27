@@ -14,7 +14,7 @@ class Client(Communicator):
                  cfg):
         super().__init__()
 
-    def set_weights(self, weights: common.Weights)):
+    def set_weights(self, weights: common.Weights):
         r"""Set model weights from a list of NumPy ndarrays."""
         state_dict = OrderedDict(
             {

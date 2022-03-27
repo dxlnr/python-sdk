@@ -1,5 +1,7 @@
 import os, sys
+import numpy as np
 from codecs import open
+from distutils.sysconfig import get_python_inc
 from setuptools import setup, Extension, find_packages
 
 requirements = [
@@ -7,14 +9,19 @@ requirements = [
     'grpcio-tools>=1.43.0',
     'minio>=1.0.1.1',
     'toml>=0.10.2',
+    'black',
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
 os.chdir(here)
 
-version_contents = {}
+version = {}
 with open(os.path.join(here, "modalic", "version.py"), encoding="utf-8") as f:
-    exec(f.read(), version_contents)
+    exec(f.read(), version)
+
+def getInclude():
+    dirName = get_python_inc()
+    return [dirName, os.path.dirname(dirName), np.get_include()]
 
 setup(name='modalic',
       description='Python SDK library for the using the modalic MLOps platform.',
