@@ -8,6 +8,13 @@ requirements = [
     "toml>=0.10.2",
 ]
 
+extra_requirements = {
+    "dev": [
+        "pytest>=3.7",
+        "black>=22.3.0",
+    ]
+}
+
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
@@ -26,6 +33,7 @@ setup(
     author="Modalic",
     license="MIT",
     install_requires=requirements,
+    extras_require=extra_requirements,
     packages=find_packages(exclude=["tests", "tests.*"]),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
