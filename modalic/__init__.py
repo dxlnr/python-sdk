@@ -1,3 +1,4 @@
+from modalic._version import __version__
 import os
 # Configuration variables
 
