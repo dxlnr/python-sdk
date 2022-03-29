@@ -10,14 +10,20 @@ from google.protobuf import symbol_database as _symbol_database
 
 _sym_db = _symbol_database.Default()
 
+
+
+
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='mosaic.proto',
   package='mosaic',
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cmosaic.proto\x12\x06mosaic\"F\n\nParameters\x12\x0e\n\x06tensor\x18\x01 \x01(\x0c\x12\x11\n\tdata_type\x18\x02 \x01(\t\x12\x15\n\rmodel_version\x18\x03 \x01(\r\"\x1f\n\rServerMessage\x12\x0e\n\x06status\x18\x01 \x01(\r\"A\n\x0bServerModel\x12&\n\nparameters\x18\x01 \x01(\x0b\x32\x12.mosaic.Parameters\x12\n\n\x02id\x18\x02 \x01(\r\"\x1b\n\rClientMessage\x12\n\n\x02id\x18\x01 \x01(\r\"B\n\x0c\x43lientUpdate\x12\n\n\x02id\x18\x01 \x01(\r\x12&\n\nparameters\x18\x02 \x01(\x0b\x32\x12.mosaic.Parameters2\x84\x01\n\rCommunication\x12<\n\x0eGetGlobalModel\x12\x15.mosaic.ClientMessage\x1a\x13.mosaic.ServerModel\x12\x35\n\x06Update\x12\x14.mosaic.ClientUpdate\x1a\x15.mosaic.ServerMessageb\x06proto3'
+  serialized_pb=b'\n\x0cmosaic.proto\x12\x06mosaic\"F\n\nParameters\x12\x0e\n\x06tensor\x18\x01 \x01(\x0c\x12\x11\n\tdata_type\x18\x02 \x01(\t\x12\x15\n\rmodel_version\x18\x03 \x01(\r\"-\n\x0bProcessMeta\x12\x10\n\x08round_id\x18\x01 \x01(\r\x12\x0c\n\x04loss\x18\x02 \x01(\x02\"\x1f\n\rServerMessage\x12\x0e\n\x06status\x18\x01 \x01(\r\"5\n\x0bServerModel\x12&\n\nparameters\x18\x01 \x01(\x0b\x32\x12.mosaic.Parameters\"\x1b\n\rClientMessage\x12\n\n\x02id\x18\x01 \x01(\r\"|\n\x0c\x43lientUpdate\x12\n\n\x02id\x18\x01 \x01(\r\x12&\n\nparameters\x18\x02 \x01(\x0b\x32\x12.mosaic.Parameters\x12\r\n\x05stake\x18\x03 \x01(\r\x12)\n\x0cprocess_meta\x18\x04 \x01(\x0b\x32\x13.mosaic.ProcessMeta2\x84\x01\n\rCommunication\x12<\n\x0eGetGlobalModel\x12\x15.mosaic.ClientMessage\x1a\x13.mosaic.ServerModel\x12\x35\n\x06Update\x12\x14.mosaic.ClientUpdate\x1a\x15.mosaic.ServerMessageb\x06proto3'
 )
+
+
+
 
 _PARAMETERS = _descriptor.Descriptor(
   name='Parameters',
@@ -65,6 +71,45 @@ _PARAMETERS = _descriptor.Descriptor(
 )
 
 
+_PROCESSMETA = _descriptor.Descriptor(
+  name='ProcessMeta',
+  full_name='mosaic.ProcessMeta',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='round_id', full_name='mosaic.ProcessMeta.round_id', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='loss', full_name='mosaic.ProcessMeta.loss', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=96,
+  serialized_end=141,
+)
+
+
 _SERVERMESSAGE = _descriptor.Descriptor(
   name='ServerMessage',
   full_name='mosaic.ServerMessage',
@@ -92,8 +137,8 @@ _SERVERMESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=96,
-  serialized_end=127,
+  serialized_start=143,
+  serialized_end=174,
 )
 
 
@@ -112,13 +157,6 @@ _SERVERMODEL = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='id', full_name='mosaic.ServerModel.id', index=1,
-      number=2, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -131,8 +169,8 @@ _SERVERMODEL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=129,
-  serialized_end=194,
+  serialized_start=176,
+  serialized_end=229,
 )
 
 
@@ -163,8 +201,8 @@ _CLIENTMESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=196,
-  serialized_end=223,
+  serialized_start=231,
+  serialized_end=258,
 )
 
 
@@ -190,6 +228,20 @@ _CLIENTUPDATE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='stake', full_name='mosaic.ClientUpdate.stake', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='process_meta', full_name='mosaic.ClientUpdate.process_meta', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -202,13 +254,15 @@ _CLIENTUPDATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=225,
-  serialized_end=291,
+  serialized_start=260,
+  serialized_end=384,
 )
 
 _SERVERMODEL.fields_by_name['parameters'].message_type = _PARAMETERS
 _CLIENTUPDATE.fields_by_name['parameters'].message_type = _PARAMETERS
+_CLIENTUPDATE.fields_by_name['process_meta'].message_type = _PROCESSMETA
 DESCRIPTOR.message_types_by_name['Parameters'] = _PARAMETERS
+DESCRIPTOR.message_types_by_name['ProcessMeta'] = _PROCESSMETA
 DESCRIPTOR.message_types_by_name['ServerMessage'] = _SERVERMESSAGE
 DESCRIPTOR.message_types_by_name['ServerModel'] = _SERVERMODEL
 DESCRIPTOR.message_types_by_name['ClientMessage'] = _CLIENTMESSAGE
@@ -221,6 +275,13 @@ Parameters = _reflection.GeneratedProtocolMessageType('Parameters', (_message.Me
   # @@protoc_insertion_point(class_scope:mosaic.Parameters)
   })
 _sym_db.RegisterMessage(Parameters)
+
+ProcessMeta = _reflection.GeneratedProtocolMessageType('ProcessMeta', (_message.Message,), {
+  'DESCRIPTOR' : _PROCESSMETA,
+  '__module__' : 'mosaic_pb2'
+  # @@protoc_insertion_point(class_scope:mosaic.ProcessMeta)
+  })
+_sym_db.RegisterMessage(ProcessMeta)
 
 ServerMessage = _reflection.GeneratedProtocolMessageType('ServerMessage', (_message.Message,), {
   'DESCRIPTOR' : _SERVERMESSAGE,
@@ -251,6 +312,7 @@ ClientUpdate = _reflection.GeneratedProtocolMessageType('ClientUpdate', (_messag
 _sym_db.RegisterMessage(ClientUpdate)
 
 
+
 _COMMUNICATION = _descriptor.ServiceDescriptor(
   name='Communication',
   full_name='mosaic.Communication',
@@ -258,8 +320,8 @@ _COMMUNICATION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=294,
-  serialized_end=426,
+  serialized_start=387,
+  serialized_end=519,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetGlobalModel',
@@ -285,3 +347,5 @@ _COMMUNICATION = _descriptor.ServiceDescriptor(
 _sym_db.RegisterServiceDescriptor(_COMMUNICATION)
 
 DESCRIPTOR.services_by_name['Communication'] = _COMMUNICATION
+
+# @@protoc_insertion_point(module_scope)

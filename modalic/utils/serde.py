@@ -5,11 +5,11 @@ import numpy as np
 import struct
 import itertools
 
-from modalic.utils import protocol
+from modalic.utils import protocol, common
 
 
 def weights_to_parameters(
-    weights: protocol.Weights, dtype: str, model_version: int
+    weights: common.Weights, dtype: str, model_version: int
 ) -> protocol.Parameters:
     r"""Convert NumPy weights to parameters object."""
     tensor = weights_to_bytes(weights, dtype_to_struct(dtype))
@@ -18,7 +18,7 @@ def weights_to_parameters(
     )
 
 
-def parameters_to_weights(parameters: protocol.Parameters, shapes) -> protocol.Weights:
+def parameters_to_weights(parameters: protocol.Parameters, shapes) -> common.Weights:
     r"""Convert parameters object to NumPy weights."""
     return bytes_to_ndarray(
         parameters.tensor, shapes, dtype_to_struct(parameters.data_type)
@@ -33,7 +33,7 @@ def ndarray_to_bytes(ndarray: np.ndarray, dtype: str) -> List:
     return res
 
 
-def weights_to_bytes(weights: protocol.Weights, dtype: str) -> bytes:
+def weights_to_bytes(weights: common.Weights, dtype: str) -> bytes:
     r"""Serialize NumPy ndarray to bytes."""
     layers = [ndarray_to_bytes(ndarray, dtype) for ndarray in weights]
     return bytes(list(itertools.chain(*layers)))
@@ -56,7 +56,7 @@ def bytes_to_ndarray(tensor: bytes, layer_shape: List, dtype: str) -> np.array:
     return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
 
-def get_shape(weights: protocol.Weights) -> List:
+def get_shape(weights: common.Weights) -> List:
     r"""Returns the shape of weights."""
     return [np.array(layer.size) for layer in weights]
 

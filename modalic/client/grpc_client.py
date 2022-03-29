@@ -4,8 +4,8 @@ from typing import Optional
 import grpc
 
 from modalic.utils import common
-from modalic.proto.mosaic_pb2_grpc import CommunicationStub
-from modalic.proto.mosaic_pb2 import ClientUpdate, ClientMessage
+from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
+from modalic.client.proto.mosaic_pb2 import ClientUpdate, ClientMessage
 
 
 class CommunicationLayer(ABC):

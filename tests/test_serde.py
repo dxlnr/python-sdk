@@ -17,15 +17,15 @@ def test_serialisation_deserialisation() -> None:
     np.testing.assert_equal(deserialized, arg)
 
 
-def test_serialisation_deserialisation_w_arg(
-    arg: np.ndarray, shape: List, dtype: str
-) -> None:
-    r"""Testing the serialization/deserialisation process of the models.
-        Args:
-            input (np.ndarray): Tested array.
-    """
-    serialized = weights_to_bytes(arg, dtype)
-    deserialized = bytes_to_ndarray(serialized, shape, dtype)
-
-    # Assert deserialized array is equal to original
-    np.testing.assert_equal(deserialized, arg)
+# def test_serialisation_deserialisation_w_arg(
+#     arg: np.ndarray, shape: List, dtype: str
+# ) -> None:
+#     r"""Testing the serialization/deserialisation process of the models.
+#         Args:
+#             input (np.ndarray): Tested array.
+#     """
+#     serialized = weights_to_bytes(arg, dtype)
+#     deserialized = bytes_to_ndarray(serialized, shape, dtype)
+#
+#     # Assert deserialized array is equal to original
+#     np.testing.assert_equal(deserialized, arg)

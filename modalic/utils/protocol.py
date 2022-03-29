@@ -1,6 +1,6 @@
 """gRPC fascilitation script."""
 
-from modalic.proto.mosaic_pb2 import (
+from modalic.client.proto.mosaic_pb2 import (
     ClientMessage,
     Parameters,
     ProcessMeta,
