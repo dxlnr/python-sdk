@@ -4,6 +4,19 @@ build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 88
+target-version = [
+  "py38",
+]
 exclude = '''
   modalic/client/proto/
+  /(
+      \.eggs/
+    | \.git/
+    | \.tox/
+    | \.venv/
+    | _build/
+    | build/
+    | dist/
+    | venv/
+  )
 '''

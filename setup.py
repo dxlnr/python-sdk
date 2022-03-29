@@ -2,6 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 requirements = [
+    "numpy>=1.22.3",
     "grpcio>=1.43.0",
     "grpcio-tools>=1.43.0",
     "minio>=1.0.1.1",
@@ -12,6 +13,7 @@ extra_requirements = {
     "dev": [
         "pytest>=3.7",
         "black>=22.3.0",
+        "tox>=3.24.5",
     ]
 }
 
