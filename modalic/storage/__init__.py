@@ -1,4 +1,5 @@
 import os
+
 # Configuration variables
 
 api_key = None
