@@ -1,6 +1,7 @@
 from modalic.client.grpc_client import Communicator
 from modalic.utils import common
 
+
 class Client(Communicator):
     r"""
     Client object which abstracts all the communication to Communicator.
@@ -10,8 +11,8 @@ class Client(Communicator):
         Args:
             cfg: Configuration setup defined by .toml
     """
-    def __init__(self,
-                 cfg):
+
+    def __init__(self, cfg):
         super().__init__()
 
     def set_weights(self, weights: common.Weights):

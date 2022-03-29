@@ -7,9 +7,9 @@ from modalic.utils import common
 from modalic.proto.mosaic_pb2_grpc import CommunicationStub
 from modalic.proto.mosaic_pb2 import ClientUpdate, ClientMessage
 
+
 class CommunicationLayer(ABC):
-    r"""Abstract communicatio base layer for ensuring the grpc protocol.
-    """
+    r"""Abstract communicatio base layer for ensuring the grpc protocol."""
 
     @abstractmethod
     def update(self):
@@ -19,7 +19,7 @@ class CommunicationLayer(ABC):
     @abstractmethod
     def get_global_model(self):
         r"""Client request to get the latest version of the global model
-            from server.
+        from server.
         """
         raise NotImplementedError()
 
@@ -31,8 +31,8 @@ class Communicator(CommunicationLayer):
         Args:
             server_address: static ip address of the aggregation server.
     """
-    def __init__(self,
-                 server_address: str):
+
+    def __init__(self, server_address: str):
         self.server_address = server_address
 
     @abstractmethod
@@ -45,14 +45,16 @@ class Communicator(CommunicationLayer):
         r"""Get model weights as a list of NumPy ndarrays."""
         raise NotImplementedError()
 
-    def grpc_connection(self,
-                        server_address: str,
-                        max_message_length: int = 536870912,
-                        root_certificates: Optional[bytes] = None):
+    def grpc_connection(
+        self,
+        server_address: str,
+        max_message_length: int = 536870912,
+        root_certificates: Optional[bytes] = None,
+    ):
         r"""Establishes a grpc connection to the server.
-            Returns:
-                (channel, stub): Tuple containing the thread-safe grpc channel
-                to server & the grpc stub.
+        Returns:
+            (channel, stub): Tuple containing the thread-safe grpc channel
+            to server & the grpc stub.
         """
         channel_options = [
             ("grpc.max_send_message_length", max_message_length),
@@ -70,24 +72,29 @@ class Communicator(CommunicationLayer):
             # log(INFO, "Opened insecure gRPC connection.")
         return (channel, CommunicationStub(channel))
 
-    def update(self,
-               dtype: str,
-               round_id: int,
-               stake: int,
-               loss: float):
+    def update(self, dtype: str, round_id: int, stake: int, loss: float):
         r"""Sends an updated model version to the server.
-            Args:
-                dtype: Data Type of the trained model. Important as it determines the de-/serialization.
-                round_id: Training round id.
-                stake: Sets the number of samples the local model was trained on.
-                loss: Loss of the local model during training.
+        Args:
+            dtype: Data Type of the trained model. Important as it determines the de-/serialization.
+            round_id: Training round id.
+            stake: Sets the number of samples the local model was trained on.
+            loss: Loss of the local model during training.
         """
         weights = self.get_weights()
-        parameters = parameters_to_proto(weights_to_parameters(weights, dtype=dtype, model_version=round_id))
+        parameters = parameters_to_proto(
+            weights_to_parameters(weights, dtype=dtype, model_version=round_id)
+        )
         process_meta = process_meta_to_proto(to_meta(round_id, loss))
 
         (channel, stub) = self.grpc_connection(self.server_address)
-        send = stub.Update(ClientUpdate(id=self.cid, parameters=parameters, stake=stake, process_meta=process_meta))
+        send = stub.Update(
+            ClientUpdate(
+                id=self.cid,
+                parameters=parameters,
+                stake=stake,
+                process_meta=process_meta,
+            )
+        )
         channel.close()
 
     def get_global_model(self):
