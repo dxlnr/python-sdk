@@ -6,3 +6,6 @@ import os
 api_key = None
 client_id = None
 server_ip = None
+
+# Client API
+from modalic.client import Client
