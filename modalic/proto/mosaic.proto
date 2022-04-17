@@ -1,32 +1,71 @@
 syntax = "proto3";
 
-package mosaic;
+package mosaic_proto;
 
 service Communication {
+  // Remote protocol to handle global model requests.
   rpc GetGlobalModel(ClientMessage) returns (ServerModel);
+  // Remote protocol for sending local model to server.
   rpc Update(ClientUpdate) returns (ServerMessage);
+  // Remote protocol for sending global meta data regarding the process.
+  // rpc SetGlobalMeta(GlobalMeta) returns (ServerMessage);
 }
 
 message Parameters {
+  // The weights and biases content of a model.
   bytes tensor = 1;
+  // The data type which sets how the bytes will be decoded.
   string data_type = 2;
+  // The model version that defines the training round of the model.
   uint32 model_version = 3;
+  // Holds the model shape
+  // ModelShape model_shape = 4;
+}
+
+message ModelShape {
+  // Shape of overall model which consists of many different layers.
+  repeated LayerShape layer_shape = 1;
+}
+
+message LayerShape {
+  // Shape of individual layer which consists of weights and bias structure.
+  repeated uint32 wb_shape = 1;
+}
+
+message ProcessMeta {
+  // Current trainings round.
+  uint32 round_id = 1;
+  // Local running loss for the current trainings round.
+  float	loss = 2;
+}
+
+message GlobalMeta {
+  float acc = 1;
 }
 
 message ServerMessage {
+  // Returns status code regarding update message.
   uint32 status = 1;
 }
 
 message ServerModel {
+  // Parameters that contain the model and some metadata from the server.
   Parameters parameters = 1;
-  uint32 id = 2;
+  // Status status = 2;
 }
 
 message ClientMessage {
+  // Client ID.
   uint32 id = 1;
 }
 
 message ClientUpdate {
+  // Client ID.
   uint32 id = 1;
+  // Parameters that contain the model and some metadata from the client.
   Parameters parameters = 2;
+  // Weight factor: number of samples the current local model was trained on.
+  uint32 stake = 3;
+  // Meta data within the local training process.
+  ProcessMeta process_meta = 4;
 }

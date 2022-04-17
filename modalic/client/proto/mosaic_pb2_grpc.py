@@ -4,6 +4,7 @@ import grpc
 
 import modalic.client.proto.mosaic_pb2 as mosaic__pb2
 
+
 class CommunicationStub(object):
     """Missing associated documentation comment in .proto file."""
 
@@ -14,27 +15,32 @@ class CommunicationStub(object):
             channel: A grpc.Channel.
         """
         self.GetGlobalModel = channel.unary_unary(
-                '/mosaic.Communication/GetGlobalModel',
+                '/mosaic_proto.Communication/GetGlobalModel',
                 request_serializer=mosaic__pb2.ClientMessage.SerializeToString,
                 response_deserializer=mosaic__pb2.ServerModel.FromString,
                 )
         self.Update = channel.unary_unary(
-                '/mosaic.Communication/Update',
+                '/mosaic_proto.Communication/Update',
                 request_serializer=mosaic__pb2.ClientUpdate.SerializeToString,
                 response_deserializer=mosaic__pb2.ServerMessage.FromString,
                 )
+
 
 class CommunicationServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def GetGlobalModel(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Remote protocol to handle global model requests.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def Update(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Remote protocol for sending local model to server.
+        Remote protocol for sending global meta data regarding the process.
+        rpc SetGlobalMeta(GlobalMeta) returns (ServerMessage);
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -54,7 +60,7 @@ def add_CommunicationServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'mosaic.Communication', rpc_method_handlers)
+            'mosaic_proto.Communication', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -73,7 +79,7 @@ class Communication(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mosaic.Communication/GetGlobalModel',
+        return grpc.experimental.unary_unary(request, target, '/mosaic_proto.Communication/GetGlobalModel',
             mosaic__pb2.ClientMessage.SerializeToString,
             mosaic__pb2.ServerModel.FromString,
             options, channel_credentials,
@@ -90,7 +96,7 @@ class Communication(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mosaic.Communication/Update',
+        return grpc.experimental.unary_unary(request, target, '/mosaic_proto.Communication/Update',
             mosaic__pb2.ClientUpdate.SerializeToString,
             mosaic__pb2.ServerMessage.FromString,
             options, channel_credentials,

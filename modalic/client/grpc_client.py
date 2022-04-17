@@ -4,6 +4,8 @@ from typing import Optional
 import grpc
 
 from modalic.utils import common
+from modalic.utils.protocol import *
+from modalic.utils.serde import *
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
 from modalic.client.proto.mosaic_pb2 import ClientUpdate, ClientMessage
 

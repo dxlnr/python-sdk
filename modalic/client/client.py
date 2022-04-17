@@ -1,3 +1,8 @@
+from collections import OrderedDict
+from typing import Generic
+import numpy as np
+import torch
+
 from modalic.client.grpc_client import Communicator
 from modalic.utils import common
 
@@ -14,14 +19,25 @@ class Client(Communicator):
         server_address: GRPC server address
     """
 
-    def __init__(self, trainer, cid: int, server_address: str):
+    def __init__(self,
+                 trainer: Generic,
+                 cid: int,
+                 server_address: str,
+    ):
         super().__init__(server_address)
-
-        self.trainer = trainer
         self.cid = cid
+        self.trainer = trainer
+        self.model = self.trainer.model
+
+        self.model_shape = self.get_model_shape()
+        self.dtype = self.get_model_dtype()
+        self.loss = 0.0
 
     def set_weights(self, weights: common.Weights):
-        r"""Set model weights from a list of NumPy ndarrays."""
+        r"""Set model weights from a list of NumPy ndarrays.
+        Args:
+            weights: Model weights as a list of NumPy ndarrays.
+        """
         state_dict = OrderedDict(
             {
                 k: torch.tensor(v)
