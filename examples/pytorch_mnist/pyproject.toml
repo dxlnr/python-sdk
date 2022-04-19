@@ -1,0 +1,16 @@
+[build-system]
+requires = [
+    "poetry==1.1.13",
+]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "pytorch_mnist"
+version = "0.1.0"
+description = "Pytorch Federated Learning example classifying Hand-written."
+
+[tool.poetry.dependencies]
+python = "^3.8"
+modalic = "^0.1.0"
+torch = "1.11.0"
+torchvision = "0.12.0"
