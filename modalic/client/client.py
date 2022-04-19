@@ -31,6 +31,7 @@ class Client(Communicator):
 
         self.model_shape = self.get_model_shape()
         self.dtype = self.get_model_dtype()
+        self.round_id = 0
         self.loss = 0.0
 
     def set_weights(self, weights: common.Weights):
@@ -85,4 +86,7 @@ class Client(Communicator):
 
     def run(self):
         r"""Runs the whole process for a single modalic client."""
-        pass
+        self.round_id += 1
+        self.get_global_model()
+        self.train()
+        self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)

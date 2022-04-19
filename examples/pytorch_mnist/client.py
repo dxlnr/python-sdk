@@ -1,20 +1,29 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import torch
+from torch.utils.data import DataLoader
+import torchvision
+from torchvision.datasets import MNIST
 
-class Dataloader():
-    r"""Basic dataloader class object."""
-    def __init__(self,
-                 data,
-                 labels):
-        self.data = data
-        self.labels = labels
+def load_data():
+    r"""loading the mnist datasets."""
+    mnist_trainset = MNIST(root='./data', train=True, download=True, transform=None)
+    mnist_testset = MNIST(root='./data', train=False, download=True, transform=None)
+    return DataLoader(mnist_trainset, batch_size=32, shuffle=True), DataLoader(mnist_testset)
 
-    def __len__(self):
-        return self.data.shape[0]
-
-    def __getitem__(self, idx):
-        return (self.data[idx], self.labels[idx])
+# class Dataloader():
+#     r"""Basic dataloader class object."""
+#     def __init__(self,
+#                  data,
+#                  labels):
+#         self.data = data
+#         self.labels = labels
+#
+#     def __len__(self):
+#         return self.data.shape[0]
+#
+#     def __getitem__(self, idx):
+#         return (self.data[idx], self.labels[idx])
 
 class CNN(nn.Module):
     r"""simple 2D CNN model for classification."""
@@ -85,3 +94,6 @@ class Trainer(object):
                     print(f'[client {cid}, epoch {epoch + 1}, {i + 1:5d}] loss: {running_loss / len(self.trainloader):.3f}')
 
         return self.model, (running_loss / len(self.trainloader))
+
+################################################################################
+trainset, testset = load_data()
