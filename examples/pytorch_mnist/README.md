@@ -23,7 +23,7 @@ Mosaic is the name of the aggregation server. The first time you run this comman
 Installing all the dependencies by running
 ```
 python3 -m venv modalic-env
-. ./modalic-env/bin/activate
+source /modalic-env/bin/activate
 pip install --editable .
 ```
 An individual client can be started simply by running
