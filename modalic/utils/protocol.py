@@ -6,7 +6,7 @@ from modalic.client.proto.mosaic_pb2 import (
     ProcessMeta,
 )
 
-from sdk.utils import common
+from modalic.utils import common
 
 
 def parameters_to_proto(parameters: common.Parameters) -> Parameters:

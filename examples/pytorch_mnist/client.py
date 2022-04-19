@@ -3,54 +3,44 @@ import torch.nn.functional as F
 import torch
 from torch.utils.data import DataLoader
 import torchvision
-from torchvision.datasets import MNIST
+from torchvision import datasets, transforms
 
 import modalic
 
-server_address = '127.0.0.1:8080'
-device = 'cpu'
+server_address = "127.0.0.1:8080"
+device = "cpu"
 if torch.cuda.is_available():
-    device = 'cuda'
+    device = "cuda"
+
 
 def load_data():
     r"""loading the mnist datasets."""
-    mnist_trainset = MNIST(root='./data', train=True, download=True, transform=None)
-    mnist_testset = MNIST(root='./data', train=False, download=True, transform=None)
-    return DataLoader(mnist_trainset, batch_size=32, shuffle=True), DataLoader(mnist_testset)
+    transform = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+    )
+    mnist_trainset = datasets.MNIST(
+        root="./data", train=True, download=True, transform=transform
+    )
+    mnist_testset = datasets.MNIST(
+        root="./data", train=False, download=True, transform=transform
+    )
+    return mnist_trainset, mnist_testset
 
-# class DataLoader():
-#     r"""Basic dataloader class object."""
-#     def __init__(self,
-#                  data,
-#                  labels):
-#         self.data = data
-#         self.labels = labels
-#
-#     def __len__(self):
-#         return self.data.shape[0]
-#
-#     def __getitem__(self, idx):
-#         return (self.data[idx], self.labels[idx])
 
 class CNN(nn.Module):
     r"""simple 2D CNN model for classification."""
+
     def __init__(self):
         super(CNN, self).__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(
-                in_channels=1,
-                out_channels=16,
-                kernel_size=5,
-                stride=1,
-                padding=2,
+                in_channels=1, out_channels=16, kernel_size=5, stride=1, padding=2,
             ),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
         self.conv2 = nn.Sequential(
-            nn.Conv2d(16, 32, 5, 1, 2),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
+            nn.Conv2d(16, 32, 5, 1, 2), nn.ReLU(), nn.MaxPool2d(2),
         )
         self.out = nn.Linear(32 * 7 * 7, 10)
 
@@ -61,23 +51,24 @@ class CNN(nn.Module):
         output = self.out(x)
         return output, x
 
+
 class Trainer(object):
     r"""Trainer class object to perform the Learning.
     Args:
         device (torch.device): model running device. GPUs are recommended for model training and inference.
         dataset: (lib.data.data.Dataloader) Dataloader object.
     """
-    def __init__(self,
-                 device: torch.device,
-                 dataset: DataLoader,
-                 epochs: int,
+
+    def __init__(
+        self, device: torch.device, dataset, epochs: int,
     ):
-        self.cfg = cfg
         self.device = device
         self.dataset = dataset
         self.epochs = epochs
 
-        self.trainloader = torch.utils.data.DataLoader(self.dataset, batch_size=100, shuffle=True)
+        self.trainloader = torch.utils.data.DataLoader(
+            self.dataset, batch_size=32, shuffle=True
+        )
 
         self.model = CNN()
         self.loss = nn.CrossEntropyLoss()
@@ -98,9 +89,12 @@ class Trainer(object):
                 running_loss += loss.item()
 
                 if (i + 1) == len(self.trainloader):
-                    print(f'[client {cid}, epoch {epoch + 1}, {i + 1:5d}] loss: {running_loss / len(self.trainloader):.3f}')
+                    print(
+                        f"[client {cid}, epoch {epoch + 1}, {i + 1:5d}] loss: {running_loss / len(self.trainloader):.3f}"
+                    )
 
         return self.model, (running_loss / len(self.trainloader))
+
 
 ################################################################################
 trainset, testset = load_data()
