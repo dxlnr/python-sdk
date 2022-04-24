@@ -7,8 +7,8 @@ from minio.error import S3Error
 class Storage:
     r"""Instantiate Storage Object that enables access to S3 layer.
 
-    Args
-    ------------------------------------------------------------
+    Parameters:
+    ------------------------
     cfg (dict): dictionary containing the configurations.
     client (minio.Minio): s3 client object.
     """

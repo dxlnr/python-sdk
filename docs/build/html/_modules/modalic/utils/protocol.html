@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>modalic.utils.common &#8212; modalic 0.0.1 documentation</title>
+    <title>modalic.utils.protocol &#8212; modalic 0.0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -165,29 +165,45 @@ title="Fullscreen mode"
                 
               <div>
                 
-  <h1>Source code for modalic.utils.common</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+  <h1>Source code for modalic.utils.protocol</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;gRPC action script.&quot;&quot;&quot;</span>
 
-<span class="n">Weights</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">modalic.client.proto.mosaic_pb2</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ClientMessage</span><span class="p">,</span>
+    <span class="n">Parameters</span><span class="p">,</span>
+    <span class="n">ProcessMeta</span><span class="p">,</span>
+<span class="p">)</span>
 
-
-<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.common.Parameters">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">Parameters</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Model parameters.&quot;&quot;&quot;</span>
-
-    <span class="n">tensor</span><span class="p">:</span> <span class="nb">bytes</span>
-    <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">model_version</span><span class="p">:</span> <span class="nb">int</span></div>
+<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">common</span>
 
 
-<div class="viewcode-block" id="ProcessMeta"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.common.ProcessMeta">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">ProcessMeta</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Meta data about the process.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="parameters_to_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.parameters_to_proto">[docs]</a><span class="k">def</span> <span class="nf">parameters_to_proto</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Parameters</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">tensor</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span>
+        <span class="n">model_version</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">model_version</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
-    <span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span></div>
+
+<div class="viewcode-block" id="parameters_from_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.parameters_from_proto">[docs]</a><span class="k">def</span> <span class="nf">parameters_from_proto</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameters</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
+    <span class="n">tensor</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">tensor</span><span class="o">=</span><span class="n">tensor</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span>
+        <span class="n">model_version</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">model_version</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="process_meta_to_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.process_meta_to_proto">[docs]</a><span class="k">def</span> <span class="nf">process_meta_to_proto</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProcessMeta</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ProcessMeta</span><span class="p">(</span><span class="n">round_id</span><span class="o">=</span><span class="n">meta</span><span class="o">.</span><span class="n">round_id</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">meta</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_meta"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.to_meta">[docs]</a><span class="k">def</span> <span class="nf">to_meta</span><span class="p">(</span><span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">(</span><span class="n">round_id</span><span class="o">=</span><span class="n">round_id</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">)</span></div>
 </pre></div>
 
               </div>

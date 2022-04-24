@@ -13,7 +13,8 @@ class Client(Communicator):
     Serves as an simple layer and API that enables participating within
     Federated Learning process without designing the endpoints.
 
-    Args:
+    Parameters:
+    ------------------------
         trainer: Pytorch Trainer object.
         cid: Client id which uniquely identifies the client within the process.
         server_address: GRPC server address
@@ -36,7 +37,9 @@ class Client(Communicator):
 
     def set_weights(self, weights: common.Weights):
         r"""Set model weights from a list of NumPy ndarrays.
-        Args:
+        
+        Parameters:
+        ------------------------
             weights: Model weights as a list of NumPy ndarrays.
         """
         state_dict = OrderedDict(
@@ -84,9 +87,13 @@ class Client(Communicator):
         r"""Validates the response from server."""
         pass
 
-    def run(self):
-        r"""Runs the whole process for a single modalic client."""
+    def _run(self):
+        r"""Runs a single trainings round for a single modalic client."""
         self.round_id += 1
         self.get_global_model()
         self.train()
         self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)
+
+    def run(self):
+        r"""Looping the whole process for a single modalic client."""
+        pass

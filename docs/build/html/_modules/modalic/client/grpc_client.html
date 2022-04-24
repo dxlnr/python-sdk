@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modalic.client.grpc_client &#8212; modalic 0.0.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=4fea3ae4a0a4ba949df0a89bbae557cc2ce861ae" type="text/css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">modalic 0.0.1 documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for modalic.client.grpc_client</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">grpc</span>
+
+<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">modalic.utils.protocol</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">modalic.utils.serde</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">modalic.client.proto.mosaic_pb2_grpc</span> <span class="kn">import</span> <span class="n">CommunicationStub</span>
+<span class="kn">from</span> <span class="nn">modalic.client.proto.mosaic_pb2</span> <span class="kn">import</span> <span class="n">ClientUpdate</span><span class="p">,</span> <span class="n">ClientMessage</span>
+
+
+<div class="viewcode-block" id="CommunicationLayer"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.CommunicationLayer">[docs]</a><span class="k">class</span> <span class="nc">CommunicationLayer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Abstract communicatio base layer for ensuring the grpc protocol.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CommunicationLayer.update"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.CommunicationLayer.update">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sends an updated model version to the server.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CommunicationLayer.get_global_model"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.CommunicationLayer.get_global_model">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_global_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Client request to get the latest version of the global model</span>
+<span class="sd">        from server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="Communicator"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.Communicator">[docs]</a><span class="k">class</span> <span class="nc">Communicator</span><span class="p">(</span><span class="n">CommunicationLayer</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Communicator class object implements the grpc protocol functionality</span>
+<span class="sd">    which will be inherited by some client class object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            server_address: static ip address of the aggregation server.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_address</span> <span class="o">=</span> <span class="n">server_address</span>
+
+<div class="viewcode-block" id="Communicator.set_weights"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.Communicator.set_weights">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Weights</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set model weights from a list of NumPy ndarrays.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Communicator.get_weights"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.Communicator.get_weights">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">Weights</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get model weights as a list of NumPy ndarrays.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Communicator.grpc_connection"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.Communicator.grpc_connection">[docs]</a>    <span class="k">def</span> <span class="nf">grpc_connection</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">server_address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">max_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">536870912</span><span class="p">,</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Establishes a grpc connection to the server.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (channel, stub): Tuple containing the thread-safe grpc channel</span>
+<span class="sd">            to server &amp; the grpc stub.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">channel_options</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;grpc.max_send_message_length&quot;</span><span class="p">,</span> <span class="n">max_message_length</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;grpc.max_receive_message_length&quot;</span><span class="p">,</span> <span class="n">max_message_length</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">root_certificates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ssl_channel_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
+                <span class="n">server_address</span><span class="p">,</span> <span class="n">ssl_channel_credentials</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">channel_options</span>
+            <span class="p">)</span>
+            <span class="c1"># log(INFO, &quot;Opened secure gRPC connection using certificates.&quot;)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span><span class="n">server_address</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">channel_options</span><span class="p">)</span>
+            <span class="c1"># log(INFO, &quot;Opened insecure gRPC connection.&quot;)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">CommunicationStub</span><span class="p">(</span><span class="n">channel</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Communicator.update"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.Communicator.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stake</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sends an updated model version to the server.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            dtype: Data Type of the trained model. Important as it determines the de-/serialization.</span>
+<span class="sd">            round_id: Training round id.</span>
+<span class="sd">            stake: Sets the number of samples the local model was trained on.</span>
+<span class="sd">            loss: Loss of the local model during training.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters_to_proto</span><span class="p">(</span>
+            <span class="n">weights_to_parameters</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">model_version</span><span class="o">=</span><span class="n">round_id</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">process_meta</span> <span class="o">=</span> <span class="n">process_meta_to_proto</span><span class="p">(</span><span class="n">to_meta</span><span class="p">(</span><span class="n">round_id</span><span class="p">,</span> <span class="n">loss</span><span class="p">))</span>
+
+        <span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">stub</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grpc_connection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_address</span><span class="p">)</span>
+        <span class="n">send</span> <span class="o">=</span> <span class="n">stub</span><span class="o">.</span><span class="n">Update</span><span class="p">(</span>
+            <span class="n">ClientUpdate</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cid</span><span class="p">,</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+                <span class="n">stake</span><span class="o">=</span><span class="n">stake</span><span class="p">,</span>
+                <span class="n">process_meta</span><span class="o">=</span><span class="n">process_meta</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">channel</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Communicator.get_global_model"><a class="viewcode-back" href="../../../modalic.client.html#modalic.client.grpc_client.Communicator.get_global_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_global_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Client request to get the latest version of the global model from server.&quot;&quot;&quot;</span>
+        <span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">stub</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grpc_connection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_address</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">stub</span><span class="o">.</span><span class="n">GetGlobalModel</span><span class="p">(</span><span class="n">ClientMessage</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cid</span><span class="p">))</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="n">parameters_from_proto</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="o">.</span><span class="n">tensor</span><span class="p">:</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">parameters_to_weights</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By modalic<br/>
+  
+      &copy; Copyright 2022, modalic.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

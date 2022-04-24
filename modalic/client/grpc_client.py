@@ -30,8 +30,9 @@ class Communicator(CommunicationLayer):
     r"""Communicator class object implements the grpc protocol functionality
     which will be inherited by some client class object.
 
-        Args:
-            server_address: static ip address of the aggregation server.
+    Parameters:
+    ------------------------
+        server_address: static ip address of the aggregation server.
     """
 
     def __init__(self, server_address: str):
@@ -54,7 +55,9 @@ class Communicator(CommunicationLayer):
         root_certificates: Optional[bytes] = None,
     ):
         r"""Establishes a grpc connection to the server.
+
         Returns:
+        ------------------------
             (channel, stub): Tuple containing the thread-safe grpc channel
             to server & the grpc stub.
         """
@@ -76,7 +79,9 @@ class Communicator(CommunicationLayer):
 
     def update(self, dtype: str, round_id: int, stake: int, loss: float):
         r"""Sends an updated model version to the server.
-        Args:
+        
+        Parameters:
+        ------------------------
             dtype: Data Type of the trained model. Important as it determines the de-/serialization.
             round_id: Training round id.
             stake: Sets the number of samples the local model was trained on.
