@@ -51,3 +51,9 @@ make html
 # See docs by opening
 # docs/build/html/index.html in the browser or with an IDE extension
 ```
+
+
+### Implementation Ideas
+- Testing / Parser that checks if the framework architecture is correctly set up and implemented beforehand to avoid python giving run time error.
+- Add the server as wrapped dockercontainer within Github.
+- Use Poetry
