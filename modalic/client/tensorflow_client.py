@@ -17,6 +17,7 @@ from typing import Generic
 import numpy as np
 import tensorflow
 
+from modalic.client.grpc_client import Communicator
 
 class TensorflowClient(Communicator):
     r"""
@@ -36,4 +37,6 @@ class TensorflowClient(Communicator):
                  cid: int,
                  server_address: str,
     ):
-        super().__init__(server_address)
+        super().__init__(server_address, cid)
+        self.cid = cid
+        self.trainer = trainer

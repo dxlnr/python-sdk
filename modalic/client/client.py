@@ -39,7 +39,7 @@ class Client(Communicator):
                  cid: int,
                  server_address: str,
     ):
-        super().__init__(server_address)
+        super().__init__(server_address, cid)
         self.cid = cid
         self.trainer = trainer
         self.model = self.trainer.model
@@ -63,10 +63,6 @@ class Client(Communicator):
             }
         )
         self.model.load_state_dict(state_dict, strict=True)
-
-    def get_weights(self):
-        r"""Get model weights as a list of NumPy ndarrays."""
-        return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
     def get_weights(self):
         r"""Get model weights as a list of NumPy ndarrays."""

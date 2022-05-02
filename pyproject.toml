@@ -1,5 +1,8 @@
 [tool.poetry]
 name="modalic"
+packages = [
+    { include = "modalic" },
+]
 description="Python SDK library for using the modalic MLOps platform."
 version = "0.7.3"
 authors = ["Daniel Illner <daniel.illner@outlook.de>"]
@@ -50,6 +53,7 @@ pytest = "^7.1.2"
 tox = "^3.24.3"
 black = "^22.3.0"
 mypy = "^0.950"
+types-protobuf = "^3.19.18"
 
 [build-system]
 requires = ["poetry-core"]
@@ -87,3 +91,7 @@ exclude = '''
     | venv/
   )
 '''
+
+[tool.mypy]
+ignore_missing_imports = true
+strict = true

@@ -47,10 +47,15 @@ class Communicator(CommunicationLayer):
     Parameters:
     ------------------------
         server_address: static ip address of the aggregation server.
+        cid: client identifier.
     """
 
-    def __init__(self, server_address: str):
+    def __init__(self,
+                 server_address: str,
+                 cid: int
+    ):
         self.server_address = server_address
+        self.cid = cid
 
     @abstractmethod
     def set_weights(self, weights: common.Weights):
