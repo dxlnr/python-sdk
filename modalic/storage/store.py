@@ -1,7 +1,9 @@
 from typing import Optional, Dict
-import io
+
+# import io
 from minio import Minio
-from minio.error import S3Error
+
+# from minio.error import S3Error
 
 
 class Storage:

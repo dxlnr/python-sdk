@@ -1,8 +1,5 @@
-import torch.nn as nn
-import torch.nn.functional as F
 import torch
-from torch.utils.data import DataLoader
-import torchvision
+import torch.nn as nn
 from torchvision import datasets, transforms
 
 import modalic

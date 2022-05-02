@@ -13,7 +13,7 @@
 #  permissions and limitations under the License.
 
 """ProtoBuf serialization and deserialization."""
-from typing import cast, List
+from typing import List
 import numpy as np
 import struct
 import itertools

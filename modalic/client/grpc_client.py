@@ -18,8 +18,13 @@ from typing import Optional
 import grpc
 
 from modalic.utils import common
-from modalic.utils.protocol import *
-from modalic.utils.serde import *
+from modalic.utils.protocol import (
+    parameters_to_proto,
+    parameters_from_proto,
+    process_meta_to_proto,
+    to_meta,
+)
+from modalic.utils.serde import weights_to_parameters, parameters_to_weights
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
 from modalic.client.proto.mosaic_pb2 import ClientUpdate, ClientMessage
 
@@ -50,10 +55,7 @@ class Communicator(CommunicationLayer):
         cid: client identifier.
     """
 
-    def __init__(self,
-                 server_address: str,
-                 cid: int
-    ):
+    def __init__(self, server_address: str, cid: int):
         self.server_address = server_address
         self.cid = cid
 
@@ -113,7 +115,7 @@ class Communicator(CommunicationLayer):
         process_meta = process_meta_to_proto(to_meta(round_id, loss))
 
         (channel, stub) = self.grpc_connection(self.server_address)
-        send = stub.Update(
+        _ = stub.Update(
             ClientUpdate(
                 id=self.cid,
                 parameters=parameters,

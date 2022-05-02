@@ -1,8 +1,6 @@
-from distutils.sysconfig import get_python_inc
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, find_packages
 
 requirements = [
-    #'modalic>=0.1.0'
     'torch>=1.8.0',
     'torchvision>=0.12.0',
 ]

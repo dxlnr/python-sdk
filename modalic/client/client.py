@@ -34,10 +34,11 @@ class Client(Communicator):
         server_address: GRPC server address
     """
 
-    def __init__(self,
-                 trainer: Generic,
-                 cid: int,
-                 server_address: str,
+    def __init__(
+        self,
+        trainer: Generic,
+        cid: int,
+        server_address: str,
     ):
         super().__init__(server_address, cid)
         self.cid = cid

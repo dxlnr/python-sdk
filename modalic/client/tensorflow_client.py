@@ -12,12 +12,14 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-from collections import OrderedDict
+# from collections import OrderedDict
 from typing import Generic
-import numpy as np
-import tensorflow
+
+# import numpy as np
+# import tensorflow
 
 from modalic.client.grpc_client import Communicator
+
 
 class TensorflowClient(Communicator):
     r"""
@@ -32,10 +34,11 @@ class TensorflowClient(Communicator):
         server_address: GRPC server address
     """
 
-    def __init__(self,
-                 trainer: Generic,
-                 cid: int,
-                 server_address: str,
+    def __init__(
+        self,
+        trainer: Generic,
+        cid: int,
+        server_address: str,
     ):
         super().__init__(server_address, cid)
         self.cid = cid

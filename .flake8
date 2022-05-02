@@ -1,5 +1,6 @@
 [flake8]
 exclude =
     modalic/client/proto
+    modalic/__init__.py
 
 ignore = E501, W503

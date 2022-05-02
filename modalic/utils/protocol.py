@@ -13,9 +13,9 @@
 #  permissions and limitations under the License.
 
 """gRPC action script."""
+from typing import List
 
 from modalic.client.proto.mosaic_pb2 import (
-    ClientMessage,
     Parameters,
     ProcessMeta,
 )
