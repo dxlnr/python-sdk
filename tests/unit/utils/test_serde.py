@@ -1,7 +1,8 @@
 import numpy as np
-# from typing import List
 
-from modalic.utils.serde import weights_to_bytes, bytes_to_ndarray, get_shape
+from modalic.utils.serde import bytes_to_ndarray, get_shape, weights_to_bytes
+
+# from typing import List
 
 
 def test_serialisation_deserialisation() -> None:

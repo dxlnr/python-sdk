@@ -12,11 +12,12 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-from typing import List
 from dataclasses import dataclass
+from typing import Any, List
+
 import numpy as np
 
-Weights = List[np.ndarray]
+Weights = List[np.ndarray[Any, np.dtype[Any]]]
 
 
 @dataclass

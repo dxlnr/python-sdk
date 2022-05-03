@@ -11,34 +11,36 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
-
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Any, List, Optional, Tuple
 
 import grpc
+import numpy as np
 
+from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
+from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
 from modalic.utils import common
 from modalic.utils.protocol import (
-    parameters_to_proto,
     parameters_from_proto,
+    parameters_to_proto,
     process_meta_to_proto,
     to_meta,
 )
-from modalic.utils.serde import weights_to_parameters, parameters_to_weights
-from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
-from modalic.client.proto.mosaic_pb2 import ClientUpdate, ClientMessage
+from modalic.utils.serde import parameters_to_weights, weights_to_parameters
 
 
 class CommunicationLayer(ABC):
     r"""Abstract communicatio base layer for ensuring the grpc protocol."""
 
     @abstractmethod
-    def update(self):
+    def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
         r"""Sends an updated model version to the server."""
         raise NotImplementedError()
 
     @abstractmethod
-    def get_global_model(self):
+    def get_global_model(
+        self, model_shape: List[np.ndarray[int, np.dtype[Any]]]
+    ) -> None:
         r"""Client request to get the latest version of the global model
         from server.
         """
@@ -60,7 +62,7 @@ class Communicator(CommunicationLayer):
         self.cid = cid
 
     @abstractmethod
-    def set_weights(self, weights: common.Weights):
+    def set_weights(self, weights: common.Weights) -> None:
         r"""Set model weights from a list of NumPy ndarrays."""
         raise NotImplementedError()
 
@@ -74,7 +76,7 @@ class Communicator(CommunicationLayer):
         server_address: str,
         max_message_length: int = 536870912,
         root_certificates: Optional[bytes] = None,
-    ):
+    ) -> Tuple[grpc.Channel, CommunicationStub]:
         r"""Establishes a grpc connection to the server.
 
         Returns:
@@ -98,7 +100,7 @@ class Communicator(CommunicationLayer):
             # log(INFO, "Opened insecure gRPC connection.")
         return (channel, CommunicationStub(channel))
 
-    def update(self, dtype: str, round_id: int, stake: int, loss: float):
+    def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
         r"""Sends an updated model version to the server.
 
         Parameters:
@@ -125,8 +127,15 @@ class Communicator(CommunicationLayer):
         )
         channel.close()
 
-    def get_global_model(self):
-        r"""Client request to get the latest version of the global model from server."""
+    def get_global_model(
+        self, model_shape: List[np.ndarray[int, np.dtype[Any]]]
+    ) -> None:
+        r"""Client request to get the latest version of the global model from server.
+
+        Parameters:
+        ------------------------
+            model_shape: Holds the shape of the model architecture for serialization & deserialization.
+        """
         (channel, stub) = self.grpc_connection(self.server_address)
         response = stub.GetGlobalModel(ClientMessage(id=self.cid))
 
@@ -134,6 +143,6 @@ class Communicator(CommunicationLayer):
         if not params.tensor:
             channel.close()
         else:
-            weights = parameters_to_weights(params, self.model_shape)
+            weights = parameters_to_weights(params, model_shape)
             self.set_weights(weights)
             channel.close()

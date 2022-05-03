@@ -13,12 +13,13 @@
 #  permissions and limitations under the License.
 
 """ProtoBuf serialization and deserialization."""
-from typing import List
-import numpy as np
-import struct
 import itertools
+import struct
+from typing import List
 
-from modalic.utils import protocol, common
+import numpy as np
+
+from modalic.utils import common, protocol
 
 
 def weights_to_parameters(
@@ -74,7 +75,7 @@ def get_shape(weights: common.Weights) -> List:
     return [np.array(layer.size) for layer in weights]
 
 
-def chunk(iterable, chunksize):
+def chunk(iterable, chunksize: int):
     r"""helper chunking an iterable."""
     return zip(*[iter(iterable)] * chunksize)
 

@@ -13,7 +13,8 @@
 #  permissions and limitations under the License.
 
 from collections import OrderedDict
-from typing import Generic
+from typing import Any, List
+
 import numpy as np
 import torch
 
@@ -36,7 +37,7 @@ class Client(Communicator):
 
     def __init__(
         self,
-        trainer: Generic,
+        trainer: Any,
         cid: int,
         server_address: str,
     ):
@@ -50,7 +51,7 @@ class Client(Communicator):
         self.round_id = 0
         self.loss = 0.0
 
-    def set_weights(self, weights: common.Weights):
+    def set_weights(self, weights: common.Weights) -> None:
         r"""Set model weights from a list of NumPy ndarrays.
 
         Parameters:
@@ -65,19 +66,25 @@ class Client(Communicator):
         )
         self.model.load_state_dict(state_dict, strict=True)
 
-    def get_weights(self):
+    def get_weights(self) -> common.Weights:
         r"""Get model weights as a list of NumPy ndarrays."""
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
-    def get_model_shape(self):
+    def get_model_shape(self) -> List[np.ndarray[int, np.dtype[Any]]]:
         r"Extracts the shape of the pytorch model." ""
-        shapes = list()
+        shapes: List[Any] = list()
         for param_tensor in self.model.state_dict().keys():
             shapes.append(np.array(self.model.state_dict()[param_tensor].size()))
         return shapes
 
-    def get_model_dtype(self):
-        r"""Extracts the data type of the pytorch model."""
+    def get_model_dtype(self) -> str:
+        r"""Extracts the data type of the pytorch model.
+
+        Returns:
+        ------------------------
+            dtype: Encodes the data type of the model as a String. Options are
+                   "F32" and "F64".
+        """
         torch_type = list(self.trainer.model.state_dict().items())[0][1].dtype
         if torch_type == "torch.float32" or "torch.float":
             dtype = "F32"
@@ -91,20 +98,18 @@ class Client(Communicator):
             )
         return dtype
 
-    def train(self):
-        self.model, self.loss = self.trainer.train(self.cid)
+    def train(self) -> None:
+        self.model, self.loss = self.trainer.train()
 
-    def val_get_global_model(self, params: common.Parameters) -> bool:
-        r"""Validates the response from server."""
-        pass
+    # def val_get_global_model(self, params: common.Parameters) -> bool:
+    #     r"""Validates the response from server."""
 
-    def _run(self):
+    def _run(self) -> None:
         r"""Runs a single trainings round for a single modalic client."""
         self.round_id += 1
-        self.get_global_model()
+        self.get_global_model(self.model_shape)
         self.train()
         self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)
 
-    def run(self):
+    def run(self) -> None:
         r"""Looping the whole process for a single modalic client."""
-        pass

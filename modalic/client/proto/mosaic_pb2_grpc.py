@@ -15,26 +15,25 @@ class CommunicationStub(object):
             channel: A grpc.Channel.
         """
         self.GetGlobalModel = channel.unary_unary(
-                '/mosaic_proto.Communication/GetGlobalModel',
-                request_serializer=mosaic__pb2.ClientMessage.SerializeToString,
-                response_deserializer=mosaic__pb2.ServerModel.FromString,
-                )
+            "/mosaic_proto.Communication/GetGlobalModel",
+            request_serializer=mosaic__pb2.ClientMessage.SerializeToString,
+            response_deserializer=mosaic__pb2.ServerModel.FromString,
+        )
         self.Update = channel.unary_unary(
-                '/mosaic_proto.Communication/Update',
-                request_serializer=mosaic__pb2.ClientUpdate.SerializeToString,
-                response_deserializer=mosaic__pb2.ServerMessage.FromString,
-                )
+            "/mosaic_proto.Communication/Update",
+            request_serializer=mosaic__pb2.ClientUpdate.SerializeToString,
+            response_deserializer=mosaic__pb2.ServerMessage.FromString,
+        )
 
 
 class CommunicationServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def GetGlobalModel(self, request, context):
-        """Remote protocol to handle global model requests.
-        """
+        """Remote protocol to handle global model requests."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
     def Update(self, request, context):
         """Remote protocol for sending local model to server.
@@ -42,62 +41,87 @@ class CommunicationServicer(object):
         rpc SetGlobalMeta(GlobalMeta) returns (ServerMessage);
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
 
 def add_CommunicationServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetGlobalModel': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetGlobalModel,
-                    request_deserializer=mosaic__pb2.ClientMessage.FromString,
-                    response_serializer=mosaic__pb2.ServerModel.SerializeToString,
-            ),
-            'Update': grpc.unary_unary_rpc_method_handler(
-                    servicer.Update,
-                    request_deserializer=mosaic__pb2.ClientUpdate.FromString,
-                    response_serializer=mosaic__pb2.ServerMessage.SerializeToString,
-            ),
+        "GetGlobalModel": grpc.unary_unary_rpc_method_handler(
+            servicer.GetGlobalModel,
+            request_deserializer=mosaic__pb2.ClientMessage.FromString,
+            response_serializer=mosaic__pb2.ServerModel.SerializeToString,
+        ),
+        "Update": grpc.unary_unary_rpc_method_handler(
+            servicer.Update,
+            request_deserializer=mosaic__pb2.ClientUpdate.FromString,
+            response_serializer=mosaic__pb2.ServerMessage.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'mosaic_proto.Communication', rpc_method_handlers)
+        "mosaic_proto.Communication", rpc_method_handlers
+    )
     server.add_generic_rpc_handlers((generic_handler,))
 
 
- # This class is part of an EXPERIMENTAL API.
+# This class is part of an EXPERIMENTAL API.
 class Communication(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def GetGlobalModel(request,
+    def GetGlobalModel(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mosaic_proto.Communication/GetGlobalModel',
+            "/mosaic_proto.Communication/GetGlobalModel",
             mosaic__pb2.ClientMessage.SerializeToString,
             mosaic__pb2.ServerModel.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
 
     @staticmethod
-    def Update(request,
+    def Update(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mosaic_proto.Communication/Update',
+            "/mosaic_proto.Communication/Update",
             mosaic__pb2.ClientUpdate.SerializeToString,
             mosaic__pb2.ServerMessage.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )

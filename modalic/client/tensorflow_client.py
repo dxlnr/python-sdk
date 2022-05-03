@@ -13,12 +13,12 @@
 #  permissions and limitations under the License.
 
 # from collections import OrderedDict
-from typing import Generic
+from typing import Any
+
+from modalic.client.grpc_client import Communicator
 
 # import numpy as np
 # import tensorflow
-
-from modalic.client.grpc_client import Communicator
 
 
 class TensorflowClient(Communicator):
@@ -36,7 +36,7 @@ class TensorflowClient(Communicator):
 
     def __init__(
         self,
-        trainer: Generic,
+        trainer: Any,
         cid: int,
         server_address: str,
     ):

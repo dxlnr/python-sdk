@@ -15,11 +15,7 @@
 """gRPC action script."""
 from typing import List
 
-from modalic.client.proto.mosaic_pb2 import (
-    Parameters,
-    ProcessMeta,
-)
-
+from modalic.client.proto.mosaic_pb2 import Parameters, ProcessMeta
 from modalic.utils import common
 
 

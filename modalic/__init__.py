@@ -8,4 +8,3 @@ client_id = None
 server_ip = None
 
 # Client API
-from modalic.client import Client
