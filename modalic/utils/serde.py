@@ -72,7 +72,7 @@ def bytes_to_ndarray(
     else:
         raise TypeError("data type {} is not known.".format(dtype))
 
-    layers = np.split(np.array(layer), indexing([np.prod(s) for s in layer_shape]))  # type: ignore  # noqa
+    layers = np.split(np.array(layer), indexing([np.prod(s) for s in layer_shape]))
 
     return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
