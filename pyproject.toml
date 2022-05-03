@@ -4,7 +4,7 @@ packages = [
     { include = "modalic" },
 ]
 description="Python SDK library for using the modalic MLOps platform."
-version = "0.7.3"
+version = "0.1.0"
 authors = ["Daniel Illner <daniel.illner@outlook.de>"]
 readme = "README.md"
 homepage = "https://modalic.ai"
