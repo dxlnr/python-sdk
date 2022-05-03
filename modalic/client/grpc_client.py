@@ -11,6 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
+
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional, Tuple
 
@@ -68,7 +71,7 @@ class Communicator(CommunicationLayer):
 
     @abstractmethod
     def get_weights(self) -> common.Weights:
-        r"""Get model weights as a list of NumPy ndarrays."""
+        r"""Returns the model weights as a list of NumPy ndarrays."""
         raise NotImplementedError()
 
     def grpc_connection(
@@ -78,6 +81,13 @@ class Communicator(CommunicationLayer):
         root_certificates: Optional[bytes] = None,
     ) -> Tuple[grpc.Channel, CommunicationStub]:
         r"""Establishes a grpc connection to the server.
+
+        Parameters:
+        ------------------------
+            server_address: Determines the IP address for connecting to the server.
+            max_message_length: Maximum grpc message size.
+            root_certificates: (optional) Can be set in order to establish a encrypted connection
+                               between client & server.
 
         Returns:
         ------------------------
@@ -127,9 +137,7 @@ class Communicator(CommunicationLayer):
         )
         channel.close()
 
-    def get_global_model(
-        self, model_shape: List[np.ndarray[int, np.dtype[Any]]]
-    ) -> None:
+    def get_global_model(self, model_shape: list[np.ndarray]) -> None:
         r"""Client request to get the latest version of the global model from server.
 
         Parameters:

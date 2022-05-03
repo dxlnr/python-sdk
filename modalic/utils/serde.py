@@ -13,6 +13,8 @@
 #  permissions and limitations under the License.
 
 """ProtoBuf serialization and deserialization."""
+from __future__ import annotations
+
 import itertools
 import struct
 import typing
@@ -44,9 +46,9 @@ def parameters_to_weights(
     )
 
 
-def ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> List[int]:
+def ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> list[int]:
     r"""Serialize NumPy ndarray to list of u8 bytes."""
-    res: List[int] = list()
+    res: list[int] = list()
     for single in np.nditer(ndarray):
         res.extend(struct.pack(dtype, single))
     return res
@@ -59,10 +61,10 @@ def weights_to_bytes(weights: common.Weights, dtype: str) -> bytes:
 
 
 def bytes_to_ndarray(
-    tensor: bytes, layer_shape: List[np.ndarray[int, np.dtype[Any]]], dtype: str
+    tensor: bytes, layer_shape: list[np.ndarray], dtype: str
 ) -> common.Weights:
     r"""Deserialize NumPy ndarray from u8 bytes."""
-    layer: List[Any] = list()
+    layer: list[Any] = list()
     if dtype == "!f":
         for content in chunk(tensor, 4):
             layer.append(struct.unpack(">f", bytes(content)))
@@ -77,17 +79,17 @@ def bytes_to_ndarray(
     return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
 
-def get_shape(weights: common.Weights) -> List[Any]:
-    r"""Returns the shape of weights."""
+def get_shape(weights: common.Weights) -> list[Any]:
+    r"""Reads in the weights and returns its shape as a list object."""
     return [np.array(layer.size) for layer in weights]
 
 
 def chunk(iterable: Iterable[Any], chunksize: int) -> zip[Any]:
-    r"""helper chunking an iterable."""
+    r"""helper chunking an iterable with fixed size."""
     return zip(*[iter(iterable)] * chunksize)
 
 
-def indexing(length: List[int]) -> List[int]:
+def indexing(length: list[int]) -> list[int]:
     r"""helper for preparing the indices at which array is splitted."""
     for idx, _ in enumerate(length):
         if idx == 0:

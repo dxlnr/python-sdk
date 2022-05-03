@@ -12,8 +12,10 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+from __future__ import annotations
+
 from collections import OrderedDict
-from typing import Any, List
+from typing import Any
 
 import numpy as np
 import torch
@@ -70,9 +72,9 @@ class Client(Communicator):
         r"""Get model weights as a list of NumPy ndarrays."""
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
-    def get_model_shape(self) -> List[np.ndarray[int, np.dtype[Any]]]:
+    def get_model_shape(self) -> list[np.ndarray]:
         r"Extracts the shape of the pytorch model." ""
-        shapes: List[Any] = list()
+        shapes: list[np.ndarray] = list()
         for param_tensor in self.model.state_dict().keys():
             shapes.append(np.array(self.model.state_dict()[param_tensor].size()))
         return shapes
@@ -111,5 +113,5 @@ class Client(Communicator):
         self.train()
         self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)
 
-    def run(self) -> None:
-        r"""Looping the whole process for a single modalic client."""
+    # def run(self) -> None:
+    #     r"""Looping the whole process for a single modalic client."""

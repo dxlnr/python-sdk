@@ -13,7 +13,7 @@
 #  permissions and limitations under the License.
 
 """gRPC action script."""
-from typing import List
+from __future__ import annotations
 
 from modalic.client.proto.mosaic_pb2 import Parameters, ProcessMeta
 from modalic.utils import common
@@ -30,7 +30,7 @@ def parameters_to_proto(parameters: common.Parameters) -> Parameters:
 
 def parameters_from_proto(msg: Parameters) -> common.Parameters:
     r"""."""
-    tensor: List[bytes] = list(msg.parameters.tensor)
+    tensor: list[bytes] = list(msg.parameters.tensor)
     return common.Parameters(
         tensor=tensor,
         data_type=msg.parameters.data_type,
