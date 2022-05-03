@@ -1,6 +1,7 @@
 name: "Setup virtual environment using Poetry"
 
 runs:
+  using: "composite"
   steps:
     - name: Set up Python
       uses: actions/setup-python@v2
