@@ -6,7 +6,7 @@ from modalic.utils.serde import bytes_to_ndarray, get_shape, weights_to_bytes
 
 
 def test_serialisation_deserialisation() -> None:
-    """Test if after serialization/deserialisation the np.ndarray is
+    r"""Test if after serialization/deserialisation the np.ndarray is
     identical."""
     arg = [np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([5.0, 6.0])]
 

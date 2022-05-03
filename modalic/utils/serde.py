@@ -15,13 +15,15 @@
 """ProtoBuf serialization and deserialization."""
 import itertools
 import struct
-from typing import List
+import typing
+from typing import Any, Iterable, List
 
 import numpy as np
 
 from modalic.utils import common, protocol
 
 
+@typing.no_type_check
 def weights_to_parameters(
     weights: common.Weights, dtype: str, model_version: int
 ) -> protocol.Parameters:
@@ -32,16 +34,19 @@ def weights_to_parameters(
     )
 
 
-def parameters_to_weights(parameters: protocol.Parameters, shapes) -> common.Weights:
+@typing.no_type_check
+def parameters_to_weights(
+    parameters: protocol.Parameters, shapes: List[np.ndarray[int, np.dtype[Any]]]
+) -> common.Weights:
     r"""Convert parameters object to NumPy weights."""
     return bytes_to_ndarray(
         parameters.tensor, shapes, dtype_to_struct(parameters.data_type)
     )
 
 
-def ndarray_to_bytes(ndarray: np.ndarray, dtype: str) -> List:
+def ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> List[int]:
     r"""Serialize NumPy ndarray to list of u8 bytes."""
-    res = list()
+    res: List[int] = list()
     for single in np.nditer(ndarray):
         res.extend(struct.pack(dtype, single))
     return res
@@ -53,9 +58,11 @@ def weights_to_bytes(weights: common.Weights, dtype: str) -> bytes:
     return bytes(list(itertools.chain(*layers)))
 
 
-def bytes_to_ndarray(tensor: bytes, layer_shape: List, dtype: str) -> np.array:
+def bytes_to_ndarray(
+    tensor: bytes, layer_shape: List[np.ndarray[int, np.dtype[Any]]], dtype: str
+) -> common.Weights:
     r"""Deserialize NumPy ndarray from u8 bytes."""
-    layer = list()
+    layer: List[Any] = list()
     if dtype == "!f":
         for content in chunk(tensor, 4):
             layer.append(struct.unpack(">f", bytes(content)))
@@ -65,22 +72,22 @@ def bytes_to_ndarray(tensor: bytes, layer_shape: List, dtype: str) -> np.array:
     else:
         raise TypeError("data type {} is not known.".format(dtype))
 
-    layers = np.split(np.array(layer), indexing([np.prod(s) for s in layer_shape]))
+    layers = np.split(np.array(layer), indexing([np.prod(s) for s in layer_shape]))  # type: ignore  # noqa
 
     return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
 
-def get_shape(weights: common.Weights) -> List:
+def get_shape(weights: common.Weights) -> List[Any]:
     r"""Returns the shape of weights."""
     return [np.array(layer.size) for layer in weights]
 
 
-def chunk(iterable, chunksize: int):
+def chunk(iterable: Iterable[Any], chunksize: int) -> zip[Any]:
     r"""helper chunking an iterable."""
     return zip(*[iter(iterable)] * chunksize)
 
 
-def indexing(length: List) -> List:
+def indexing(length: List[int]) -> List[int]:
     r"""helper for preparing the indices at which array is splitted."""
     for idx, _ in enumerate(length):
         if idx == 0:
