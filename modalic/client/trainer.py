@@ -1,7 +1,7 @@
 # from abc import ABC, abstractmethod
 #
 #
-# class BaselineTrainer(ABC):
+# class BaseTrainer(ABC):
 #     r"""Trainer class provides an API for feature-complete training in PyTorch"""
 #
 #     model = abstract_attribute()
