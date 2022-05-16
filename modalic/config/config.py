@@ -24,7 +24,9 @@ class ConfigObject:
     """
     server_address: str = '[::]:8000'
     timeout: float = 60.0
+    training_rounds: int = 1
 
     def __init__(self, conf: dict):
         self.server_address = conf["server_address"]
         self.timeout = conf["timeout"]
+        self.training_rounds = conf["rounds"]

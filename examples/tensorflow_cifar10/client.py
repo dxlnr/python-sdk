@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import datasets
 
-import modalic
+# import modalic
 
 server_address = "127.0.0.1:8080"
 
@@ -21,9 +21,7 @@ def load_data():
 
 
 class Trainer:
-    def __init__(
-        self,
-    ):
+    def __init__(self,):
         self.epochs = 5
         self.model = tf.keras.models.Sequential(
             [
