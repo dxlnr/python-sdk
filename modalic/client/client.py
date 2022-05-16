@@ -30,8 +30,7 @@ class Client(Communicator):
     Serves as a simple layer and API that enables participating within a
     Federated Learning process.
 
-    Parameters:
-    ------------------------
+    Args:
         trainer: Pytorch Trainer object.
         cid: Client id which uniquely identifies the client within the process.
         server_address: GRPC server address
@@ -56,8 +55,7 @@ class Client(Communicator):
     def set_weights(self, weights: common.Weights) -> None:
         r"""Set model weights from a list of NumPy ndarrays.
 
-        Parameters:
-        ------------------------
+        Args:
             weights: Model weights as a list of NumPy ndarrays.
         """
         state_dict = OrderedDict(
@@ -83,7 +81,6 @@ class Client(Communicator):
         r"""Extracts the data type of the pytorch model.
 
         Returns:
-        ------------------------
             dtype: Encodes the data type of the model as a String. Options are
                    "F32" and "F64".
         """

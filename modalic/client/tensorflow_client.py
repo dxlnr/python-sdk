@@ -27,8 +27,7 @@ class TensorflowClient(Communicator):
     Serves as a simple layer and API that enables participating within a
     Federated Learning process.
 
-    Parameters:
-    ------------------------
+    Args:
         trainer: Tensorflow Trainer object.
         cid: Client id which uniquely identifies the client within the process.
         server_address: GRPC server address

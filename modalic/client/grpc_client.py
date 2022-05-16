@@ -54,8 +54,7 @@ class Communicator(CommunicationLayer):
     r"""Communicator class object implements the grpc protocol functionality
     which will be inherited by some client class object.
 
-    Parameters:
-    ------------------------
+    Args:
         server_address: static ip address of the aggregation server.
         cid: client identifier.
     """
@@ -82,15 +81,13 @@ class Communicator(CommunicationLayer):
     ) -> Tuple[grpc.Channel, CommunicationStub]:
         r"""Establishes a grpc connection to the server.
 
-        Parameters:
-        ------------------------
+        Args:
             server_address: Determines the IP address for connecting to the server.
             max_message_length: Maximum grpc message size.
             root_certificates: (optional) Can be set in order to establish a encrypted connection
                                between client & server.
 
         Returns:
-        ------------------------
             (channel, stub): Tuple containing the thread-safe grpc channel
             to server & the grpc stub.
         """
@@ -113,8 +110,7 @@ class Communicator(CommunicationLayer):
     def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
         r"""Sends an updated model version to the server.
 
-        Parameters:
-        ------------------------
+        Args:
             dtype: Data Type of the trained model. Important as it determines the de-/serialization.
             round_id: Training round id.
             stake: Sets the number of samples the local model was trained on.
@@ -140,8 +136,7 @@ class Communicator(CommunicationLayer):
     def get_global_model(self, model_shape: list[np.ndarray]) -> None:
         r"""Client request to get the latest version of the global model from server.
 
-        Parameters:
-        ------------------------
+        Args:
             model_shape: Holds the shape of the model architecture for serialization & deserialization.
         """
         (channel, stub) = self.grpc_connection(self.server_address)
