@@ -34,7 +34,7 @@ class ClientThread(threading.Thread):
         r"""runs the simulation of a single client within separate thread."""
         try:
             self._run()
-        except Exception as _:
+        except Exception:
             traceback.print_exc()
 
     def _run(self):

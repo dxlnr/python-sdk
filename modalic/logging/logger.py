@@ -28,5 +28,12 @@ class Monitor(object):
         # logger configuration
         self.logger.setLevel(level=logging.INFO)
 
-    def configure(self):
-        pass
+        handler = logging.StreamHandler()
+        handler.setLevel(level=logging.INFO)
+        handler.setFormatter(
+            logging.Formatter("%(name)s: %(asctime)s %(levelname)s | %(message)s")
+        )
+        self.logger.addHandler(handler)
+
+    # def configure(self):
+    #     pass
