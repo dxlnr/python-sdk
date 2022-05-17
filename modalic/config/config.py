@@ -14,6 +14,7 @@
 
 from dataclasses import dataclass
 
+
 @dataclass(slots=True)
 class ConfigObject:
     r"""Configuration object class that stores the parameters regarding the federated learning process.
@@ -22,7 +23,7 @@ class ConfigObject:
         server_address:
         timeout:
     """
-    server_address: str = '[::]:8000'
+    server_address: str = "[::]:8000"
     timeout: float = 60.0
     training_rounds: int = 1
 

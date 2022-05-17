@@ -43,7 +43,7 @@ class ClientThread(threading.Thread):
             counter += 1
             self.single_client.get_global_model(self.single_client.model_shape)
             self.single_client.train()
-            self.single_client.update(self.single_client.dtype, counter, 10, 0.5)
+            self.single_client.update(self.single_client.dtype, counter, 0, 0)
 
             # time.sleep(60)
             if counter == 20:

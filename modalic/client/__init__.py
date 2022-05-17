@@ -1,3 +1,3 @@
-from .client import Client
+from .pytorch_client import PytorchClient
 
-__all__ = ["Client"]
+__all__ = ["PytorchClient"]

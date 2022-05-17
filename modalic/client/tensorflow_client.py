@@ -34,11 +34,11 @@ class TensorflowClient(Communicator):
     """
 
     def __init__(
-        self,
-        trainer: Any,
-        cid: int,
-        server_address: str,
+        self, trainer: Any, cid: int, server_address: str,
     ):
         super().__init__(server_address, cid)
         self.cid = cid
         self.trainer = trainer
+
+    def __repr__(self):
+        return f"Modalic Tensorflow Client Object {self.cid}"
