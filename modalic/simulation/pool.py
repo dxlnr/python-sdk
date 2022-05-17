@@ -13,7 +13,7 @@
 #  permissions and limitations under the License.
 
 
-class ClientPool:
-    f"""Object holds and manages a bunch of individual simulated clients."""
-    def __init__(self):
-        pass
+# class ClientPool:
+#     f"""Object holds and manages a bunch of individual simulated clients."""
+#     def __init__(self):
+#         pass

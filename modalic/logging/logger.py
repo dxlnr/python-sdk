@@ -25,5 +25,8 @@ class Monitor(object):
     def __init__(self, log_name: str = "modalic"):
         self.logger = logging.getLogger(log_name)
 
+        # logger configuration
+        self.logger.setLevel(level=logging.INFO)
+
     def configure(self):
         pass
