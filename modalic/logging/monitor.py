@@ -12,6 +12,8 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+from typing import Any
+
 import logging
 
 
@@ -23,17 +25,28 @@ class Monitor(object):
     """
 
     def __init__(self, log_name: str = "modalic"):
-        self.logger = logging.getLogger(log_name)
-
-        # logger configuration
-        self.logger.setLevel(level=logging.INFO)
-
-        handler = logging.StreamHandler()
-        handler.setLevel(level=logging.INFO)
-        handler.setFormatter(
-            logging.Formatter("%(name)s: %(asctime)s %(levelname)s | %(message)s")
-        )
-        self.logger.addHandler(handler)
+        self.log_name = log_name
+        self.logger = self.init_logger()
 
     # def configure(self):
     #     pass
+
+    def init_logger(self) -> logging.Logger:
+        r"""Initializes and returns logging object."""
+        logger = logging.getLogger(self.log_name)
+
+        # logger configuration
+        logger.setLevel(level=logging.INFO)
+        # handler configuration
+        handler = logging.StreamHandler()
+        handler.setLevel(level=logging.INFO)
+        handler.setFormatter(
+            logging.Formatter("%(name)s: %(asctime)s %(levelname)s : %(message)s")
+        )
+        logger.addHandler(handler)
+
+        return logger
+
+    def log(self, level: Any, msg: str, *args: any, **kwargs: Any):
+        r"""Passing through the log message of python logging.Logger object."""
+        return self.logger.log(level, msg, *args, **kwargs)

@@ -13,6 +13,7 @@
 #  permissions and limitations under the License.
 
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass(slots=True)
@@ -27,7 +28,7 @@ class ConfigObject:
     timeout: float = 60.0
     training_rounds: int = 1
 
-    def __init__(self, conf: dict):
+    def __init__(self, conf: dict[str, Any]):
         self.server_address = conf["server_address"]
         self.timeout = conf["timeout"]
         self.training_rounds = conf["rounds"]

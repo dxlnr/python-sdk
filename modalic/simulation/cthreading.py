@@ -30,14 +30,19 @@ class ClientThread(threading.Thread):
     ):
         self.single_client = single_client
 
-    def run(self):
+        self._exit_event = threading.Event()
+        # self._lock = threading.Lock()
+
+        super().__init__(daemon=True)
+
+    def run(self) -> None:
         r"""runs the simulation of a single client within separate thread."""
         try:
             self._run()
         except Exception:
             traceback.print_exc()
 
-    def _run(self):
+    def _run(self) -> None:
         counter = 0
         while not self._exit_event.is_set():
             counter += 1
@@ -47,7 +52,7 @@ class ClientThread(threading.Thread):
 
             # time.sleep(60)
             if counter == 20:
-                self.stop()
+                self._stop()
 
-    def _stop(self):
+    def _stop(self) -> None:
         self._exit_event.set()

@@ -49,7 +49,7 @@ class PytorchClient(Communicator):
         self.round_id = 0
         self.loss = 0.0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Modalic Pytorch Client Object {self.cid}"
 
     def set_weights(self, weights: common.Weights) -> None:

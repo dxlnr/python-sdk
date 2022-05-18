@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from logging import INFO, WARNING
 from typing import Any, List, Optional, Tuple
 
 import grpc
@@ -22,6 +23,7 @@ import numpy as np
 
 from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
+from modalic.logging import Monitor
 from modalic.utils import common
 from modalic.utils.protocol import (
     parameters_from_proto,
@@ -62,6 +64,7 @@ class Communicator(CommunicationLayer):
     def __init__(self, server_address: str, cid: int):
         self.server_address = server_address
         self.cid = cid
+        self.monitor = Monitor()
 
     @abstractmethod
     def set_weights(self, weights: common.Weights) -> None:
@@ -101,10 +104,10 @@ class Communicator(CommunicationLayer):
             channel = grpc.secure_channel(
                 server_address, ssl_channel_credentials, options=channel_options
             )
-            # log(INFO, "Opened secure gRPC connection using certificates.")
+            # self.monitor.log(INFO, "Client {} established secure gRPC connection.".format(self.cid))
         else:
             channel = grpc.insecure_channel(server_address, options=channel_options)
-            # log(INFO, "Opened insecure gRPC connection.")
+            # self.monitor.log(INFO, "Client {} established insecure gRPC connection.".format(self.cid))
         return (channel, CommunicationStub(channel))
 
     def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
@@ -132,6 +135,7 @@ class Communicator(CommunicationLayer):
             )
         )
         channel.close()
+        self.monitor.log(INFO, f"Client {self.cid} sent update to aggregation server.")
 
     def get_global_model(self, model_shape: list[np.ndarray]) -> None:
         r"""Client request to get the latest version of the global model from server.
@@ -145,7 +149,15 @@ class Communicator(CommunicationLayer):
         params = parameters_from_proto(response)
         if not params.tensor:
             channel.close()
+            self.monitor.log(
+                WARNING,
+                f"Client {self.cid} received global model from aggregation server.",
+            )
         else:
             weights = parameters_to_weights(params, model_shape)
             self.set_weights(weights)
             channel.close()
+            self.monitor.log(
+                INFO,
+                f"Client {self.cid} received global model from aggregation server.",
+            )

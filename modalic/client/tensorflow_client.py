@@ -40,5 +40,5 @@ class TensorflowClient(Communicator):
         self.cid = cid
         self.trainer = trainer
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Modalic Tensorflow Client Object {self.cid}"
