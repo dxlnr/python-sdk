@@ -3,9 +3,13 @@
 
 # Configuration variables
 
-api_key = None
-client_id = None
-server_ip = None
+# api_key = None
+# client_id = None
+# server_ip = None
 
 # Client API
 from modalic.client import PytorchClient
+from modalic.client import TensorflowClient
+
+# Simulation API
+from modalic.simulation import ClientPool

@@ -12,8 +12,35 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+import concurrent.futures
+import traceback
+from typing import Any
 
-# class ClientPool:
-#     f"""Object holds and manages a bunch of individual simulated clients."""
-#     def __init__(self):
-#         pass
+
+class ClientPool:
+    f"""Object holds and manages a bunch of individual simulated clients.
+
+    Args:
+        client: Modalic client object. Options are PytorchClient || TensorflowClient
+        num_clients: Number of clients you want to run the federated learning with.
+    """
+
+    def __init__(self, client: Any, num_clients: int = 1):
+        self.client = client
+        self.num_clients = num_clients
+
+    def run(self) -> None:
+        r"""Endpoint to execute the whole client pool in parallel."""
+        self.spawn_pool(self.num_clients)
+
+    def spawn_pool(self, max_workers: int = 1) -> None:
+        r"""Launching a pool of separated clients using concurrent.futures ThreadPoolExecutor."""
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            executor.map(self.exec_single_thread, range(1, max_workers + 1))
+
+    def exec_single_thread(self, name: str) -> None:
+        r"""Executes the single thread object which holds the main functionality."""
+        try:
+            self.client.run()
+        except Exception:
+            traceback.print_exc()

@@ -44,6 +44,8 @@ class PytorchClient(Communicator):
         self.trainer = trainer
         self.model = self.trainer.model
 
+        self.training_rounds = 20
+
         self.model_shape = self.get_model_shape()
         self.dtype = self.get_model_dtype()
         self.round_id = 0
@@ -108,10 +110,13 @@ class PytorchClient(Communicator):
 
     def _run(self) -> None:
         r"""Runs a single trainings round for a single modalic client."""
+        print("client _run.")
         self.round_id += 1
         self.get_global_model(self.model_shape)
         self.train()
         self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)
 
-    # def run(self) -> None:
-    #     r"""Looping the whole process for a single modalic client."""
+    def run(self) -> None:
+        r"""Looping the whole process for a single modalic client."""
+        while self.round_id < self.training_rounds:
+            self._run()

@@ -12,7 +12,7 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-from typing import Any
+from typing import Any, Callable
 
 import logging
 
@@ -47,6 +47,6 @@ class Monitor(object):
 
         return logger
 
-    def log(self, level: Any, msg: str, *args: any, **kwargs: Any):
+    def log(self, level: Any, msg: str, *args: Any, **kwargs: Any) -> Callable[Any]:
         r"""Passing through the log message of python logging.Logger object."""
         return self.logger.log(level, msg, *args, **kwargs)

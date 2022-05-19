@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from typing import Any
 
 
-@dataclass(slots=True)
+@dataclass
 class ConfigObject:
     r"""Configuration object class that stores the parameters regarding the federated learning process.
 
