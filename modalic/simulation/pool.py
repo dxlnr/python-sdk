@@ -14,20 +14,28 @@
 
 import concurrent.futures
 import traceback
+from logging import INFO, WARN
 from typing import Any
 
 
 class ClientPool:
-    f"""Object holds and manages a bunch of individual simulated clients.
+    r"""Object holds and manages a bunch of individual simulated clients.
 
     Args:
-        client: Modalic client object. Options are PytorchClient || TensorflowClient
+        client: Modalic client object. Options are `PytorchClient` or `TensorflowClient`
+        data : List of datasets that each client should pick up.
         num_clients: Number of clients you want to run the federated learning with.
     """
 
-    def __init__(self, client: Any, num_clients: int = 1):
+    def __init__(self, client: Any, data: list[Any], num_clients: int = 1):
         self.client = client
+        self.data = data
         self.num_clients = num_clients
+
+        # Health checking
+        assert (
+            len(self.data) >= self.num_clients
+        ), f"Number of clients: {self.num_clients} exceeds number of available datasets: {len(self.data)}."
 
     def run(self) -> None:
         r"""Endpoint to execute the whole client pool in parallel."""
@@ -40,7 +48,15 @@ class ClientPool:
 
     def exec_single_thread(self, name: str) -> None:
         r"""Executes the single thread object which holds the main functionality."""
+        self.client.monitor.log(
+            INFO, f"Thread {name} for simulating client {name} started."
+        )
         try:
             self.client.run()
         except Exception:
+            self.client.monitor.log(WARN, f"Thread {name} failed.")
             traceback.print_exc()
+
+        self.client.monitor.log(
+            INFO, f"Thread {name} for simulating client {name} finished."
+        )

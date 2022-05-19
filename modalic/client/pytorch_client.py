@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from collections import OrderedDict
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 import torch
@@ -32,12 +32,17 @@ class PytorchClient(Communicator):
 
     Args:
         trainer: Pytorch Trainer object.
+        data: Dataset object that can be set for the Pytorch Trainer object.
         cid: Client id which uniquely identifies the client within the process.
         server_address: GRPC server address
     """
 
     def __init__(
-        self, trainer: Any, cid: int, server_address: str,
+        self,
+        trainer: Any,
+        data: Optional[Any] = None,
+        cid: int = 0,
+        server_address: str = "[::]:8000",
     ):
         super().__init__(server_address, cid)
         self.cid = cid
@@ -46,8 +51,8 @@ class PytorchClient(Communicator):
 
         self.training_rounds = 20
 
-        self.model_shape = self.get_model_shape()
-        self.dtype = self.get_model_dtype()
+        self.model_shape = self._get_model_shape()
+        self.dtype = self._get_model_dtype()
         self.round_id = 0
         self.loss = 0.0
 
@@ -72,14 +77,14 @@ class PytorchClient(Communicator):
         r"""Get model weights as a list of NumPy ndarrays."""
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
-    def get_model_shape(self) -> list[np.ndarray]:
-        r"Extracts the shape of the pytorch model." ""
+    def _get_model_shape(self) -> list[np.ndarray]:
+        r"""Extracts the shape of the pytorch model."""
         shapes: list[np.ndarray] = list()
         for param_tensor in self.model.state_dict().keys():
             shapes.append(np.array(self.model.state_dict()[param_tensor].size()))
         return shapes
 
-    def get_model_dtype(self) -> str:
+    def _get_model_dtype(self) -> str:
         r"""Extracts the data type of the pytorch model.
 
         Returns:
@@ -99,7 +104,7 @@ class PytorchClient(Communicator):
             )
         return dtype
 
-    def train(self) -> None:
+    def _train(self) -> None:
         self.model, self.loss = self.trainer.train()
 
     # def eval(self) -> None:
@@ -110,10 +115,9 @@ class PytorchClient(Communicator):
 
     def _run(self) -> None:
         r"""Runs a single trainings round for a single modalic client."""
-        print("client _run.")
         self.round_id += 1
         self.get_global_model(self.model_shape)
-        self.train()
+        self._train()
         self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)
 
     def run(self) -> None:

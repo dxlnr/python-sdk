@@ -41,12 +41,12 @@ class Monitor(object):
         handler = logging.StreamHandler()
         handler.setLevel(level=logging.INFO)
         handler.setFormatter(
-            logging.Formatter("%(name)s: %(asctime)s %(levelname)s : %(message)s")
+            logging.Formatter("%(name)s: %(asctime)s  %(levelname)s : %(message)s")
         )
         logger.addHandler(handler)
 
         return logger
 
-    def log(self, level: Any, msg: str, *args: Any, **kwargs: Any) -> Callable[Any]:
+    def log(self, level: Any, msg: str, *args: Any, **kwargs: Any) -> Any:
         r"""Passing through the log message of python logging.Logger object."""
         return self.logger.log(level, msg, *args, **kwargs)
