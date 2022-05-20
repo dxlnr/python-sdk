@@ -19,7 +19,9 @@ from typing import Any, Optional
 
 import numpy as np
 import torch
+import traceback
 
+from modalic.config import Conf
 from modalic.client.grpc_client import Communicator
 from modalic.utils import common
 
@@ -33,24 +35,30 @@ class PytorchClient(Communicator):
     Args:
         trainer: Pytorch Trainer object.
         data: Dataset object that can be set for the Pytorch Trainer object.
+        conf: Configuration object that stores all the parameters concerning the process.
         cid: Client id which uniquely identifies the client within the process.
-        server_address: GRPC server address
     """
 
     def __init__(
         self,
-        trainer: Any,
+        trainer: Optional[Any] = None,
         data: Optional[Any] = None,
+        conf: Optional[dict] = None,
         cid: int = 0,
-        server_address: str = "[::]:8000",
+        # server_address: str = "[::]:8000",
     ):
-        super().__init__(server_address, cid)
-        self.cid = cid
         self.trainer = trainer
-        self.model = self.trainer.model
+        self.data = data
+        self.conf = Conf() if conf is None else conf
+        self.cid = cid
+        super().__init__(self.conf.server_address, self.cid)
 
-        self.training_rounds = 20
+        try:
+            self.model = self.trainer.model
+        except AttributeError:
+            traceback.print_exc()
 
+        self.training_rounds = self.conf.training_rounds
         self.model_shape = self._get_model_shape()
         self.dtype = self._get_model_dtype()
         self.round_id = 0

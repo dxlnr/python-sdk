@@ -17,18 +17,20 @@ from typing import Any
 
 
 @dataclass
-class ConfigObject:
+class Conf(object):
     r"""Configuration object class that stores the parameters regarding the federated learning process.
 
     Args:
-        server_address:
-        timeout:
+        server_address: GRPC endpoint for aggregation server.
+        timeout: Defines a timeout length in seconds which is mainly used for
+                 simulating some waiting periode after each training round.
+        training_rounds: Number of training rounds that should be performed.
     """
     server_address: str = "[::]:8000"
     timeout: float = 60.0
     training_rounds: int = 1
 
-    def __init__(self, conf: dict[str, Any]):
-        self.server_address = conf["server_address"]
-        self.timeout = conf["timeout"]
-        self.training_rounds = conf["rounds"]
+    # def __init__(self, conf: dict[str, Any]):
+    #     self.server_address = conf["server_address"]
+    #     self.timeout = conf["timeout"]
+    #     self.training_rounds = conf["rounds"]

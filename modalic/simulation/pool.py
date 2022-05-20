@@ -37,6 +37,10 @@ class ClientPool:
             len(self.data) >= self.num_clients
         ), f"Number of clients: {self.num_clients} exceeds number of available datasets: {len(self.data)}."
 
+        self.client.monitor.log(
+            INFO, f"Federated Learning with {self.num_clients} clients started."
+        )
+
     def run(self) -> None:
         r"""Endpoint to execute the whole client pool in parallel."""
         self.spawn_pool(self.num_clients)
