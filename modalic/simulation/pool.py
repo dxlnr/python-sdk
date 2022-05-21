@@ -17,6 +17,9 @@ import traceback
 from logging import INFO, WARN
 from typing import Any
 
+from modalic.client import PytorchClient, TensorflowClient
+from modalic.logging import Monitor
+
 
 class ClientPool:
     r"""Object holds and manages a bunch of individual simulated clients.
@@ -27,17 +30,19 @@ class ClientPool:
         num_clients: Number of clients you want to run the federated learning with.
     """
 
-    def __init__(self, client: Any, data: list[Any], num_clients: int = 1):
-        self.client = client
+    def __init__(self, ctype: str, trainer: Any, data: list[Any], num_clients: int = 1):
+        self.ctype = ctype
+        self.trainer = trainer
         self.data = data
         self.num_clients = num_clients
+        self.monitor = Monitor()
 
         # Health checking
         assert (
             len(self.data) >= self.num_clients
         ), f"Number of clients: {self.num_clients} exceeds number of available datasets: {len(self.data)}."
 
-        self.client.monitor.log(
+        self.monitor.log(
             INFO, f"Federated Learning with {self.num_clients} clients started."
         )
 
@@ -52,15 +57,22 @@ class ClientPool:
 
     def exec_single_thread(self, name: str) -> None:
         r"""Executes the single thread object which holds the main functionality."""
-        self.client.monitor.log(
+        self.monitor.log(
             INFO, f"Thread {name} for simulating client {name} started."
         )
+        if self.ctype == 'torch':
+            client = PytorchClient(self.trainer, self.data[int(name) - 1], cid=int(name))
+        elif self.ctype == 'tf':
+            client = TensorflowClient(self.trainer, self.data[int(name) - 1], cid=int(name))
+        else:
+            raise TypeError(f"{self.ctype} not known. Please choose either ctype='torch' or ctype=='tf'.")
+
         try:
-            self.client.run()
+            client.run()
         except Exception:
-            self.client.monitor.log(WARN, f"Thread {name} failed.")
+            self.monitor.log(WARN, f"Thread {name} failed.")
             traceback.print_exc()
 
-        self.client.monitor.log(
+        self.monitor.log(
             INFO, f"Thread {name} for simulating client {name} finished."
         )

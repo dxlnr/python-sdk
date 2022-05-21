@@ -23,6 +23,7 @@ import traceback
 
 from modalic.config import Conf
 from modalic.client.grpc_client import Communicator
+from modalic.client.trainer import Trainer
 from modalic.utils import common
 
 
@@ -41,7 +42,7 @@ class PytorchClient(Communicator):
 
     def __init__(
         self,
-        trainer: Optional[Any] = None,
+        trainer: Optional[Trainer] = None,
         data: Optional[Any] = None,
         conf: Optional[dict] = None,
         cid: int = 0,
@@ -58,6 +59,7 @@ class PytorchClient(Communicator):
         except AttributeError:
             traceback.print_exc()
 
+        self.trainer.data(self.data)
         self.training_rounds = self.conf.training_rounds
         self.model_shape = self._get_model_shape()
         self.dtype = self._get_model_dtype()

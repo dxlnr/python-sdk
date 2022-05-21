@@ -1,13 +1,37 @@
-# from abc import ABC, abstractmethod
+#  Copyright (c) modalic 2022. All Rights Reserved.
 #
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at:
 #
-# class BaseTrainer(ABC):
-#     r"""Trainer class provides an API for feature-complete training in PyTorch"""
+#       https://www.apache.org/licenses/LICENSE-2.0
 #
-#     model = abstract_attribute()
-#     dataset = abstract_attribute()
-#
-#     @abstractmethod
-#     def train(self):
-#         r"""runs the training."""
-#         raise NotImplementedError()
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+#  or implied. See the License for the specific language governing
+#  permissions and limitations under the License.
+
+from abc import ABC, abstractmethod
+from typing import Any
+
+
+class Trainer(ABC):
+    r"""Trainer class provides an API for feature-complete training in PyTorch."""
+
+    model: Any = NotImplemented
+    dataset: Any = NotImplemented
+
+    @abstractmethod
+    def data(self, data: Any):
+        r"""Setting the dataset for the trainer which will be used in training and testing.
+
+        Args:
+            data: Chunk of data that should be turned into self.dataset.
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def train(self):
+        r"""runs the training."""
+        raise NotImplementedError()
