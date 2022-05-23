@@ -23,6 +23,6 @@ class Trainer(ABC):
     # dataset: Any = NotImplemented
 
     @abstractmethod
-    def train(self):
+    def train(self) -> None:
         r"""runs the training."""
         raise NotImplementedError()

@@ -14,16 +14,18 @@
 
 from __future__ import annotations
 
+import time
+import traceback
 from collections import OrderedDict
+from logging import INFO
 from typing import Any, Optional
 
 import numpy as np
 import torch
-import traceback
 
-from modalic.config import Conf
 from modalic.client.grpc_client import Communicator
 from modalic.client.trainer import Trainer
+from modalic.config import Conf
 from modalic.logging.logging import logger
 from modalic.utils import common
 
@@ -43,10 +45,10 @@ class PytorchClient(Communicator):
 
     def __init__(
         self,
-        trainer: Optional[Trainer] = None,
-        # data: Optional[Any] = None,
-        conf: Optional[dict] = None,
+        trainer: Optional[Any] = None,
         cid: int = 0,
+        conf: Optional[dict] = None,
+        # data: Optional[Any] = None,
     ):
         self.trainer = trainer
         # self.conf = Conf() if conf is None else conf
@@ -130,9 +132,10 @@ class PytorchClient(Communicator):
         self._train()
         logger.log(
             INFO,
-            f"[client {name} | training round: {self.round_id} | loss: {self.loss}]",
+            f"Client {self.cid} | training round: {self.round_id} | loss: {self.loss}",
         )
         self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)
+        time.sleep(self.conf.timeout)
 
     def run(self) -> None:
         r"""Looping the whole process for a single modalic client."""

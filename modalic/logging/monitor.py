@@ -27,26 +27,3 @@ class Monitor(object):
     def __init__(self, log_name: str = "modalic"):
         self.log_name = log_name
         self.logger = self.init_logger()
-
-    # def configure(self):
-    #     pass
-
-    def init_logger(self) -> logging.Logger:
-        r"""Initializes and returns logging object."""
-        logger = logging.getLogger(self.log_name)
-
-        # logger configuration
-        logger.setLevel(level=logging.INFO)
-        # handler configuration
-        handler = logging.StreamHandler()
-        handler.setLevel(level=logging.INFO)
-        handler.setFormatter(
-            logging.Formatter("%(name)s: %(asctime)s  %(levelname)s : %(message)s")
-        )
-        logger.addHandler(handler)
-
-        return logger
-
-    def log(self, level: Any, msg: str, *args: Any, **kwargs: Any) -> Any:
-        r"""Passing through the log message of python logging.Logger object."""
-        return self.logger.log(level, msg, *args, **kwargs)
