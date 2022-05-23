@@ -24,7 +24,6 @@ import numpy as np
 import torch
 
 from modalic.client.grpc_client import Communicator
-# from modalic.client.trainer import Trainer
 from modalic.config import Conf
 from modalic.logging.logging import logger
 from modalic.utils import common
@@ -51,8 +50,7 @@ class PytorchClient(Communicator):
         # data: Optional[Any] = None,
     ):
         self.trainer = trainer
-        # self.conf = Conf() if conf is None else conf
-        self.conf = Conf()
+        self.conf = Conf.create_conf(conf)
         self.cid = cid
 
         super().__init__(self.conf.server_address, self.cid)
