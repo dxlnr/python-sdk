@@ -17,7 +17,6 @@ import traceback
 from logging import INFO, WARNING
 from typing import Any
 
-from modalic.client import PytorchClient, TensorflowClient
 from modalic.logging.logging import logger
 
 

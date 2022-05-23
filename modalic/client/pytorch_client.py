@@ -24,7 +24,7 @@ import numpy as np
 import torch
 
 from modalic.client.grpc_client import Communicator
-from modalic.client.trainer import Trainer
+# from modalic.client.trainer import Trainer
 from modalic.config import Conf
 from modalic.logging.logging import logger
 from modalic.utils import common
