@@ -12,17 +12,16 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-from abc import ABC, abstractmethod
-from typing import Any
+import logging
 
+logger = logging.getLogger('modalic')
 
-class Trainer(ABC):
-    r"""Trainer class provides an API for feature-complete training in PyTorch."""
-
-    # model: Any = NotImplemented
-    # dataset: Any = NotImplemented
-
-    @abstractmethod
-    def train(self):
-        r"""runs the training."""
-        raise NotImplementedError()
+# logger configuration
+logger.setLevel(level=logging.INFO)
+# handler configuration
+handler = logging.StreamHandler()
+handler.setLevel(level=logging.INFO)
+handler.setFormatter(
+    logging.Formatter("%(name)s: %(asctime)s  %(levelname)s : %(message)s")
+)
+logger.addHandler(handler)

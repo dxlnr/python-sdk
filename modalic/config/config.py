@@ -26,9 +26,9 @@ class Conf(object):
                  simulating some waiting periode after each training round.
         training_rounds: Number of training rounds that should be performed.
     """
-    server_address: str = "[::]:8000"
+    server_address: str = "[::]:8080"
     timeout: float = 60.0
-    training_rounds: int = 1
+    training_rounds: int = 20
 
     # def __init__(self, conf: dict[str, Any]):
     #     self.server_address = conf["server_address"]

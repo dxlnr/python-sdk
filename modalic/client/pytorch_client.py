@@ -24,6 +24,7 @@ import traceback
 from modalic.config import Conf
 from modalic.client.grpc_client import Communicator
 from modalic.client.trainer import Trainer
+from modalic.logging.logging import logger
 from modalic.utils import common
 
 
@@ -43,15 +44,15 @@ class PytorchClient(Communicator):
     def __init__(
         self,
         trainer: Optional[Trainer] = None,
-        data: Optional[Any] = None,
+        # data: Optional[Any] = None,
         conf: Optional[dict] = None,
         cid: int = 0,
-        # server_address: str = "[::]:8000",
     ):
         self.trainer = trainer
-        self.data = data
-        self.conf = Conf() if conf is None else conf
+        # self.conf = Conf() if conf is None else conf
+        self.conf = Conf()
         self.cid = cid
+
         super().__init__(self.conf.server_address, self.cid)
 
         try:
@@ -59,7 +60,6 @@ class PytorchClient(Communicator):
         except AttributeError:
             traceback.print_exc()
 
-        self.trainer.data(self.data)
         self.training_rounds = self.conf.training_rounds
         self.model_shape = self._get_model_shape()
         self.dtype = self._get_model_dtype()
@@ -128,6 +128,10 @@ class PytorchClient(Communicator):
         self.round_id += 1
         self.get_global_model(self.model_shape)
         self._train()
+        logger.log(
+            INFO,
+            f"[client {name} | training round: {self.round_id} | loss: {self.loss}]",
+        )
         self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)
 
     def run(self) -> None:

@@ -23,7 +23,7 @@ import numpy as np
 
 from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
-from modalic.logging import Monitor
+from modalic.logging.logging import logger
 from modalic.utils import common
 from modalic.utils.protocol import (
     parameters_from_proto,
@@ -64,7 +64,6 @@ class Communicator(CommunicationLayer):
     def __init__(self, server_address: str, cid: int):
         self.server_address = server_address
         self.cid = cid
-        self.monitor = Monitor()
 
     @abstractmethod
     def set_weights(self, weights: common.Weights) -> None:
@@ -135,7 +134,7 @@ class Communicator(CommunicationLayer):
             )
         )
         channel.close()
-        self.monitor.log(INFO, f"Client {self.cid} sent update to aggregation server.")
+        logger.log(INFO, f"Client {self.cid} sent update to aggregation server.")
 
     def get_global_model(self, model_shape: list[np.ndarray]) -> None:
         r"""Client request to get the latest version of the global model from server.
@@ -149,15 +148,15 @@ class Communicator(CommunicationLayer):
         params = parameters_from_proto(response)
         if not params.tensor:
             channel.close()
-            self.monitor.log(
+            logger.log(
                 WARNING,
-                f"Client {self.cid} received global model from aggregation server.",
+                f"Client {self.cid} did not receive global model from aggregation server.",
             )
         else:
             weights = parameters_to_weights(params, model_shape)
             self.set_weights(weights)
             channel.close()
-            self.monitor.log(
+            logger.log(
                 INFO,
                 f"Client {self.cid} received global model from aggregation server.",
             )

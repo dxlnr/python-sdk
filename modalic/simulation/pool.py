@@ -12,67 +12,50 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-import concurrent.futures
+import multiprocessing
 import traceback
-from logging import INFO, WARN
+from logging import INFO, WARNING
 from typing import Any
 
 from modalic.client import PytorchClient, TensorflowClient
-from modalic.logging import Monitor
+from modalic.logging.logging import logger
 
 
 class ClientPool:
     r"""Object holds and manages a bunch of individual simulated clients.
 
     Args:
-        client: Modalic client object. Options are `PytorchClient` or `TensorflowClient`
-        data : List of datasets that each client should pick up.
+        clients: List of modalic client object. Options are [`PytorchClient`] or [`TensorflowClient`]
         num_clients: Number of clients you want to run the federated learning with.
     """
 
-    def __init__(self, ctype: str, trainer: Any, data: list[Any], num_clients: int = 1):
-        self.ctype = ctype
-        self.trainer = trainer
-        self.data = data
-        self.num_clients = num_clients
-        self.monitor = Monitor()
+    def __init__(self, clients: list[Any], num_clients: int = 0):
+        self.clients = clients
+        self.num_clients = len(clients) if num_clients == 0 else num_clients
 
         # Health checking
         assert (
-            len(self.data) >= self.num_clients
-        ), f"Number of clients: {self.num_clients} exceeds number of available datasets: {len(self.data)}."
+            len(self.clients) >= self.num_clients
+        ), f"Specfified number of clients: {self.num_clients} exceeds number of instantiated modalic clients: {len(self.clients)}."
 
-        self.monitor.log(
-            INFO, f"Federated Learning with {self.num_clients} clients started."
-        )
+        logger.log(INFO, f"Federated Learning with {self.num_clients} clients started.")
 
     def run(self) -> None:
         r"""Endpoint to execute the whole client pool in parallel."""
         self.spawn_pool(self.num_clients)
 
-    def spawn_pool(self, max_workers: int = 1) -> None:
+    def spawn_pool(self, num_workers: int = 1) -> None:
         r"""Launching a pool of separated clients using concurrent.futures ThreadPoolExecutor."""
-        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            executor.map(self.exec_single_thread, range(1, max_workers + 1))
+        with multiprocessing.Pool(processes=num_workers) as pool:
+            pool.map(self.exec_single_thread, range(1, num_workers + 1))
 
     def exec_single_thread(self, name: str) -> None:
         r"""Executes the single thread object which holds the main functionality."""
-        self.monitor.log(
-            INFO, f"Thread {name} for simulating client {name} started."
-        )
-        if self.ctype == 'torch':
-            client = PytorchClient(self.trainer, self.data[int(name) - 1], cid=int(name))
-        elif self.ctype == 'tf':
-            client = TensorflowClient(self.trainer, self.data[int(name) - 1], cid=int(name))
-        else:
-            raise TypeError(f"{self.ctype} not known. Please choose either ctype='torch' or ctype=='tf'.")
-
+        logger.log(INFO, f"Thread {name} for simulating client {name} started.")
         try:
-            client.run()
+            self.clients[int(name) - 1].run()
         except Exception:
-            self.monitor.log(WARN, f"Thread {name} failed.")
+            logger.log(WARNING, f"Thread {name} failed.")
             traceback.print_exc()
 
-        self.monitor.log(
-            INFO, f"Thread {name} for simulating client {name} finished."
-        )
+        logger.log(INFO, f"Thread {name} for simulating client {name} finished.")
