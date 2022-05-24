@@ -12,6 +12,8 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -53,7 +55,7 @@ class Conf(object):
                     self.data_type = value["data_type"]
 
     @classmethod
-    def create_conf(cls, conf: dict[str, dict[str, Any]]):
+    def create_conf(cls, conf: dict[str, dict[str, Any]]) -> Conf:
         r"""Constructs a conig object with external conf.
 
         Args:

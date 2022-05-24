@@ -8,7 +8,7 @@
 # server_ip = None
 
 # Client API
-from modalic.client import PytorchClient, TensorflowClient, Trainer
+from modalic.client import PytorchClient, Trainer
 
 # Simulation API
 from modalic.simulation import ClientPool

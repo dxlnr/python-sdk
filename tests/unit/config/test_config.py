@@ -12,16 +12,5 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-import logging
-
-logger = logging.getLogger("modalic")
-
-# logger configuration
-logger.setLevel(level=logging.INFO)
-# handler configuration
-handler = logging.StreamHandler()
-handler.setLevel(level=logging.INFO)
-handler.setFormatter(
-    logging.Formatter("%(name)s: %(asctime)s  %(levelname)s : %(message)s")
-)
-logger.addHandler(handler)
+# def test_() -> None:
+#     pass

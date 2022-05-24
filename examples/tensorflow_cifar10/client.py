@@ -1,10 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras import datasets
 
-# import modalic
-
-server_address = "127.0.0.1:8080"
-
 
 def load_data():
     r"""loading the cifar10 datasets."""
@@ -21,7 +17,9 @@ def load_data():
 
 
 class Trainer:
-    def __init__(self,):
+    r"""."""
+
+    def __init__(self):
         self.epochs = 5
         self.model = tf.keras.models.Sequential(
             [
@@ -71,7 +69,3 @@ class Trainer:
             f"Loss: {self.train_loss.result()}, "
             f"Accuracy: {self.train_acc.result() * 100}"
         )
-
-
-trainer = Trainer()
-trainer.train()

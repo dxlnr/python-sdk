@@ -12,7 +12,7 @@ documentation = "https://docs.modalic.ai"
 repository = "https://github.com/modalic/python-sdk"
 license = "Apache-2.0"
 keywords = [
-    "python", "federated learning", "machine learning", "sdk", "MLOps",
+    "python", "Federated Learning", "Machine Learning", "SDK", "MLOps",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -22,6 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
     "Topic :: System :: Distributed Computing",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -57,6 +58,7 @@ isort = "^5.10.1"
 types-protobuf = "^3.19.18"
 autoflake = "^1.4"
 flake8 = "^4.0.1"
+pre-commit = "^2.19.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -101,7 +103,7 @@ profile = "black"
 [tool.mypy]
 ignore_missing_imports = true
 strict = true
-exclude = ['modalic/client/proto/', 'modalic/utils/protocol.py']
+exclude = ["modalic/client/proto/", "modalic/utils/protocol.py"]
 allow_untyped_calls = true
 
 [[tool.mypy.overrides]]

@@ -1,0 +1,12 @@
+fail_fast: true
+
+repos:
+  - repo: local
+    hooks:
+      - id: lint
+        name: lint
+        entry: poetry run bash scripts/linting.sh
+        language: system
+        files: ^modalic/|^tests/|^examples/
+        types: [file, python]
+        pass_filenames: false
