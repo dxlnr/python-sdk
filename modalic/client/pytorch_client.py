@@ -26,7 +26,7 @@ import torch
 from modalic.client.grpc_client import Communicator
 from modalic.config import Conf
 from modalic.logging.logging import logger
-from modalic.utils import common
+from modalic.utils import shared
 
 
 class PytorchClient(Communicator):
@@ -69,7 +69,7 @@ class PytorchClient(Communicator):
     def __repr__(self) -> str:
         return f"Modalic Pytorch Client Object {self.cid}"
 
-    def set_weights(self, weights: common.Weights) -> None:
+    def set_weights(self, weights: shared.Weights) -> None:
         r"""Set model weights from a list of NumPy ndarrays.
 
         Args:
@@ -83,7 +83,7 @@ class PytorchClient(Communicator):
         )
         self.model.load_state_dict(state_dict, strict=True)
 
-    def get_weights(self) -> common.Weights:
+    def get_weights(self) -> shared.Weights:
         r"""Get model weights as a list of NumPy ndarrays."""
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
@@ -120,7 +120,7 @@ class PytorchClient(Communicator):
     # def eval(self) -> None:
     #     pass
 
-    # def val_get_global_model(self, params: common.Parameters) -> bool:
+    # def val_get_global_model(self, params: shared.Parameters) -> bool:
     #     r"""Validates the response from server."""
 
     def _run(self) -> None:

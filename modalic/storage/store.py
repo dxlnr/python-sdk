@@ -8,8 +8,7 @@ from minio import Minio
 class Storage:
     r"""Instantiate Storage Object that enables access to S3 layer.
 
-    Parameters:
-    ------------------------
+    Args:
         cfg (dict): dictionary containing the configurations.
     """
 

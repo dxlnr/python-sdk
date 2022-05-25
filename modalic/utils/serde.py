@@ -22,12 +22,12 @@ from typing import Any, Iterable, List
 
 import numpy as np
 
-from modalic.utils import common, protocol
+from modalic.utils import protocol, shared
 
 
 @typing.no_type_check
 def weights_to_parameters(
-    weights: common.Weights, dtype: str, model_version: int
+    weights: shared.Weights, dtype: str, model_version: int
 ) -> protocol.Parameters:
     r"""Convert NumPy weights to parameters object."""
     tensor = weights_to_bytes(weights, dtype_to_struct(dtype))
@@ -39,7 +39,7 @@ def weights_to_parameters(
 @typing.no_type_check
 def parameters_to_weights(
     parameters: protocol.Parameters, shapes: List[np.ndarray[int, np.dtype[Any]]]
-) -> common.Weights:
+) -> shared.Weights:
     r"""Convert parameters object to NumPy weights."""
     return bytes_to_ndarray(
         parameters.tensor, shapes, dtype_to_struct(parameters.data_type)
@@ -54,7 +54,7 @@ def ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> lis
     return res
 
 
-def weights_to_bytes(weights: common.Weights, dtype: str) -> bytes:
+def weights_to_bytes(weights: shared.Weights, dtype: str) -> bytes:
     r"""Serialize NumPy ndarray to bytes."""
     layers = [ndarray_to_bytes(ndarray, dtype) for ndarray in weights]
     return bytes(list(itertools.chain(*layers)))
@@ -62,7 +62,7 @@ def weights_to_bytes(weights: common.Weights, dtype: str) -> bytes:
 
 def bytes_to_ndarray(
     tensor: bytes, layer_shape: list[np.ndarray], dtype: str
-) -> common.Weights:
+) -> shared.Weights:
     r"""Deserialize NumPy ndarray from u8 bytes."""
     layer: list[Any] = list()
     if dtype == "!f":
@@ -79,7 +79,7 @@ def bytes_to_ndarray(
     return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
 
-def get_shape(weights: common.Weights) -> list[Any]:
+def get_shape(weights: shared.Weights) -> list[Any]:
     r"""Reads in the weights and returns its shape as a list object."""
     return [np.array(layer.size) for layer in weights]
 

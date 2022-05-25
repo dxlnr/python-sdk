@@ -13,13 +13,10 @@
 #  permissions and limitations under the License.
 
 
-class Monitor(object):
-    r"""Monitoring the Modalic client while training.
+def train(func):
+    r"""."""
 
-    Args:
-        log_name: logging name that gets printed by default.
-    """
+    def inner():
+        func()
 
-    def __init__(self, log_name: str = "modalic"):
-        self.log_name = log_name
-        # self.logger = self.init_logger()
+    return inner

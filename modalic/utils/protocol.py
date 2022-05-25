@@ -16,10 +16,10 @@
 from __future__ import annotations
 
 from modalic.client.proto.mosaic_pb2 import Parameters, ProcessMeta
-from modalic.utils import common
+from modalic.utils import shared
 
 
-def parameters_to_proto(parameters: common.Parameters) -> Parameters:
+def parameters_to_proto(parameters: shared.Parameters) -> Parameters:
     r"""."""
     return Parameters(
         tensor=parameters.tensor,
@@ -28,21 +28,21 @@ def parameters_to_proto(parameters: common.Parameters) -> Parameters:
     )
 
 
-def parameters_from_proto(msg: Parameters) -> common.Parameters:
+def parameters_from_proto(msg: Parameters) -> shared.Parameters:
     r"""."""
     tensor: list[bytes] = list(msg.parameters.tensor)
-    return common.Parameters(
+    return shared.Parameters(
         tensor=tensor,
         data_type=msg.parameters.data_type,
         model_version=msg.parameters.model_version,
     )
 
 
-def process_meta_to_proto(meta: common.ProcessMeta) -> ProcessMeta:
+def process_meta_to_proto(meta: shared.ProcessMeta) -> ProcessMeta:
     r"""."""
     return ProcessMeta(round_id=meta.round_id, loss=meta.loss)
 
 
-def to_meta(round_id: int, loss: float) -> common.ProcessMeta:
+def to_meta(round_id: int, loss: float) -> shared.ProcessMeta:
     r"""."""
-    return common.ProcessMeta(round_id=round_id, loss=loss)
+    return shared.ProcessMeta(round_id=round_id, loss=loss)

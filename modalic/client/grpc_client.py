@@ -23,8 +23,9 @@ import numpy as np
 
 from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
+from modalic.client.utils.communication import _grpc_connection
 from modalic.logging.logging import logger
-from modalic.utils import common
+from modalic.utils import shared
 from modalic.utils.protocol import (
     parameters_from_proto,
     parameters_to_proto,
@@ -66,12 +67,12 @@ class Communicator(CommunicationLayer):
         self.cid = cid
 
     @abstractmethod
-    def set_weights(self, weights: common.Weights) -> None:
+    def set_weights(self, weights: shared.Weights) -> None:
         r"""Set model weights from a list of NumPy ndarrays."""
         raise NotImplementedError()
 
     @abstractmethod
-    def get_weights(self) -> common.Weights:
+    def get_weights(self) -> shared.Weights:
         r"""Returns the model weights as a list of NumPy ndarrays."""
         raise NotImplementedError()
 
@@ -80,6 +81,7 @@ class Communicator(CommunicationLayer):
         server_address: str,
         max_message_length: int = 536870912,
         root_certificates: Optional[bytes] = None,
+        logging: Optional[bool] = False,
     ) -> Tuple[grpc.Channel, CommunicationStub]:
         r"""Establishes a grpc connection to the server.
 
@@ -88,26 +90,15 @@ class Communicator(CommunicationLayer):
             max_message_length: Maximum grpc message size.
             root_certificates: (optional) Can be set in order to establish a encrypted connection
                                between client & server.
+            logging: (optional) bool for setting logging or not. Default: False
 
         Returns:
             (channel, stub): Tuple containing the thread-safe grpc channel
             to server & the grpc stub.
         """
-        channel_options = [
-            ("grpc.max_send_message_length", max_message_length),
-            ("grpc.max_receive_message_length", max_message_length),
-        ]
-
-        if root_certificates is not None:
-            ssl_channel_credentials = grpc.ssl_channel_credentials(root_certificates)
-            channel = grpc.secure_channel(
-                server_address, ssl_channel_credentials, options=channel_options
-            )
-            # self.monitor.log(INFO, "Client {} established secure gRPC connection.".format(self.cid))
-        else:
-            channel = grpc.insecure_channel(server_address, options=channel_options)
-            # self.monitor.log(INFO, "Client {} established insecure gRPC connection.".format(self.cid))
-        return (channel, CommunicationStub(channel))
+        return _grpc_connection(
+            server_address, max_message_length, root_certificates, logging
+        )
 
     def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
         r"""Sends an updated model version to the server.
