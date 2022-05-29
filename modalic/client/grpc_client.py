@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from logging import ERROR, INFO, WARNING
+from logging import INFO, WARNING
 from typing import Any, List, Optional, Tuple
 
 import grpc
@@ -23,7 +23,7 @@ import numpy as np
 
 from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
-from modalic.client.utils.communication import _grpc_connection
+from modalic.client.utils.communication import _error_grpc, _grpc_connection
 from modalic.logging.logging import logger
 from modalic.utils import shared
 from modalic.utils.protocol import (
@@ -59,7 +59,7 @@ class Communicator(CommunicationLayer):
 
     Args:
         server_address: static ip address of the aggregation server.
-        cid: client identifier.
+        cid: client identifier via unique integer.
     """
 
     def __init__(self, server_address: str, cid: int):
@@ -116,16 +116,20 @@ class Communicator(CommunicationLayer):
         process_meta = process_meta_to_proto(to_meta(round_id, loss))
 
         (channel, stub) = self.grpc_connection(self.server_address)
-        _ = stub.Update(
-            ClientUpdate(
-                id=self.cid,
-                parameters=parameters,
-                stake=stake,
-                process_meta=process_meta,
+        try:
+            _ = stub.Update(
+                ClientUpdate(
+                    id=self.cid,
+                    parameters=parameters,
+                    stake=stake,
+                    process_meta=process_meta,
+                )
             )
-        )
-        channel.close()
-        logger.log(INFO, f"Client {self.cid} sent update to aggregation server.")
+        except grpc.RpcError as rpc_error:
+            _error_grpc(rpc_error, server_address=self.server_address)
+        else:
+            channel.close()
+            logger.log(INFO, f"Client {self.cid} sent update to aggregation server.")
 
     def get_global_model(self, model_shape: list[np.ndarray]) -> None:
         r"""Client request to get the latest version of the global model from server.
@@ -134,20 +138,10 @@ class Communicator(CommunicationLayer):
             model_shape: Holds the shape of the model architecture for serialization & deserialization.
         """
         (channel, stub) = self.grpc_connection(self.server_address)
-        # for _ in range(max_retries):
         try:
             response = stub.GetGlobalModel(ClientMessage(id=self.cid))
         except grpc.RpcError as rpc_error:
-            if rpc_error.code() == grpc.StatusCode.UNAVAILABLE:
-                logger.log(
-                    ERROR,
-                    f"Aggregation server could not be reached. Please validate if server is up and running and the IP {self.server_address} is valid.",
-                )
-            else:
-                logger.log(
-                    ERROR,
-                    f"Received RPC error: code={rpc_error.code()} message={rpc_error.details()}",
-                )
+            _error_grpc(rpc_error, server_address=self.server_address)
         else:
             params = parameters_from_proto(response)
             if not params.tensor:

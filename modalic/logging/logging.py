@@ -18,35 +18,38 @@ import logging
 class CustomFormatter(logging.Formatter):
     r"""Custom formatting object."""
 
-    # grey = "\x1b[38;20m"
+    faint = "\x1b[2m"
     green = "\x1b[32m"
     yellow = "\x1b[33;20m"
     red = "\x1b[31;20m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
 
-    @staticmethod
-    def custom_format(color, reset):
+    def custom_format_str(self, color: str) -> str:
         r"""Returns a custom format string."""
         return (
-            "%(name)s: %(asctime)s "
+            self.faint
+            + "%(asctime)s "
+            + self.reset
             + color
             + " %(levelname)s"
-            + reset
+            + self.reset
             + " : %(message)s"
-            + reset
+            + self.reset
         )
 
-    FORMATS = {
-        logging.DEBUG: custom_format.__func__(yellow, reset),
-        logging.INFO: custom_format.__func__(green, reset),
-        logging.WARNING: custom_format.__func__(yellow, reset),
-        logging.ERROR: custom_format.__func__(red, reset),
-        logging.CRITICAL: custom_format.__func__(bold_red, reset),
-    }
+    def custom_format(self) -> dict:
+        r"""."""
+        return {
+            logging.DEBUG: self.custom_format_str(self.yellow),
+            logging.INFO: self.custom_format_str(self.green),
+            logging.WARNING: self.custom_format_str(self.yellow),
+            logging.ERROR: self.custom_format_str(self.red),
+            logging.CRITICAL: self.custom_format_str(self.bold_red),
+        }
 
     def format(self, record):
-        log_fmt = self.FORMATS.get(record.levelno)
+        log_fmt = self.custom_format().get(record.levelno)
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 

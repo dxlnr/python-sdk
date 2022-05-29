@@ -43,12 +43,12 @@ class Conf(object):
         """
         if conf is not None:
             for key, value in conf.items():
-                if "address" in value.keys():
-                    self.server_address = value["address"]
+                if "server_address" in value.keys():
+                    self.server_address = value["server_address"]
                 if "timeout" in value.keys():
                     self.timeout = value["timeout"]
-                if "rounds" in value.keys():
-                    self.training_rounds = value["rounds"]
+                if "training_rounds" in value.keys():
+                    self.training_rounds = value["training_rounds"]
                 if "participants" in value.keys():
                     self.participants = value["participants"]
                 if "data_type" in value.keys():

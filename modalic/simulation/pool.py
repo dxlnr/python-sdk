@@ -14,7 +14,7 @@
 
 import multiprocessing
 import traceback
-from logging import INFO, WARNING
+from logging import DEBUG, ERROR, INFO
 from typing import Any
 
 from modalic.logging.logging import logger
@@ -54,7 +54,7 @@ class ClientPool:
         try:
             self.clients[int(name) - 1].run()
         except Exception:
-            logger.log(WARNING, f"Thread {name} failed.")
-            traceback.print_exc()
+            logger.log(ERROR, f"Running thread {name} failed.")
+            logger.log(DEBUG, traceback.print_exc())
 
         logger.log(INFO, f"Thread {name} for simulating client {name} finished.")

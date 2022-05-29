@@ -14,8 +14,8 @@
 
 from __future__ import annotations
 
-from logging import INFO
-from typing import Optional, Tuple
+from logging import ERROR, INFO
+from typing import Any, Optional, Tuple
 
 import grpc
 
@@ -69,14 +69,22 @@ def _grpc_connection(
     return (channel, CommunicationStub(channel))
 
 
-# def _error_grpc(func(*args, **kwargs)):
-#     r"""."""
-#     try:
-#         response = func(args)
-#     except grpc.RpcError as rpc_error:
-#         if rpc_error.code() == grpc.StatusCode.UNAVAILABLE:
-#             logger.log(ERROR, f"Aggregation server could not be reached. Please validate IP {self.server_address}.")
-#         else:
-#             logger.log(ERROR, f"Received unknown RPC error: code={rpc_error.code()} message={rpc_error.details()}")
-#
-#     return response
+def _error_grpc(rpc_error: grpc.RpcError, **kwargs: dict[str, Any]) -> None:
+    r"""Common grpc error message when exception is thrown.
+
+    Args:
+        rpc_error: grpc.RpcError which defines the kind of error message.
+    """
+    if rpc_error.code() == grpc.StatusCode.UNAVAILABLE:
+        logger.log(
+            ERROR,
+            f"Aggregation server could not be reached. Please validate if server is up and running\
+            and the IP {kwargs['server_address']} is correct.",
+        )
+        return
+    else:
+        logger.log(
+            ERROR,
+            f"Received RPC error: code={rpc_error.code()} message={rpc_error.details()}",
+        )
+        return
