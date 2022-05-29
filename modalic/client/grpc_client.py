@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from logging import INFO, WARNING
+from logging import ERROR, INFO, WARNING
 from typing import Any, List, Optional, Tuple
 
 import grpc
@@ -81,7 +81,7 @@ class Communicator(CommunicationLayer):
         server_address: str,
         max_message_length: int = 536870912,
         root_certificates: Optional[bytes] = None,
-        logging: Optional[bool] = False,
+        logback: Optional[bool] = False,
     ) -> Tuple[grpc.Channel, CommunicationStub]:
         r"""Establishes a grpc connection to the server.
 
@@ -90,14 +90,14 @@ class Communicator(CommunicationLayer):
             max_message_length: Maximum grpc message size.
             root_certificates: (optional) Can be set in order to establish a encrypted connection
                                between client & server.
-            logging: (optional) bool for setting logging or not. Default: False
+            logback: (optional) bool for setting logging or not. Default: False
 
         Returns:
             (channel, stub): Tuple containing the thread-safe grpc channel
             to server & the grpc stub.
         """
         return _grpc_connection(
-            server_address, max_message_length, root_certificates, logging
+            server_address, max_message_length, root_certificates, logback, self.cid
         )
 
     def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
@@ -134,20 +134,33 @@ class Communicator(CommunicationLayer):
             model_shape: Holds the shape of the model architecture for serialization & deserialization.
         """
         (channel, stub) = self.grpc_connection(self.server_address)
-        response = stub.GetGlobalModel(ClientMessage(id=self.cid))
-
-        params = parameters_from_proto(response)
-        if not params.tensor:
-            channel.close()
-            logger.log(
-                WARNING,
-                f"Client {self.cid} did not receive global model from aggregation server.",
-            )
+        # for _ in range(max_retries):
+        try:
+            response = stub.GetGlobalModel(ClientMessage(id=self.cid))
+        except grpc.RpcError as rpc_error:
+            if rpc_error.code() == grpc.StatusCode.UNAVAILABLE:
+                logger.log(
+                    ERROR,
+                    f"Aggregation server could not be reached. Please validate if server is up and running and the IP {self.server_address} is valid.",
+                )
+            else:
+                logger.log(
+                    ERROR,
+                    f"Received RPC error: code={rpc_error.code()} message={rpc_error.details()}",
+                )
         else:
-            weights = parameters_to_weights(params, model_shape)
-            self.set_weights(weights)
-            channel.close()
-            logger.log(
-                INFO,
-                f"Client {self.cid} received global model from aggregation server.",
-            )
+            params = parameters_from_proto(response)
+            if not params.tensor:
+                channel.close()
+                logger.log(
+                    WARNING,
+                    f"Client {self.cid} did not receive global model from aggregation server.",
+                )
+            else:
+                weights = parameters_to_weights(params, model_shape)
+                self.set_weights(weights)
+                channel.close()
+                logger.log(
+                    INFO,
+                    f"Client {self.cid} received global model from aggregation server.",
+                )

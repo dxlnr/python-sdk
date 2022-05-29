@@ -24,11 +24,11 @@ from modalic.logging.logging import logger
 
 
 def _grpc_connection(
-    self,
     server_address: str,
     max_message_length: int = 536870912,
     root_certificates: Optional[bytes] = None,
-    logging: Optional[bool] = False,
+    logback: Optional[bool] = False,
+    cid: Optional[int] = 0,
 ) -> Tuple[grpc.Channel, CommunicationStub]:
     r"""Establishes a grpc connection to the server.
 
@@ -37,7 +37,8 @@ def _grpc_connection(
         max_message_length: Maximum grpc message size. Default: 536870912 which are 512MB : 512 * 1024 * 1024
         root_certificates: (optional) Can be set in order to establish a encrypted connection
                            between client & server. Default: None
-        logging: (optional) bool for setting logging or not. Default: False
+        logback: (optional) bool for setting logging or not. Default: False
+        cid: (optional) Client ID used for logging purposes.
 
     Returns:
         (channel, stub): Tuple containing the thread-safe grpc channel
@@ -49,18 +50,33 @@ def _grpc_connection(
     ]
 
     if root_certificates is not None:
+        # with open('server.crt') as f:
+        #     trusted_certs = f.read().encode()
         ssl_channel_credentials = grpc.ssl_channel_credentials(root_certificates)
         channel = grpc.secure_channel(
             server_address, ssl_channel_credentials, options=channel_options
         )
-        if logging:
+        if logback:
             logger.log(
-                INFO, "Client {} established secure gRPC connection.".format(self.cid)
+                INFO, "Client {} established secure gRPC connection.".format(cid)
             )
     else:
         channel = grpc.insecure_channel(server_address, options=channel_options)
-        if logging:
+        if logback:
             logger.log(
-                INFO, "Client {} established insecure gRPC connection.".format(self.cid)
+                INFO, "Client {} established insecure gRPC connection.".format(cid)
             )
     return (channel, CommunicationStub(channel))
+
+
+# def _error_grpc(func(*args, **kwargs)):
+#     r"""."""
+#     try:
+#         response = func(args)
+#     except grpc.RpcError as rpc_error:
+#         if rpc_error.code() == grpc.StatusCode.UNAVAILABLE:
+#             logger.log(ERROR, f"Aggregation server could not be reached. Please validate IP {self.server_address}.")
+#         else:
+#             logger.log(ERROR, f"Received unknown RPC error: code={rpc_error.code()} message={rpc_error.details()}")
+#
+#     return response

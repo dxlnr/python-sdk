@@ -12,11 +12,14 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+# from modalic.client.utils.communication import _grpc_connection
+
 
 def train(func):
     r"""."""
 
     def inner():
+        # (channel, stub) = _grpc_connection(server_address)
         func()
 
     return inner
