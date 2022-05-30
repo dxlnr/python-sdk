@@ -9,15 +9,15 @@ class Storage:
     r"""Instantiate Storage Object that enables access to S3 layer.
 
     Args:
-        cfg (dict): dictionary containing the configurations.
+        conf (dict): dictionary containing the configurations.
     """
 
-    def __init__(self, cfg: Dict[str, Any]):
-        self.cfg = cfg
+    def __init__(self, conf: Dict[str, Any]):
+        self.conf = conf
         self.client = Minio(
-            endpoint=cfg["s3_server"],
-            access_key=cfg["access_key"],
-            secret_key=cfg["secret_access_key"],
+            endpoint=conf["s3_server"],
+            access_key=conf["access_key"],
+            secret_key=conf["secret_access_key"],
             secure=False,
         )
 
@@ -30,7 +30,7 @@ class Storage:
     ) -> None:
         r"""Uploads data object to s3 storage bucket."""
         self.client.put_object(
-            self.cfg["bucket"], object_name, object, length=length, metadata=metadata
+            self.conf["bucket"], object_name, object, length=length, metadata=metadata
         )
 
     # def create_bucket(self):

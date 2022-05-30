@@ -17,7 +17,7 @@ from __future__ import annotations
 import time
 import traceback
 from collections import OrderedDict
-from logging import INFO
+from logging import DEBUG, INFO
 from typing import Any, Optional
 
 import numpy as np
@@ -44,8 +44,8 @@ class PytorchClient(Communicator):
 
     def __init__(
         self,
-        trainer: Optional[Any] = None,
-        cid: int = 0,
+        trainer: Any,
+        cid: Optional[int] = 0,
         conf: Optional[dict] = None,
         # data: Optional[Any] = None,
     ):
@@ -60,14 +60,48 @@ class PytorchClient(Communicator):
         except AttributeError:
             traceback.print_exc()
 
-        self.training_rounds = self.conf.training_rounds
-        self.model_shape = self._get_model_shape()
-        self.dtype = self._get_model_dtype()
-        self.round_id = 0
-        self.loss = 0.0
+        # Internal attributes.
+        self._training_rounds = self.conf.training_rounds
+        self._model_shape = self._get_model_shape()
+        self._get_model_dtype()
+        self._round_id = 0
+        if hasattr(self.trainer, "dataset"):
+            if isinstance(self.trainer.dataset, list):
+                self._data_size = len(self.trainer.dataset)
+            else:
+                self._data_size = 1
+        else:
+            logger.log(
+                DEBUG,
+                f"Object {self.trainer} has no attribute dataset.\
+                Federation will proceed with default value 1 as the size of the dataset.",
+            )
+            self._data_size = 1
+
+        self._loss = 0.0
 
     def __repr__(self) -> str:
         return f"Modalic Pytorch Client Object {self.cid}"
+
+    @property
+    def dtype(self):
+        r"""."""
+        return self._dtype
+
+    @property
+    def round_id(self):
+        r"""."""
+        return self._round_id
+
+    @property
+    def loss(self):
+        r"""."""
+        return self._loss
+
+    @property
+    def model_shape(self):
+        r"""."""
+        return self._model_shape
 
     def set_weights(self, weights: shared.Weights) -> None:
         r"""Set model weights from a list of NumPy ndarrays.
@@ -94,7 +128,7 @@ class PytorchClient(Communicator):
             shapes.append(np.array(self.model.state_dict()[param_tensor].size()))
         return shapes
 
-    def _get_model_dtype(self) -> str:
+    def _get_model_dtype(self) -> None:
         r"""Extracts the data type of the pytorch model.
 
         Returns:
@@ -103,19 +137,20 @@ class PytorchClient(Communicator):
         """
         torch_type = list(self.trainer.model.state_dict().items())[0][1].dtype
         if torch_type == "torch.float32" or "torch.float":
-            dtype = "F32"
+            self._dtype = "F32"
         elif torch_type == "torch.float64" or "torch.double":
-            dtype = "F64"
+            self._dtype = "F64"
         else:
             raise ValueError(
-                "{} is not supported by aggregation server. Federation will fail. Please use 'torch.float' or 'torch.double'".format(
-                    torch_type
-                )
+                f"{torch_type} is not supported by aggregation server. Federation will fail. Please use 'torch.float' or 'torch.double'."
             )
-        return dtype
 
     def _train(self) -> None:
-        self.model, self.loss = self.trainer.train()
+        r"""Runs the train method of custom trainer object for single model."""
+        try:
+            self.model, self._loss = self.trainer.train()
+        except AttributeError:
+            raise AttributeError(f"{self.trainer} has no train() functionality.")
 
     # def eval(self) -> None:
     #     pass
@@ -125,17 +160,17 @@ class PytorchClient(Communicator):
 
     def _run(self) -> None:
         r"""Runs a single trainings round for a single modalic client."""
-        self.round_id += 1
-        self.get_global_model(self.model_shape)
+        self._round_id += 1
+        self.get_global_model(self._model_shape)
         self._train()
         logger.log(
             INFO,
-            f"Client {self.cid} | training round: {self.round_id} | loss: {self.loss}",
+            f"Client {self.cid} | training round: {self._round_id} | loss: {self._loss}",
         )
-        self.update(self.dtype, self.round_id, len(self.trainer.dataset), self.loss)
+        self.update(self._dtype, self._round_id, self._data_size, self._loss)
         time.sleep(self.conf.timeout)
 
     def run(self) -> None:
         r"""Looping the whole process for a single modalic client."""
-        while self.round_id < self.training_rounds:
+        while self._round_id < self._training_rounds:
             self._run()

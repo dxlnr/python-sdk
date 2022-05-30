@@ -16,10 +16,14 @@
 
 
 def train(func):
-    r"""."""
+    r"""
 
-    def inner():
+    Example usage:
+    >>> @modalic.train
+    """
+
+    def inner(*args, **kwargs):
         # (channel, stub) = _grpc_connection(server_address)
-        func()
+        func(*args, **kwargs)
 
     return inner
