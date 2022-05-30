@@ -40,6 +40,12 @@ class PytorchClient(Communicator):
         data: Dataset object that can be set for the Pytorch Trainer object.
         conf: Configuration object that stores all the parameters concerning the process.
         cid: Client id which uniquely identifies the client within the process.
+
+    Examples:
+        >>> client = modalic.PytorchClient(Trainer(), 1)
+        >>> client.run()
+    Raises:
+        AttributeError: Input object trainer has to contain a model & train() function.
     """
 
     def __init__(
@@ -60,7 +66,7 @@ class PytorchClient(Communicator):
         except AttributeError:
             traceback.print_exc()
 
-        # Internal attributes.
+        # Setting all the internal necessary attributes.
         self._training_rounds = self.conf.training_rounds
         self._model_shape = self._get_model_shape()
         self._get_model_dtype()
@@ -142,7 +148,8 @@ class PytorchClient(Communicator):
             self._dtype = "F64"
         else:
             raise ValueError(
-                f"{torch_type} is not supported by aggregation server. Federation will fail. Please use 'torch.float' or 'torch.double'."
+                f"{torch_type} is not supported by aggregation server. \
+                Federation will fail. Please use 'torch.float' or 'torch.double'."
             )
 
     def _train(self) -> None:

@@ -1,0 +1,3 @@
+[submodule "modules/mosaic"]
+	path = modules/mosaic
+	url = git@github.com:modalic/mosaic.git

@@ -12,18 +12,6 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-# from modalic.client.utils.communication import _grpc_connection
 
-
-def train(func):
-    r"""
-
-    Example usage:
-    >>> @modalic.train
-    """
-
-    def wrapper(*args, **kwargs):
-        # (channel, stub) = _grpc_connection(server_address)
-        func(*args, **kwargs)
-
-    return wrapper
+class DataPool(object):
+    r"""Data handler for distributing the data to independet threats which simulate clients."""
