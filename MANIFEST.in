@@ -1,0 +1,2 @@
+include mosaic/Cargo.toml
+recursive-include mosaic/src *

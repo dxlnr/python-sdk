@@ -52,6 +52,12 @@ make html
 # docs/build/html/index.html in the browser or with an IDE extension
 ```
 
+### Building
+```
+python setup.py install --user
+wheel convert dist/modalic-0.1.0-py3.9-linux-x86_64.egg
+```
+
 
 ### Implementation Ideas
 - Testing / Parser that checks if the framework architecture is correctly set up and implemented beforehand to avoid python giving run time error.
