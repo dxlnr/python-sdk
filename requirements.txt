@@ -1,0 +1,10 @@
+pytest
+tox
+black
+mypy
+isort
+types-protobuf
+autoflake
+flake8
+pre-commit
+sphinx
