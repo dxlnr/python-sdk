@@ -21,7 +21,3 @@ share/python-wheels/
 .mypy_cache/
 __pycache__
 .tox
-
-# Poetry
-poetry.lock
-*.pkl

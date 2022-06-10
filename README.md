@@ -8,35 +8,6 @@
 
 Python SDK library for the using the Modalic MLOps Federated Learning platform.
 
-## Developing
-### Linting
-```sh
-pip install black
-black modalic/
-# Sometimes this does not work, then try
-python -m black modalic/
-```
-### Documentation
-```sh
-pip install -U sphinx
-pip install -U sphinx-book-theme
-# Build new documentation
-sphinx-build -b html docs/source/ docs/build/html
-# Alternatively you could run the following two lines
-cd docs
-make html
-
-# See docs by opening
-# docs/build/html/index.html in the browser or with an IDE extension
-```
-
-### Building
-```
-python setup.py install --user
-wheel convert dist/modalic-0.1.0-py3.9-linux-x86_64.egg
-```
-
-
 ## Installation
 
 ### Binaries
@@ -73,7 +44,10 @@ git submodule update --init --recursive
 On **Linux**
 
 ```bash
-python setup.py install
+# Building the wheel (.whl)
+python setup.py sdist bdist_wheel
+# Installing the wheel locally
+pip install dist/modalic-0.1.0-cp39-cp39-linux_x86_64.whl
 ```
 
 ### Docker Image
@@ -95,4 +69,3 @@ docker run
 ## Implementation Ideas
 - Testing / Parser that checks if the framework architecture is correctly set up and implemented beforehand to avoid python giving run time error.
 - Add the server as wrapped dockercontainer within Github.
-- Use Poetry

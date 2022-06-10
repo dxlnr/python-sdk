@@ -5,7 +5,7 @@ repos:
     hooks:
       - id: lint
         name: lint
-        entry: poetry run bash scripts/linting.sh
+        entry: bash scripts/linting.sh
         language: system
         files: ^modalic/|^tests/|^examples/
         types: [file, python]

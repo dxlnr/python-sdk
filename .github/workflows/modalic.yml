@@ -18,10 +18,8 @@ jobs:
           sudo apt-get install clang-format-10
           python -m pip install -U pip==22.0.4
           python -m pip install -U setuptools==60.9.3
-          python -m pip install -U poetry==1.1.13
-          poetry config virtualenvs.create false
       - name: Install dependencies
-        run: python -m poetry install
+        run: pip install -r requirements.txt
 
       - name: lint
         run: bash scripts/linting.sh

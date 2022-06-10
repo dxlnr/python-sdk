@@ -31,19 +31,13 @@ class CNN(nn.Module):
         super(CNN, self).__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(
-                in_channels=1,
-                out_channels=16,
-                kernel_size=5,
-                stride=1,
-                padding=2,
+                in_channels=1, out_channels=16, kernel_size=5, stride=1, padding=2,
             ),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
         self.conv2 = nn.Sequential(
-            nn.Conv2d(16, 32, 5, 1, 2),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
+            nn.Conv2d(16, 32, 5, 1, 2), nn.ReLU(), nn.MaxPool2d(2),
         )
         self.out = nn.Linear(32 * 7 * 7, 10)
 
@@ -63,10 +57,7 @@ class Trainer(object):
     """
 
     def __init__(
-        self,
-        device: torch.device,
-        dataset,
-        epochs: int,
+        self, device: torch.device, dataset, epochs: int,
     ):
         self.device = device
         self.dataset = dataset
