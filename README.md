@@ -8,28 +8,6 @@
 
 Python SDK library for the using the Modalic MLOps Federated Learning platform.
 
-## Development
-For active development of the library some extra packages are needed
-```shell
-pip install -e .[dev]
-```
-
-
-More information on how to deploy a python package:
-[Packaging Projects with Python](https://packaging.python.org/en/latest/tutorials/packaging-projects/#classifiers)
-
-## Install from source with pip
-To install 'modalic' as a package locally run:
-```sh
-# From the root of this repo
-pip install .
-```
-Type `python` in the terminal and then check the installation by running:
-```python
-import modalic
-print(modalic.__version__)
-```
-
 ## Developing
 ### Linting
 ```sh

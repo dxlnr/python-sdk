@@ -1,2 +1,4 @@
-include mosaic/Cargo.toml
-recursive-include mosaic/src *
+include modules/mosaic/Cargo.toml
+include modules/mosaic/build.rs
+recursive-include modules/mosaic/proto * 
+recursive-include modules/mosaic/src *

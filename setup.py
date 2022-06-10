@@ -38,7 +38,7 @@ except ImportError:
 setup(
     rust_extensions=[
         RustExtension(
-            {"mosaic": "mosaic.mosaic"},
+            {"mosaic": "modalic.bin.mosaic"},
             "modules/mosaic/Cargo.toml",
             binding=Binding.Exec
         )

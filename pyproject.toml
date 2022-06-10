@@ -62,8 +62,7 @@
 # pre-commit = "^2.19.0"
 
 [build-system]
-requires = ["poetry-core", "setuptools", "wheel", "setuptools-rust"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools", "wheel", "setuptools-rust"]
 
 [tool.tox]
 name = "modalic"
@@ -72,18 +71,12 @@ legacy_tox_ini = """
 [tox]
 isolated_build = True
 skipsdist = true
-envlist = py36,py37,py38,py39
-[testenv]
-whitelist_externals = poetry
-commands =
-    poetry install -v --extras all
-    poetry run pytest tests
-    poetry run bash scripts/mypy.sh --install-types
+envlist = py38,py39
 """
 
 [tool.black]
 line-length = 88
-target-version = ["py37", "py38", "py39"]
+target-version = ["py38", "py39"]
 exclude = '''
   modalic/client/proto/
   /(
