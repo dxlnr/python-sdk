@@ -19,7 +19,7 @@ jobs:
           python -m pip install -U pip==22.0.4
           python -m pip install -U setuptools==60.9.3
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: python -m pip install --upgrade pip -r requirements.txt
 
       - name: lint
         run: bash scripts/linting.sh
