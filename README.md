@@ -59,7 +59,62 @@ wheel convert dist/modalic-0.1.0-py3.9-linux-x86_64.egg
 ```
 
 
-### Implementation Ideas
+## Installation
+
+### Binaries
+Commands to install binaries via conda or pip wheels via
+```bash
+pip install modalic
+```
+
+### From Source
+
+#### Prerequisites
+Installing from source, the following prerequisites are needed:
+- Python 3.8 or later
+- [Rust](https://www.rust-lang.org/tools/install) Toolchain for compiling the server application.
+- [Anaconda](https://www.anaconda.com/distribution/#download-section) environment is recommended.
+
+#### Install Dependencies
+
+```bash
+# Running in some conda environment
+conda install setuptools, setuptools-rust
+```
+
+#### Get the Modalic Python-SDK Source
+```bash
+git clone --recursive https://github.com/modalic/python-sdk
+cd python-sdk
+
+git submodule sync
+git submodule update --init --recursive
+```
+
+#### Install Modalic Python-SDK
+On **Linux**
+
+```bash
+python setup.py install
+```
+
+### Docker Image
+Install docker:  https://docs.docker.com/engine/install/ubuntu/
+
+#### Using pre-built images
+
+There is the option of using a pre-built docker image and run  in interactive mode with docker v19.03+
+
+```bash
+docker run
+```
+
+#### Building the image yourself
+```bash
+./build_....
+```
+
+## Implementation Ideas
 - Testing / Parser that checks if the framework architecture is correctly set up and implemented beforehand to avoid python giving run time error.
 - Add the server as wrapped dockercontainer within Github.
 - Use Poetry
