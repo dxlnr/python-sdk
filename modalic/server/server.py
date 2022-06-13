@@ -21,7 +21,10 @@ from modalic.server.api import find_bin_path
 
 def run_server(cfg_path: str = None) -> None:
     r"""Runs the Federated Learning server."""
+    command = [find_bin_path()]
     if cfg_path is not None:
-        subprocess.call([find_bin_path(), "--", "-c", cfg_path], shell=True)
-    else:
-        subprocess.call([find_bin_path()])
+        command.extend(["-c", cfg_path])
+    try:
+        subprocess.run(command, shell=False)
+    except subprocess.CalledProcessError:
+        return

@@ -11,23 +11,28 @@ You can clone this example as a closed folder into a separate environment by run
 ```
 git clone --depth=1 https://github.com/modalic/python-sdk.git && mv python-sdk/examples/pytorch_mnist . && rm -rf python_sdk && cd pytorch_mnist
 ```
-
-### Server
-For aggregating the local models from different clients, modalic provides a lightweight server application which can be started by running
-```
-docker run modalic/worker:mosaic
-```
-Mosaic is the name of the aggregation server. The first time you run this command, the Mosaic docker image will be downloaded. This might take a bit of time and bandwidth, be patient.
-
-### Clients
 Installing all the dependencies by running
 ```
 python3 -m venv modalic-env
 source modalic-env/bin/activate
 pip install --editable .
 ```
+
+### Download the dataset
+Get the MNIST dataset via
+```shell
+mkdir data/MNIST/ && cd data/MNIST/ && wget https://data.deepai.org/mnist.zip && unzip mnist.zip -d mnist && rm mnist.zip && cd ../..
+```
+
+### Server
+For aggregating the local models from different clients, modalic provides a lightweight server application which can be started by running
+```
+python server.py --cfg config.toml
+```
+
+### Clients
 An individual client can be started simply by running
 ```
-python client.py --cid 1 --cfg config.toml
+python client.py --cid 1
 ```
 in an additional terminal.

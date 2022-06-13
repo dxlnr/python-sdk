@@ -3,9 +3,10 @@ import sys
 
 import torch
 import torch.nn as nn
-from torchvision import datasets, transforms
 
 import modalic
+
+from .data import Dataloader, load_partition_data_mnist
 
 
 def create_arg_parser():
@@ -16,20 +17,6 @@ def create_arg_parser():
     )
 
     return parser
-
-
-def load_data():
-    r"""loading the mnist datasets."""
-    transform = transforms.Compose(
-        [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
-    )
-    mnist_trainset = datasets.MNIST(
-        root="./data", train=True, download=True, transform=transform
-    )
-    mnist_testset = datasets.MNIST(
-        root="./data", train=False, download=True, transform=transform
-    )
-    return mnist_trainset, mnist_testset
 
 
 class CNN(nn.Module):
@@ -65,7 +52,7 @@ class Trainer(object):
     """
 
     def __init__(
-        self, device: torch.device, dataset, epochs: int,
+        self, device: torch.device, dataset: Dataloader, epochs: int = 1,
     ):
         self.device = device
         self.dataset = dataset
@@ -93,21 +80,25 @@ class Trainer(object):
                 self.optimizer.step()
                 running_loss += loss.item()
 
-        return self.model, (running_loss / len(self.trainloader))
+        return self.model, running_loss / len(self.trainloader)
 
 
 def main():
     arg_parser = create_arg_parser()
     args = arg_parser.parse_args(sys.argv[1:])
 
-    device = "cpu"
-    if torch.cuda.is_available():
-        device = "cuda"
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    trainset, testset = load_data()
+    train_data, train_labels, test_data, test_labels = load_partition_data_mnist(
+        num_splits=100
+    )
 
-    client = modalic.Client(
-        Trainer(device, trainset, 1), args.cid, conf={"server_address": "[:]:8080"}
+    client = modalic.PytorchClient(
+        Trainer(
+            device, Dataloader(train_data[args.cid - 1], train_labels[args.cid - 1])
+        ),
+        args.cid,
+        conf={"server_address": "[:]:8080"},
     )
     client.run()
 

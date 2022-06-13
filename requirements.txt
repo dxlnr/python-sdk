@@ -1,3 +1,4 @@
+setuptools_rust
 pytest
 tox
 black

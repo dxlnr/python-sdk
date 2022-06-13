@@ -36,11 +36,15 @@ except ImportError:
 
 
 setup(
+    install_requires=[
+        "grpcio>=1.43.0",
+        "grpcio-tools>=1.43.0",
+    ],
     rust_extensions=[
         RustExtension(
             {"mosaic": "modalic.bin.mosaic"},
             "modules/mosaic/Cargo.toml",
             binding=Binding.Exec
         )
-    ]
+    ],
 )
