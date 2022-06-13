@@ -29,7 +29,7 @@ class Conf(object):
         training_rounds: Number of training rounds that should be performed.
     """
     server_address: str = "[::]:8080"
-    timeout: float = 30.0
+    timeout: float = 0.0
     training_rounds: int = 0
     participants: int = 0
     data_type: str = "F32"

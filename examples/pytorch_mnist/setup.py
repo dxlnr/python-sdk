@@ -1,8 +1,10 @@
 from setuptools import find_packages, setup
 
 requirements = [
+    "modalic>=0.1.0",
     "torch>=1.8.0",
     "torchvision>=0.12.0",
+    "toml>=0.10.2",
 ]
 
 

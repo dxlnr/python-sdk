@@ -28,6 +28,6 @@ pip install --editable .
 ```
 An individual client can be started simply by running
 ```
-python client.py
+python client.py --cid 1 --cfg config.toml
 ```
 in an additional terminal.

@@ -2,9 +2,8 @@
   <b>Modalic Python SDK</b><br>
 </h1>
 
-<p align="center">
-<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-</p>
+  [![GitHub license](https://img.shields.io/github/license/adap/flower)](https://github.com/adap/flower/blob/main/LICENSE)
+  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/modalic/python-sdk/blob/main/CONTRIBUTING.md)
 
 Python SDK library for the using the Modalic MLOps Federated Learning platform.
 
@@ -38,6 +37,7 @@ cd python-sdk
 
 git submodule sync
 git submodule update --init --recursive
+git submodule -q foreach git pull -q origin main
 ```
 
 #### Install Modalic Python-SDK
@@ -65,7 +65,3 @@ docker run
 ```bash
 ./build_....
 ```
-
-## Implementation Ideas
-- Testing / Parser that checks if the framework architecture is correctly set up and implemented beforehand to avoid python giving run time error.
-- Add the server as wrapped dockercontainer within Github.

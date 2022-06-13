@@ -1,13 +1,21 @@
+import argparse
+import sys
+
 import torch
 import torch.nn as nn
 from torchvision import datasets, transforms
 
 import modalic
 
-server_address = "127.0.0.1:8080"
-device = "cpu"
-if torch.cuda.is_available():
-    device = "cuda"
+
+def create_arg_parser():
+    r"""Get arguments from command lines."""
+    parser = argparse.ArgumentParser(description="Client parser.")
+    parser.add_argument(
+        "--cid", metavar="N", type=int, help="an integer specifing the client ID."
+    )
+
+    return parser
 
 
 def load_data():
@@ -71,7 +79,7 @@ class Trainer(object):
         self.loss = nn.CrossEntropyLoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
 
-    def train(self, cid=0):
+    def train(self):
         self.model.train()
 
         running_loss = 0.0
@@ -85,16 +93,24 @@ class Trainer(object):
                 self.optimizer.step()
                 running_loss += loss.item()
 
-                if (i + 1) == len(self.trainloader):
-                    print(
-                        f"[client {cid}, epoch {epoch + 1}, {i + 1:5d}] loss: {running_loss / len(self.trainloader):.3f}"
-                    )
-
         return self.model, (running_loss / len(self.trainloader))
 
 
-################################################################################
-trainset, testset = load_data()
+def main():
+    arg_parser = create_arg_parser()
+    args = arg_parser.parse_args(sys.argv[1:])
 
-client = modalic.Client(Trainer(device, trainset, epochs=1), 1, server_address)
-client.run()
+    device = "cpu"
+    if torch.cuda.is_available():
+        device = "cuda"
+
+    trainset, testset = load_data()
+
+    client = modalic.Client(
+        Trainer(device, trainset, 1), args.cid, conf={"server_address": "[:]:8080"}
+    )
+    client.run()
+
+
+if __name__ == "__main__":
+    main()
