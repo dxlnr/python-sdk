@@ -9,5 +9,5 @@ export MODALIC_DEBUG=1
 flake8 $SRC
 autoflake --remove-all-unused-imports --recursive --remove-unused-variables --in-place $SRC --exclude=__init__.py --check
 isort $SRC scripts --check-only
-black $SRC --target-version py38 --check
+black $SRC --target-version py38 --check --exclude examples/pytorch_mnist/client.py
 # mypy $SRC_NO_TESTS

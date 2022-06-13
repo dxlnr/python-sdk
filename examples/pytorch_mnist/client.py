@@ -3,10 +3,9 @@ import sys
 
 import torch
 import torch.nn as nn
+from data import Dataloader, load_partition_data_mnist
 
 import modalic
-
-from .data import Dataloader, load_partition_data_mnist
 
 
 def create_arg_parser():
@@ -48,7 +47,7 @@ class Trainer(object):
     r"""Trainer class object to perform the Learning.
     Args:
         device (torch.device): model running device. GPUs are recommended for model training and inference.
-        dataset: (lib.data.data.Dataloader) Dataloader object.
+        dataset: (data.Dataloader) Dataloader object.
     """
 
     def __init__(
@@ -98,7 +97,10 @@ def main():
             device, Dataloader(train_data[args.cid - 1], train_labels[args.cid - 1])
         ),
         args.cid,
-        conf={"server_address": "[:]:8080"},
+        conf={
+            "api": {"server_address": "[::]:8080"},
+            "process": {"training_rounds": 10, "timeout": 5.0},
+        },
     )
     client.run()
 

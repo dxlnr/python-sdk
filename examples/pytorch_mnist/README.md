@@ -21,7 +21,7 @@ pip install --editable .
 ### Download the dataset
 Get the MNIST dataset via
 ```shell
-mkdir data/MNIST/ && cd data/MNIST/ && wget https://data.deepai.org/mnist.zip && unzip mnist.zip -d mnist && rm mnist.zip && cd ../..
+mkdir -p data/MNIST/ && cd data/MNIST/ && wget https://data.deepai.org/mnist.zip && unzip mnist.zip -d mnist && rm mnist.zip && cd ../..
 ```
 
 ### Server
@@ -32,7 +32,10 @@ python server.py --cfg config.toml
 
 ### Clients
 An individual client can be started simply by running
-```
+```shell
 python client.py --cid 1
+# Additional clients can be started with a different cid.
+python client.py --cid 2
+# ...
 ```
-in an additional terminal.
+in additional terminals.
