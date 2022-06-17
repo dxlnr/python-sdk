@@ -88,3 +88,8 @@ def _error_grpc(rpc_error: grpc.RpcError, **kwargs: dict[str, Any]) -> None:
             f"Received RPC error: code={rpc_error.code()} message={rpc_error.details()}",
         )
         return
+
+
+# def _sync_model_version(func, params: shared.Parameters, round_id: int, retry: float = 10.0):
+#     r"""Checks and syncs model version to current training round."""
+#     pass

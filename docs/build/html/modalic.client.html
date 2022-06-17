@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>modalic.client package &#8212; modalic 0.0.1 documentation</title>
+    <title>modalic.client package &#8212; modalic 0.1.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -21,7 +21,7 @@
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=4fea3ae4a0a4ba949df0a89bbae557cc2ce861ae" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -71,7 +71,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">modalic 0.0.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">modalic 0.1.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -286,66 +286,6 @@ title="Print to PDF"
 </section>
 <section id="module-modalic.client.client">
 <span id="modalic-client-client-module"></span><h2>modalic.client.client module<a class="headerlink" href="#module-modalic.client.client" title="Permalink to this headline">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="modalic.client.client.Client">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modalic.client.client.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.client.Client" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#modalic.client.grpc_client.Communicator" title="modalic.client.grpc_client.Communicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">modalic.client.grpc_client.Communicator</span></code></a></p>
-<p>Client object which abstracts all the communication to Communicator.
-Serves as an simple layer and API that enables participating within
-Federated Learning process without designing the endpoints.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>trainer: Pytorch Trainer object.
-cid: Client id which uniquely identifies the client within the process.
-server_address: GRPC server address</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.client.Client.get_model_dtype">
-<span class="sig-name descname"><span class="pre">get_model_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.get_model_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.client.Client.get_model_dtype" title="Permalink to this definition">#</a></dt>
-<dd><p>Extracts the data type of the pytorch model.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.client.Client.get_model_shape">
-<span class="sig-name descname"><span class="pre">get_model_shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.get_model_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.client.Client.get_model_shape" title="Permalink to this definition">#</a></dt>
-<dd><p>Extracts the shape of the pytorch model.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.client.Client.get_weights">
-<span class="sig-name descname"><span class="pre">get_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.get_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.client.Client.get_weights" title="Permalink to this definition">#</a></dt>
-<dd><p>Get model weights as a list of NumPy ndarrays.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.client.Client.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.client.Client.run" title="Permalink to this definition">#</a></dt>
-<dd><p>Runs the whole process for a single modalic client.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.client.Client.set_weights">
-<span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.client.Client.set_weights" title="Permalink to this definition">#</a></dt>
-<dd><p>Set model weights from a list of NumPy ndarrays.
-Args:</p>
-<blockquote>
-<div><p>weights: Model weights as a list of NumPy ndarrays.</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.client.Client.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.client.Client.train" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.client.Client.val_get_global_model">
-<span class="sig-name descname"><span class="pre">val_get_global_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="modalic.utils.html#modalic.utils.common.Parameters" title="modalic.utils.common.Parameters"><span class="pre">modalic.utils.common.Parameters</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/modalic/client/client.html#Client.val_get_global_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.client.Client.val_get_global_model" title="Permalink to this definition">#</a></dt>
-<dd><p>Validates the response from server.</p>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 <section id="module-modalic.client.grpc_client">
 <span id="modalic-client-grpc-client-module"></span><h2>modalic.client.grpc_client module<a class="headerlink" href="#module-modalic.client.grpc_client" title="Permalink to this headline">#</a></h2>
@@ -356,14 +296,14 @@ Args:</p>
 <p>Abstract communicatio base layer for ensuring the grpc protocol.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="modalic.client.grpc_client.CommunicationLayer.get_global_model">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_global_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#CommunicationLayer.get_global_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.CommunicationLayer.get_global_model" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_global_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#CommunicationLayer.get_global_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.CommunicationLayer.get_global_model" title="Permalink to this definition">#</a></dt>
 <dd><p>Client request to get the latest version of the global model
 from server.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modalic.client.grpc_client.CommunicationLayer.update">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#CommunicationLayer.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.CommunicationLayer.update" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stake</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#CommunicationLayer.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.CommunicationLayer.update" title="Permalink to this definition">#</a></dt>
 <dd><p>Sends an updated model version to the server.</p>
 </dd></dl>
 
@@ -371,56 +311,67 @@ from server.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="modalic.client.grpc_client.Communicator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modalic.client.grpc_client.</span></span><span class="sig-name descname"><span class="pre">Communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modalic.client.grpc_client.</span></span><span class="sig-name descname"><span class="pre">Communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#modalic.client.grpc_client.CommunicationLayer" title="modalic.client.grpc_client.CommunicationLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">modalic.client.grpc_client.CommunicationLayer</span></code></a></p>
 <p>Communicator class object implements the grpc protocol functionality
 which will be inherited by some client class object.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Args:</dt><dd><p>server_address: static ip address of the aggregation server.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>server_address: static ip address of the aggregation server.
+cid: client identifier via unique integer.</p>
 </dd>
 </dl>
-</div></blockquote>
 <dl class="py method">
 <dt class="sig sig-object py" id="modalic.client.grpc_client.Communicator.get_global_model">
-<span class="sig-name descname"><span class="pre">get_global_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.get_global_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.get_global_model" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_global_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.get_global_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.get_global_model" title="Permalink to this definition">#</a></dt>
 <dd><p>Client request to get the latest version of the global model from server.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>model_shape: Holds the shape of the model architecture for serialization &amp; deserialization.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modalic.client.grpc_client.Communicator.get_weights">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.get_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.get_weights" title="Permalink to this definition">#</a></dt>
-<dd><p>Get model weights as a list of NumPy ndarrays.</p>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.get_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.get_weights" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the model weights as a list of NumPy ndarrays.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modalic.client.grpc_client.Communicator.grpc_connection">
-<span class="sig-name descname"><span class="pre">grpc_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_message_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">536870912</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_certificates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.grpc_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.grpc_connection" title="Permalink to this definition">#</a></dt>
-<dd><p>Establishes a grpc connection to the server.
-Returns:</p>
+<span class="sig-name descname"><span class="pre">grpc_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_message_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">536870912</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_certificates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">grpc.Channel</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">modalic.client.proto.mosaic_pb2_grpc.CommunicationStub</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.grpc_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.grpc_connection" title="Permalink to this definition">#</a></dt>
+<dd><p>Establishes a grpc connection to the server.</p>
+<dl>
+<dt>Args:</dt><dd><p>server_address: Determines the IP address for connecting to the server.
+max_message_length: Maximum grpc message size.
+root_certificates: (optional) Can be set in order to establish a encrypted connection</p>
 <blockquote>
-<div><p>(channel, stub): Tuple containing the thread-safe grpc channel
-to server &amp; the grpc stub.</p>
+<div><p>between client &amp; server.</p>
 </div></blockquote>
+<p>logback: (optional) bool for setting logging or not. Default: False</p>
+</dd>
+<dt>Returns:</dt><dd><p>(channel, stub): Tuple containing the thread-safe grpc channel
+to server &amp; the grpc stub.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modalic.client.grpc_client.Communicator.set_weights">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.set_weights" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.set_weights" title="Permalink to this definition">#</a></dt>
 <dd><p>Set model weights from a list of NumPy ndarrays.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="modalic.client.grpc_client.Communicator.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stake</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.update" title="Permalink to this definition">#</a></dt>
-<dd><p>Sends an updated model version to the server.
-Args:</p>
-<blockquote>
-<div><p>dtype: Data Type of the trained model. Important as it determines the de-/serialization.
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stake</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/modalic/client/grpc_client.html#Communicator.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.grpc_client.Communicator.update" title="Permalink to this definition">#</a></dt>
+<dd><p>Sends an updated model version to the server.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>dtype: Data Type of the trained model. Important as it determines the de-/serialization.
 round_id: Training round id.
 stake: Sets the number of samples the local model was trained on.
 loss: Loss of the local model during training.</p>
-</div></blockquote>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -429,61 +380,83 @@ loss: Loss of the local model during training.</p>
 <section id="module-modalic.client">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-modalic.client" title="Permalink to this headline">#</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="modalic.client.Client">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modalic.client.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Client" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="modalic.client.PytorchClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modalic.client.</span></span><span class="sig-name descname"><span class="pre">PytorchClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/pytorch_client.html#PytorchClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.PytorchClient" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#modalic.client.grpc_client.Communicator" title="modalic.client.grpc_client.Communicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">modalic.client.grpc_client.Communicator</span></code></a></p>
-<p>Client object which abstracts all the communication to Communicator.
-Serves as an simple layer and API that enables participating within
-Federated Learning process without designing the endpoints.</p>
-<dl class="simple">
+<p>Pytorch compatible client object which abstracts all the distributed communication.
+Serves as a simple layer and API that enables participating within a
+Federated Learning process.</p>
+<dl>
 <dt>Args:</dt><dd><p>trainer: Pytorch Trainer object.
-cid: Client id which uniquely identifies the client within the process.
-server_address: GRPC server address</p>
+data: Dataset object that can be set for the Pytorch Trainer object.
+conf: Configuration object that stores all the parameters concerning the process.
+cid: Client id which uniquely identifies the client within the process.</p>
+</dd>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">modalic</span><span class="o">.</span><span class="n">PytorchClient</span><span class="p">(</span><span class="n">Trainer</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+<dt>Raises:</dt><dd><p>AttributeError: Input object trainer has to contain a model &amp; train() function.</p>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.Client.get_model_dtype">
-<span class="sig-name descname"><span class="pre">get_model_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.get_model_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Client.get_model_dtype" title="Permalink to this definition">#</a></dt>
-<dd><p>Extracts the data type of the pytorch model.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="modalic.client.PytorchClient.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#modalic.client.PytorchClient.dtype" title="Permalink to this definition">#</a></dt>
+<dd><p>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.Client.get_model_shape">
-<span class="sig-name descname"><span class="pre">get_model_shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.get_model_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Client.get_model_shape" title="Permalink to this definition">#</a></dt>
-<dd><p>Extracts the shape of the pytorch model.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.Client.get_weights">
-<span class="sig-name descname"><span class="pre">get_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.get_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Client.get_weights" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="modalic.client.PytorchClient.get_weights">
+<span class="sig-name descname"><span class="pre">get_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/modalic/client/pytorch_client.html#PytorchClient.get_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.PytorchClient.get_weights" title="Permalink to this definition">#</a></dt>
 <dd><p>Get model weights as a list of NumPy ndarrays.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.Client.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Client.run" title="Permalink to this definition">#</a></dt>
-<dd><p>Runs the whole process for a single modalic client.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="modalic.client.PytorchClient.loss">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loss</span></span><a class="headerlink" href="#modalic.client.PytorchClient.loss" title="Permalink to this definition">#</a></dt>
+<dd><p>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modalic.client.PytorchClient.model_shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_shape</span></span><a class="headerlink" href="#modalic.client.PytorchClient.model_shape" title="Permalink to this definition">#</a></dt>
+<dd><p>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modalic.client.PytorchClient.round_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">round_id</span></span><a class="headerlink" href="#modalic.client.PytorchClient.round_id" title="Permalink to this definition">#</a></dt>
+<dd><p>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.Client.set_weights">
-<span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Client.set_weights" title="Permalink to this definition">#</a></dt>
-<dd><p>Set model weights from a list of NumPy ndarrays.
-Args:</p>
-<blockquote>
-<div><p>weights: Model weights as a list of NumPy ndarrays.</p>
-</div></blockquote>
+<dt class="sig sig-object py" id="modalic.client.PytorchClient.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/modalic/client/pytorch_client.html#PytorchClient.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.PytorchClient.run" title="Permalink to this definition">#</a></dt>
+<dd><p>Looping the whole process for a single modalic client.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.Client.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modalic/client/client.html#Client.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Client.train" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="modalic.client.PytorchClient.set_weights">
+<span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/modalic/client/pytorch_client.html#PytorchClient.set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.PytorchClient.set_weights" title="Permalink to this definition">#</a></dt>
+<dd><p>Set model weights from a list of NumPy ndarrays.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>weights: Model weights as a list of NumPy ndarrays.</p>
+</dd>
+</dl>
+</dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modalic.client.Trainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modalic.client.</span></span><span class="sig-name descname"><span class="pre">Trainer</span></span><a class="reference internal" href="_modules/modalic/client/trainer.html#Trainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Trainer" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Trainer class provides an API for feature-complete training in PyTorch.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="modalic.client.Client.val_get_global_model">
-<span class="sig-name descname"><span class="pre">val_get_global_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="modalic.utils.html#modalic.utils.common.Parameters" title="modalic.utils.common.Parameters"><span class="pre">modalic.utils.common.Parameters</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/modalic/client/client.html#Client.val_get_global_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Client.val_get_global_model" title="Permalink to this definition">#</a></dt>
-<dd><p>Validates the response from server.</p>
+<dt class="sig sig-object py" id="modalic.client.Trainer.train">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/modalic/client/trainer.html#Trainer.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modalic.client.Trainer.train" title="Permalink to this definition">#</a></dt>
+<dd><p>runs the training.</p>
 </dd></dl>
 
 </dd></dl>

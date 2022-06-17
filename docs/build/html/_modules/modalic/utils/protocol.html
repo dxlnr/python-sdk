@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>modalic.utils.protocol &#8212; modalic 0.0.1 documentation</title>
+    <title>modalic.utils.protocol &#8212; modalic 0.1.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -20,7 +20,7 @@
     href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=4fea3ae4a0a4ba949df0a89bbae557cc2ce861ae" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -70,7 +70,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">modalic 0.0.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">modalic 0.1.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -166,18 +166,28 @@ title="Fullscreen mode"
               <div>
                 
   <h1>Source code for modalic.utils.protocol</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;gRPC action script.&quot;&quot;&quot;</span>
+<span></span><span class="c1">#  Copyright (c) modalic 2022. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1">#  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#  you may not use this file except in compliance with the License.</span>
+<span class="c1">#  You may obtain a copy of the License at:</span>
+<span class="c1">#</span>
+<span class="c1">#       https://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1">#  Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express</span>
+<span class="c1">#  or implied. See the License for the specific language governing</span>
+<span class="c1">#  permissions and limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">modalic.client.proto.mosaic_pb2</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ClientMessage</span><span class="p">,</span>
-    <span class="n">Parameters</span><span class="p">,</span>
-    <span class="n">ProcessMeta</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;gRPC action script.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">modalic.client.proto.mosaic_pb2</span> <span class="kn">import</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">ProcessMeta</span>
+<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">shared</span>
 
 
-<div class="viewcode-block" id="parameters_to_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.parameters_to_proto">[docs]</a><span class="k">def</span> <span class="nf">parameters_to_proto</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Parameters</span><span class="p">:</span>
+<div class="viewcode-block" id="parameters_to_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.parameters_to_proto">[docs]</a><span class="k">def</span> <span class="nf">parameters_to_proto</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Parameters</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">Parameters</span><span class="p">(</span>
         <span class="n">tensor</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span>
@@ -186,24 +196,24 @@ title="Fullscreen mode"
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="parameters_from_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.parameters_from_proto">[docs]</a><span class="k">def</span> <span class="nf">parameters_from_proto</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameters</span><span class="p">:</span>
+<div class="viewcode-block" id="parameters_from_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.parameters_from_proto">[docs]</a><span class="k">def</span> <span class="nf">parameters_from_proto</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">Parameters</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
-    <span class="n">tensor</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+    <span class="n">tensor</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shared</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
         <span class="n">tensor</span><span class="o">=</span><span class="n">tensor</span><span class="p">,</span>
         <span class="n">data_type</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span>
         <span class="n">model_version</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">model_version</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="process_meta_to_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.process_meta_to_proto">[docs]</a><span class="k">def</span> <span class="nf">process_meta_to_proto</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProcessMeta</span><span class="p">:</span>
+<div class="viewcode-block" id="process_meta_to_proto"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.process_meta_to_proto">[docs]</a><span class="k">def</span> <span class="nf">process_meta_to_proto</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProcessMeta</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ProcessMeta</span><span class="p">(</span><span class="n">round_id</span><span class="o">=</span><span class="n">meta</span><span class="o">.</span><span class="n">round_id</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">meta</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="to_meta"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.to_meta">[docs]</a><span class="k">def</span> <span class="nf">to_meta</span><span class="p">(</span><span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">:</span>
+<div class="viewcode-block" id="to_meta"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.protocol.to_meta">[docs]</a><span class="k">def</span> <span class="nf">to_meta</span><span class="p">(</span><span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">(</span><span class="n">round_id</span><span class="o">=</span><span class="n">round_id</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">shared</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">(</span><span class="n">round_id</span><span class="o">=</span><span class="n">round_id</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">)</span></div>
 </pre></div>
 
               </div>

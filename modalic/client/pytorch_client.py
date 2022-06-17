@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-import time
+# import time
 import traceback
 from collections import OrderedDict
 from logging import DEBUG, INFO
@@ -70,7 +70,6 @@ class PytorchClient(Communicator):
         self._training_rounds = self.conf.training_rounds
         self._model_shape = self._get_model_shape()
         self._get_model_dtype()
-        self._round_id = 0
         if hasattr(self.trainer, "dataset"):
             if isinstance(self.trainer.dataset, list):
                 self._data_size = len(self.trainer.dataset)
@@ -167,15 +166,15 @@ class PytorchClient(Communicator):
 
     def _run(self) -> None:
         r"""Runs a single trainings round for a single modalic client."""
-        self._round_id += 1
         self.get_global_model(self._model_shape)
+        self._round_id += 1
         self._train()
         logger.log(
             INFO,
             f"Client {self.cid} | training round: {self._round_id} | loss: {self._loss}",
         )
         self.update(self._dtype, self._round_id, self._data_size, self._loss)
-        time.sleep(self.conf.timeout)
+        # time.sleep(self.conf.timeout)
 
     def run(self) -> None:
         r"""Looping the whole process for a single modalic client."""

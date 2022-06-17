@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import time
 from abc import ABC, abstractmethod
 from logging import INFO, WARNING
 from typing import Any, List, Optional, Tuple
@@ -65,6 +66,7 @@ class Communicator(CommunicationLayer):
     def __init__(self, server_address: str, cid: int):
         self.server_address = server_address
         self.cid = cid
+        self._round_id = 0
 
     @abstractmethod
     def set_weights(self, weights: shared.Weights) -> None:
@@ -131,7 +133,9 @@ class Communicator(CommunicationLayer):
             channel.close()
             logger.log(INFO, f"Client {self.cid} sent update to aggregation server.")
 
-    def get_global_model(self, model_shape: list[np.ndarray]) -> None:
+    def get_global_model(
+        self, model_shape: list[np.ndarray], retry: float = 5.0
+    ) -> None:
         r"""Client request to get the latest version of the global model from server.
 
         Args:
@@ -145,16 +149,18 @@ class Communicator(CommunicationLayer):
         else:
             params = parameters_from_proto(response)
             if not params.tensor:
-                channel.close()
                 logger.log(
                     WARNING,
                     f"Client {self.cid} did not receive global model from aggregation server.",
                 )
+            elif not params.model_version <= self._round_id:
+                time.sleep(retry)
+                self.get_global_model(model_shape)
             else:
                 weights = parameters_to_weights(params, model_shape)
                 self.set_weights(weights)
-                channel.close()
                 logger.log(
                     INFO,
                     f"Client {self.cid} received global model from aggregation server.",
                 )
+            channel.close()

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>modalic.utils.serde &#8212; modalic 0.0.1 documentation</title>
+    <title>modalic.utils.serde &#8212; modalic 0.1.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -20,7 +20,7 @@
     href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=4fea3ae4a0a4ba949df0a89bbae557cc2ce861ae" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -70,7 +70,7 @@
       
       
       
-      <h1 class="site-logo" id="site-title">modalic 0.0.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">modalic 0.1.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -166,18 +166,36 @@ title="Fullscreen mode"
               <div>
                 
   <h1>Source code for modalic.utils.serde</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;ProtoBuf serialization and deserialization.&quot;&quot;&quot;</span>
+<span></span><span class="c1">#  Copyright (c) modalic 2022. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1">#  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#  you may not use this file except in compliance with the License.</span>
+<span class="c1">#  You may obtain a copy of the License at:</span>
+<span class="c1">#</span>
+<span class="c1">#       https://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1">#  Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express</span>
+<span class="c1">#  or implied. See the License for the specific language governing</span>
+<span class="c1">#  permissions and limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">struct</span>
+<span class="sd">&quot;&quot;&quot;ProtoBuf serialization and deserialization.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">common</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">shared</span>
 
 
-<div class="viewcode-block" id="weights_to_parameters"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.weights_to_parameters">[docs]</a><span class="k">def</span> <span class="nf">weights_to_parameters</span><span class="p">(</span>
-    <span class="n">weights</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Weights</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_version</span><span class="p">:</span> <span class="nb">int</span>
+<div class="viewcode-block" id="weights_to_parameters"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.weights_to_parameters">[docs]</a><span class="nd">@typing</span><span class="o">.</span><span class="n">no_type_check</span>
+<span class="k">def</span> <span class="nf">weights_to_parameters</span><span class="p">(</span>
+    <span class="n">weights</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_version</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">protocol</span><span class="o">.</span><span class="n">Parameters</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert NumPy weights to parameters object.&quot;&quot;&quot;</span>
     <span class="n">tensor</span> <span class="o">=</span> <span class="n">weights_to_bytes</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype_to_struct</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
@@ -186,30 +204,35 @@ title="Fullscreen mode"
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="parameters_to_weights"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.parameters_to_weights">[docs]</a><span class="k">def</span> <span class="nf">parameters_to_weights</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">protocol</span><span class="o">.</span><span class="n">Parameters</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">Weights</span><span class="p">:</span>
+<div class="viewcode-block" id="parameters_to_weights"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.parameters_to_weights">[docs]</a><span class="nd">@typing</span><span class="o">.</span><span class="n">no_type_check</span>
+<span class="k">def</span> <span class="nf">parameters_to_weights</span><span class="p">(</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="n">protocol</span><span class="o">.</span><span class="n">Parameters</span><span class="p">,</span> <span class="n">shapes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert parameters object to NumPy weights.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">bytes_to_ndarray</span><span class="p">(</span>
         <span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">shapes</span><span class="p">,</span> <span class="n">dtype_to_struct</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ndarray_to_bytes"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.ndarray_to_bytes">[docs]</a><span class="k">def</span> <span class="nf">ndarray_to_bytes</span><span class="p">(</span><span class="n">ndarray</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<div class="viewcode-block" id="ndarray_to_bytes"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.ndarray_to_bytes">[docs]</a><span class="k">def</span> <span class="nf">ndarray_to_bytes</span><span class="p">(</span><span class="n">ndarray</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Serialize NumPy ndarray to list of u8 bytes.&quot;&quot;&quot;</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">res</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">single</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">single</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">res</span></div>
 
 
-<div class="viewcode-block" id="weights_to_bytes"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.weights_to_bytes">[docs]</a><span class="k">def</span> <span class="nf">weights_to_bytes</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Weights</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<div class="viewcode-block" id="weights_to_bytes"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.weights_to_bytes">[docs]</a><span class="k">def</span> <span class="nf">weights_to_bytes</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Serialize NumPy ndarray to bytes.&quot;&quot;&quot;</span>
     <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">ndarray_to_bytes</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">ndarray</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">]</span>
     <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)))</span></div>
 
 
-<div class="viewcode-block" id="bytes_to_ndarray"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.bytes_to_ndarray">[docs]</a><span class="k">def</span> <span class="nf">bytes_to_ndarray</span><span class="p">(</span><span class="n">tensor</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">layer_shape</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<div class="viewcode-block" id="bytes_to_ndarray"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.bytes_to_ndarray">[docs]</a><span class="k">def</span> <span class="nf">bytes_to_ndarray</span><span class="p">(</span>
+    <span class="n">tensor</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">layer_shape</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Deserialize NumPy ndarray from u8 bytes.&quot;&quot;&quot;</span>
-    <span class="n">layer</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">layer</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;!f&quot;</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
             <span class="n">layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;f&quot;</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
@@ -224,17 +247,17 @@ title="Fullscreen mode"
     <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">shapes</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">layer_shape</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="get_shape"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.get_shape">[docs]</a><span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Weights</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the shape of weights.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_shape"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.get_shape">[docs]</a><span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reads in the weights and returns its shape as a list object.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="chunk"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.chunk">[docs]</a><span class="k">def</span> <span class="nf">chunk</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">chunksize</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;helper chunking an iterable.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="chunk"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.chunk">[docs]</a><span class="k">def</span> <span class="nf">chunk</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">chunksize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">zip</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;helper chunking an iterable with fixed size.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)]</span> <span class="o">*</span> <span class="n">chunksize</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="indexing"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.indexing">[docs]</a><span class="k">def</span> <span class="nf">indexing</span><span class="p">(</span><span class="n">length</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<div class="viewcode-block" id="indexing"><a class="viewcode-back" href="../../../modalic.utils.html#modalic.utils.serde.indexing">[docs]</a><span class="k">def</span> <span class="nf">indexing</span><span class="p">(</span><span class="n">length</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;helper for preparing the indices at which array is splitted.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
