@@ -16,8 +16,6 @@ import numpy as np
 
 from modalic.utils.serde import bytes_to_ndarray, get_shape, weights_to_bytes
 
-# from typing import List
-
 
 def test_serialisation_deserialisation() -> None:
     r"""Test if after serialization/deserialisation the np.ndarray is

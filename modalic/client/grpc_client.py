@@ -14,26 +14,22 @@
 
 from __future__ import annotations
 
-import time
 from abc import ABC, abstractmethod
-from logging import INFO, WARNING
+from logging import INFO
 from typing import Any, List, Optional, Tuple
 
 import grpc
 import numpy as np
 
-from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
-from modalic.client.utils.communication import _error_grpc, _grpc_connection
+from modalic.client.utils.communication import (
+    _grpc_connection,
+    _sync_model_version,
+    _update,
+)
 from modalic.logging.logging import logger
 from modalic.utils import shared
-from modalic.utils.protocol import (
-    parameters_from_proto,
-    parameters_to_proto,
-    process_meta_to_proto,
-    to_meta,
-)
-from modalic.utils.serde import parameters_to_weights, weights_to_parameters
+from modalic.utils.serde import parameters_to_weights
 
 
 class CommunicationLayer(ABC):
@@ -111,27 +107,15 @@ class Communicator(CommunicationLayer):
             stake: Sets the number of samples the local model was trained on.
             loss: Loss of the local model during training.
         """
-        weights = self.get_weights()
-        parameters = parameters_to_proto(
-            weights_to_parameters(weights, dtype=dtype, model_version=round_id)
+        _update(
+            self.cid,
+            self.server_address,
+            self.get_weights(),
+            dtype,
+            round_id,
+            stake,
+            loss,
         )
-        process_meta = process_meta_to_proto(to_meta(round_id, loss))
-
-        (channel, stub) = self.grpc_connection(self.server_address)
-        try:
-            _ = stub.Update(
-                ClientUpdate(
-                    id=self.cid,
-                    parameters=parameters,
-                    stake=stake,
-                    process_meta=process_meta,
-                )
-            )
-        except grpc.RpcError as rpc_error:
-            _error_grpc(rpc_error, server_address=self.server_address)
-        else:
-            channel.close()
-            logger.log(INFO, f"Client {self.cid} sent update to aggregation server.")
 
     def get_global_model(
         self, model_shape: list[np.ndarray], retry: float = 5.0
@@ -141,26 +125,13 @@ class Communicator(CommunicationLayer):
         Args:
             model_shape: Holds the shape of the model architecture for serialization & deserialization.
         """
-        (channel, stub) = self.grpc_connection(self.server_address)
-        try:
-            response = stub.GetGlobalModel(ClientMessage(id=self.cid))
-        except grpc.RpcError as rpc_error:
-            _error_grpc(rpc_error, server_address=self.server_address)
-        else:
-            params = parameters_from_proto(response)
-            if not params.tensor:
-                logger.log(
-                    WARNING,
-                    f"Client {self.cid} did not receive global model from aggregation server.",
-                )
-            elif not params.model_version <= self._round_id:
-                time.sleep(retry)
-                self.get_global_model(model_shape)
-            else:
-                weights = parameters_to_weights(params, model_shape)
-                self.set_weights(weights)
-                logger.log(
-                    INFO,
-                    f"Client {self.cid} received global model from aggregation server.",
-                )
-            channel.close()
+        params = _sync_model_version(
+            self.cid, self.server_address, self._round_id, retry_period=retry
+        )
+        if params is not None:
+            weights = parameters_to_weights(params, model_shape)
+            self.set_weights(weights)
+            logger.log(
+                INFO,
+                f"Client {self.cid} received global model from aggregation server.",
+            )

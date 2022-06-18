@@ -14,13 +14,23 @@
 
 from __future__ import annotations
 
-from logging import ERROR, INFO
+import time
+from logging import ERROR, INFO, WARNING
 from typing import Any, Optional, Tuple
 
 import grpc
 
+from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
 from modalic.logging.logging import logger
+from modalic.utils import shared
+from modalic.utils.protocol import (
+    parameters_from_proto,
+    parameters_to_proto,
+    process_meta_to_proto,
+    to_meta,
+)
+from modalic.utils.serde import weights_to_parameters
 
 
 def _grpc_connection(
@@ -90,6 +100,98 @@ def _error_grpc(rpc_error: grpc.RpcError, **kwargs: dict[str, Any]) -> None:
         return
 
 
-# def _sync_model_version(func, params: shared.Parameters, round_id: int, retry: float = 10.0):
-#     r"""Checks and syncs model version to current training round."""
-#     pass
+def _update(
+    cid: int,
+    server_address: str,
+    weights: shared.Weights,
+    dtype: str,
+    round_id: int,
+    stake: int,
+    loss: float,
+) -> None:
+    r"""Sends an updated model version to the server.
+
+    Args:
+        cid: Client identifier
+        server_address: Determines the IP address for connecting to the server.
+        weights: The local model weights which are sent to the aggregation server.
+        dtype: Data Type of the trained model. Important as it determines the de-/serialization.
+        round_id: Training round id.
+        stake: Sets the number of samples the local model was trained on.
+        loss: Loss of the local model during training.
+    """
+    parameters = parameters_to_proto(
+        weights_to_parameters(weights, dtype=dtype, model_version=round_id)
+    )
+    process_meta = process_meta_to_proto(to_meta(round_id, loss))
+
+    (channel, stub) = _grpc_connection(server_address)
+    try:
+        _ = stub.Update(
+            ClientUpdate(
+                id=cid, parameters=parameters, stake=stake, process_meta=process_meta,
+            )
+        )
+    except grpc.RpcError as rpc_error:
+        _error_grpc(rpc_error, server_address=server_address)
+    else:
+        channel.close()
+        logger.log(INFO, f"Client {cid} sent update to aggregation server.")
+
+
+def _get_global_model(cid: int, server_address: str) -> shared.Parameters:
+    r"""Client request to get the latest version of the global model from server.
+
+    Args:
+        cid: Client identifier
+        server_address: Determines the IP address for connecting to the server.
+    """
+    (channel, stub) = _grpc_connection(server_address)
+    try:
+        response = stub.GetGlobalModel(ClientMessage(id=cid))
+    except grpc.RpcError as rpc_error:
+        _error_grpc(rpc_error, server_address=server_address)
+    else:
+        channel.close()
+        return parameters_from_proto(response)
+
+
+def _sync_model_version(
+    cid: int,
+    server_address: str,
+    round_id: int,
+    n_retry: int = 1,
+    retry_period: float = 10.0,
+    **kwargs: dict[str, Any],
+) -> shared.Parameters:
+    r"""Checks and syncs model version to current training round.
+
+    Args:
+        cid: Client identifier
+        server_address: Determines the IP address for connecting to the server.
+        round_id: Curretn training round id for checking the global model version.
+        n_retry: Number of retries that should be performed before ignoring
+                 getting an updated global model.
+        retry_period: Defines how long a logstep should take before retrying.
+    """
+    for n in range(n_retry):
+        params = _get_global_model(cid, server_address)
+        if params is not None:
+            if not params.tensor:
+                logger.log(
+                    WARNING,
+                    f"Client {cid} did not receive global model from aggregation server.",
+                )
+                return
+            else:
+                if params.model_version == round_id:
+                    return params
+                else:
+                    logger.log(
+                        INFO,
+                        f"Client {cid} in training round {round_id} received global model version {params.model_version}. \
+                        Client goes in lockstep for {retry_period}s.",
+                    )
+                    time.sleep(retry_period)
+        else:
+            return

@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-# import time
+import time
 import traceback
 from collections import OrderedDict
 from logging import DEBUG, INFO
@@ -174,7 +174,7 @@ class PytorchClient(Communicator):
             f"Client {self.cid} | training round: {self._round_id} | loss: {self._loss}",
         )
         self.update(self._dtype, self._round_id, self._data_size, self._loss)
-        # time.sleep(self.conf.timeout)
+        time.sleep(self.conf.timeout)
 
     def run(self) -> None:
         r"""Looping the whole process for a single modalic client."""
