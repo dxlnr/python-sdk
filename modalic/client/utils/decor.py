@@ -12,18 +12,64 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-# from modalic.client.utils.communication import _grpc_connection
+from logging import INFO
+
+from modalic.client.utils.communication import _get_global_model, _update
+from modalic.client.utils.torch_utils import (
+    _get_model_shape,
+    _get_torch_weights,
+    _set_torch_weights,
+)
+from modalic.logging.logging import logger
+from modalic.utils.serde import parameters_to_weights
 
 
 def train(func):
-    r"""
+    r"""Training function decorator. Performs the underlying train() function
+    multiply times while participating in a federated learning procedure.
 
-    Example usage:
-    >>> @modalic.train
+    Examples:
+        >>> @modalic.train
     """
 
-    def wrapper(*args, **kwargs):
-        # (channel, stub) = _grpc_connection(server_address)
-        func(*args, **kwargs)
+    def wrapper(model, *args, **kwargs):
+        wrapper.model_shape = _get_model_shape(model)
+
+        while wrapper.round_id < 10:
+            params = _get_global_model(wrapper.client_id, wrapper.server_address)
+            print("params: ", params)
+
+            if params is not None and len(params.tensor) != 0:
+                weights = parameters_to_weights(params, wrapper.model_shape)
+                model = _set_torch_weights(model, weights)
+                logger.log(
+                    INFO,
+                    f"Client {wrapper.client_id} received global model from aggregation server.",
+                )
+            wrapper.round_id += 1
+
+            print(f"calling train in round {wrapper.round_id}")
+            # print(f"model: {model[-1]}")
+
+            model = func(model, *args, **kwargs)
+
+            logger.log(
+                INFO,
+                f"Client {wrapper.client_id} | training round: {wrapper.round_id} | loss: {wrapper.loss}",
+            )
+            _update(
+                wrapper.client_id,
+                wrapper.server_address,
+                _get_torch_weights(model),
+                "F32",
+                wrapper.round_id,
+                1,
+                wrapper.loss,
+            )
+
+    wrapper.round_id = 0
+    wrapper.loss = 0.0
+    wrapper.client_id = 1
+    wrapper.server_address = "[::]:8080"
 
     return wrapper

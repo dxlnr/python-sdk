@@ -56,12 +56,12 @@ class Communicator(CommunicationLayer):
 
     Args:
         server_address: static ip address of the aggregation server.
-        cid: client identifier via unique integer.
+        client_id: client identifier via unique integer.
     """
 
-    def __init__(self, server_address: str, cid: int):
+    def __init__(self, server_address: str, client_id: int):
         self.server_address = server_address
-        self.cid = cid
+        self.client_id = client_id
         self._round_id = 0
 
     @abstractmethod
@@ -95,7 +95,11 @@ class Communicator(CommunicationLayer):
             to server & the grpc stub.
         """
         return _grpc_connection(
-            server_address, max_message_length, root_certificates, logback, self.cid
+            server_address,
+            max_message_length,
+            root_certificates,
+            logback,
+            self.client_id,
         )
 
     def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
@@ -108,7 +112,7 @@ class Communicator(CommunicationLayer):
             loss: Loss of the local model during training.
         """
         _update(
-            self.cid,
+            self.client_id,
             self.server_address,
             self.get_weights(),
             dtype,
@@ -126,12 +130,12 @@ class Communicator(CommunicationLayer):
             model_shape: Holds the shape of the model architecture for serialization & deserialization.
         """
         params = _sync_model_version(
-            self.cid, self.server_address, self._round_id, retry_period=retry
+            self.client_id, self.server_address, self._round_id, retry_period=retry
         )
         if params is not None:
             weights = parameters_to_weights(params, model_shape)
             self.set_weights(weights)
             logger.log(
                 INFO,
-                f"Client {self.cid} received global model from aggregation server.",
+                f"Client {self.client_id} received global model from aggregation server.",
             )

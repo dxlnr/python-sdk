@@ -41,7 +41,7 @@ def parameters_to_weights(
     parameters: protocol.Parameters, shapes: List[np.ndarray[int, np.dtype[Any]]]
 ) -> shared.Weights:
     r"""Convert parameters object to NumPy weights."""
-    return bytes_to_ndarray(
+    return _bytes_to_ndarray(
         parameters.tensor, shapes, dtype_to_struct(parameters.data_type)
     )
 
@@ -60,7 +60,7 @@ def weights_to_bytes(weights: shared.Weights, dtype: str) -> bytes:
     return bytes(list(itertools.chain(*layers)))
 
 
-def bytes_to_ndarray(
+def _bytes_to_ndarray(
     tensor: bytes, layer_shape: list[np.ndarray], dtype: str
 ) -> shared.Weights:
     r"""Deserialize NumPy ndarray from u8 bytes."""
@@ -72,7 +72,7 @@ def bytes_to_ndarray(
         for content in chunk(tensor, 8):
             layer.append(struct.unpack(">d", bytes(content)))
     else:
-        raise TypeError("data type {} is not known.".format(dtype))
+        raise TypeError(f"data type {dtype} is not known.")
 
     layers = np.split(np.array(layer), indexing([np.prod(s) for s in layer_shape]))
 
@@ -101,10 +101,17 @@ def indexing(length: list[int]) -> list[int]:
 
 
 def dtype_to_struct(dtype: str) -> str:
-    r"""Prepare dtype for conversion with struct."""
+    r"""Prepare dtype for conversion with struct.
+
+    Args:
+        dtype: String that represents the data type that is used for the pytorch model.
+
+    Raises:
+        TypeError: When dtype is unkown. Choose 'F32' or 'F64'.
+    """
     if dtype == "F32":
         return "!f"
     elif dtype == "F64":
         return "!d"
     else:
-        raise TypeError("data type {} is not known.".format(dtype))
+        raise TypeError(f"data type {dtype} is not known.")

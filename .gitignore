@@ -21,3 +21,8 @@ share/python-wheels/
 .mypy_cache/
 __pycache__
 .tox
+
+
+#examples
+examples/tensorflow_cifar10
+examples/pytorch_nlp_func

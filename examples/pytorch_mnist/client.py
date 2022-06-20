@@ -12,7 +12,7 @@ def create_arg_parser():
     r"""Get arguments from command lines."""
     parser = argparse.ArgumentParser(description="Client parser.")
     parser.add_argument(
-        "--cid", metavar="N", type=int, help="an integer specifing the client ID."
+        "--client_id", metavar="N", type=int, help="an integer specifing the client ID."
     )
 
     return parser
@@ -72,7 +72,7 @@ class Trainer(object):
         for epoch in range(0, self.epochs):
             for i, (images, labels) in enumerate(self.trainloader):
                 self.optimizer.zero_grad()
-                output, x = self.model.forward(images)
+                output, _ = self.model.forward(images)
 
                 loss = self.loss(output, labels.long())
                 loss.backward()
@@ -94,9 +94,9 @@ def main():
 
     client = modalic.PytorchClient(
         Trainer(
-            device, Dataloader(train_data[args.cid - 1], train_labels[args.cid - 1])
+            device, Dataloader(train_data[args.client_id - 1], train_labels[args.client_id - 1])
         ),
-        args.cid,
+        args.client_id,
         conf={
             "api": {"server_address": "[::]:8080"},
             "process": {"training_rounds": 10, "timeout": 5.0},

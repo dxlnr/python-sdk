@@ -16,14 +16,13 @@ from __future__ import annotations
 
 import time
 import traceback
-from collections import OrderedDict
 from logging import DEBUG, INFO
 from typing import Any, Optional
 
 import numpy as np
-import torch
 
 from modalic.client.grpc_client import Communicator
+from modalic.client.utils.torch_utils import _set_torch_weights
 from modalic.config import Conf
 from modalic.logging.logging import logger
 from modalic.utils import shared
@@ -39,7 +38,7 @@ class PytorchClient(Communicator):
         trainer: Pytorch Trainer object.
         data: Dataset object that can be set for the Pytorch Trainer object.
         conf: Configuration object that stores all the parameters concerning the process.
-        cid: Client id which uniquely identifies the client within the process.
+        client_id: Client id which uniquely identifies the client within the process.
 
     Examples:
         >>> client = modalic.PytorchClient(Trainer(), 1)
@@ -51,15 +50,15 @@ class PytorchClient(Communicator):
     def __init__(
         self,
         trainer: Any,
-        cid: Optional[int] = 0,
+        client_id: Optional[int] = 0,
         conf: Optional[dict] = None,
         # data: Optional[Any] = None,
     ):
         self.trainer = trainer
         self.conf = Conf.create_conf(conf)
-        self.cid = cid
+        self.client_id = client_id
 
-        super().__init__(self.conf.server_address, self.cid)
+        super().__init__(self.conf.server_address, self.client_id)
 
         try:
             self.model = self.trainer.model
@@ -86,7 +85,7 @@ class PytorchClient(Communicator):
         self._loss = 0.0
 
     def __repr__(self) -> str:
-        return f"Modalic Pytorch Client Object {self.cid}"
+        return f"Modalic Pytorch Client Object {self.client_id}"
 
     @property
     def dtype(self):
@@ -108,22 +107,22 @@ class PytorchClient(Communicator):
         r"""."""
         return self._model_shape
 
+    # def _validate_trainer(self):
+    #     r"""Raises exception if trainer object does not contain certain attributes
+    #     and functionalities.
+    #     """
+    #     pass
+
     def set_weights(self, weights: shared.Weights) -> None:
-        r"""Set model weights from a list of NumPy ndarrays.
+        r"""Sets model weights from a list of NumPy ndarrays.
 
         Args:
             weights: Model weights as a list of NumPy ndarrays.
         """
-        state_dict = OrderedDict(
-            {
-                k: torch.tensor(v)
-                for k, v in zip(self.model.state_dict().keys(), weights)
-            }
-        )
-        self.model.load_state_dict(state_dict, strict=True)
+        self.model = _set_torch_weights(self.model, weights)
 
     def get_weights(self) -> shared.Weights:
-        r"""Get model weights as a list of NumPy ndarrays."""
+        r"""Returns model weights as a list of NumPy ndarrays."""
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
     def _get_model_shape(self) -> list[np.ndarray]:
@@ -171,7 +170,7 @@ class PytorchClient(Communicator):
         self._train()
         logger.log(
             INFO,
-            f"Client {self.cid} | training round: {self._round_id} | loss: {self._loss}",
+            f"Client {self.client_id} | training round: {self._round_id} | loss: {self._loss}",
         )
         self.update(self._dtype, self._round_id, self._data_size, self._loss)
         time.sleep(self.conf.timeout)

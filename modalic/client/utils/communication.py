@@ -38,7 +38,7 @@ def _grpc_connection(
     max_message_length: int = 536870912,
     root_certificates: Optional[bytes] = None,
     logback: Optional[bool] = False,
-    cid: Optional[int] = 0,
+    client_id: Optional[int] = 0,
 ) -> Tuple[grpc.Channel, CommunicationStub]:
     r"""Establishes a grpc connection to the server.
 
@@ -48,7 +48,7 @@ def _grpc_connection(
         root_certificates: (optional) Can be set in order to establish a encrypted connection
                            between client & server. Default: None
         logback: (optional) bool for setting logging or not. Default: False
-        cid: (optional) Client ID used for logging purposes.
+        client_id: (optional) Client ID used for logging purposes.
 
     Returns:
         (channel, stub): Tuple containing the thread-safe grpc channel
@@ -68,13 +68,14 @@ def _grpc_connection(
         )
         if logback:
             logger.log(
-                INFO, "Client {} established secure gRPC connection.".format(cid)
+                INFO, "Client {} established secure gRPC connection.".format(client_id)
             )
     else:
         channel = grpc.insecure_channel(server_address, options=channel_options)
         if logback:
             logger.log(
-                INFO, "Client {} established insecure gRPC connection.".format(cid)
+                INFO,
+                "Client {} established insecure gRPC connection.".format(client_id),
             )
     return (channel, CommunicationStub(channel))
 
@@ -101,7 +102,7 @@ def _error_grpc(rpc_error: grpc.RpcError, **kwargs: dict[str, Any]) -> None:
 
 
 def _update(
-    cid: int,
+    client_id: int,
     server_address: str,
     weights: shared.Weights,
     dtype: str,
@@ -112,7 +113,7 @@ def _update(
     r"""Sends an updated model version to the server.
 
     Args:
-        cid: Client identifier
+        client_id: Client identifier
         server_address: Determines the IP address for connecting to the server.
         weights: The local model weights which are sent to the aggregation server.
         dtype: Data Type of the trained model. Important as it determines the de-/serialization.
@@ -129,26 +130,29 @@ def _update(
     try:
         _ = stub.Update(
             ClientUpdate(
-                id=cid, parameters=parameters, stake=stake, process_meta=process_meta,
+                id=client_id,
+                parameters=parameters,
+                stake=stake,
+                process_meta=process_meta,
             )
         )
     except grpc.RpcError as rpc_error:
         _error_grpc(rpc_error, server_address=server_address)
     else:
         channel.close()
-        logger.log(INFO, f"Client {cid} sent update to aggregation server.")
+        logger.log(INFO, f"Client {client_id} sent update to aggregation server.")
 
 
-def _get_global_model(cid: int, server_address: str) -> shared.Parameters:
+def _get_global_model(client_id: int, server_address: str) -> shared.Parameters:
     r"""Client request to get the latest version of the global model from server.
 
     Args:
-        cid: Client identifier
+        client_id: Client identifier
         server_address: Determines the IP address for connecting to the server.
     """
     (channel, stub) = _grpc_connection(server_address)
     try:
-        response = stub.GetGlobalModel(ClientMessage(id=cid))
+        response = stub.GetGlobalModel(ClientMessage(id=client_id))
     except grpc.RpcError as rpc_error:
         _error_grpc(rpc_error, server_address=server_address)
     else:
@@ -157,7 +161,7 @@ def _get_global_model(cid: int, server_address: str) -> shared.Parameters:
 
 
 def _sync_model_version(
-    cid: int,
+    client_id: int,
     server_address: str,
     round_id: int,
     n_retry: int = 1,
@@ -167,20 +171,21 @@ def _sync_model_version(
     r"""Checks and syncs model version to current training round.
 
     Args:
-        cid: Client identifier
+        client_id: Client identifier
         server_address: Determines the IP address for connecting to the server.
         round_id: Curretn training round id for checking the global model version.
         n_retry: Number of retries that should be performed before ignoring
                  getting an updated global model.
         retry_period: Defines how long a logstep should take before retrying.
     """
+    # TODO: This function need testing and rewriting.
     for n in range(n_retry):
-        params = _get_global_model(cid, server_address)
+        params = _get_global_model(client_id, server_address)
         if params is not None:
             if not params.tensor:
                 logger.log(
                     WARNING,
-                    f"Client {cid} did not receive global model from aggregation server.",
+                    f"Client {client_id} did not receive global model from aggregation server.",
                 )
                 return
             else:
@@ -189,7 +194,7 @@ def _sync_model_version(
                 else:
                     logger.log(
                         INFO,
-                        f"Client {cid} in training round {round_id} received global model version {params.model_version}. \
+                        f"Client {client_id} in training round {round_id} received global model version {params.model_version}.\
                         Client goes in lockstep for {retry_period}s.",
                     )
                     time.sleep(retry_period)
