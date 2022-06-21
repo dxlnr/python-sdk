@@ -4,6 +4,9 @@ from modalic.client import PytorchClient, Trainer
 # Decorators
 from modalic.client.utils.decor import train
 
+# Configuration
+from modalic.config import Conf
+
 # Invoke Aggregation Server
 from modalic.server.server import run_server
 

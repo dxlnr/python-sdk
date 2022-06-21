@@ -12,6 +12,7 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+import functools
 from logging import INFO
 
 from modalic.client.utils.communication import _get_global_model, _update
@@ -20,56 +21,62 @@ from modalic.client.utils.torch_utils import (
     _get_torch_weights,
     _set_torch_weights,
 )
+from modalic.config import Conf
 from modalic.logging.logging import logger
 from modalic.utils.serde import parameters_to_weights
 
 
-def train(func):
+def train(conf: Conf = Conf()):
     r"""Training function decorator. Performs the underlying train() function
     multiply times while participating in a federated learning procedure.
 
     Examples:
-        >>> @modalic.train
+        >>> @modalic.train()
     """
 
-    def wrapper(model, *args, **kwargs):
-        wrapper.model_shape = _get_model_shape(model)
+    def inner_train(func, *args, **kwargs):
+        logger.log(
+            INFO, f"Training runs with the following hyperparameters: \n\t{conf}"
+        )
 
-        while wrapper.round_id < 10:
-            params = _get_global_model(wrapper.client_id, wrapper.server_address)
-            print("params: ", params)
+        @functools.wraps(func)
+        def wrapper(model, *args, **kwargs):
+            wrapper.model_shape = _get_model_shape(model)
 
-            if params is not None and len(params.tensor) != 0:
-                weights = parameters_to_weights(params, wrapper.model_shape)
-                model = _set_torch_weights(model, weights)
+            while wrapper.round_id < conf.training_rounds:
+                params = _get_global_model(conf.client_id, conf.server_address)
+
+                if params is not None and len(params.tensor) != 0:
+                    weights = parameters_to_weights(params, wrapper.model_shape)
+                    model = _set_torch_weights(model, weights)
+                    logger.log(
+                        INFO,
+                        f"Client {conf.client_id} received global model from aggregation server.",
+                    )
+                wrapper.round_id += 1
+
+                print(f"calling {func.__name__} in round {wrapper.round_id}")
+                # print(f"model: {model[-1]}")
+
+                model = func(model, *args, **kwargs)
+
                 logger.log(
                     INFO,
-                    f"Client {wrapper.client_id} received global model from aggregation server.",
+                    f"Client {conf.client_id} | training round: {wrapper.round_id} | loss: {wrapper.loss}",
                 )
-            wrapper.round_id += 1
+                _update(
+                    conf.client_id,
+                    conf.server_address,
+                    _get_torch_weights(model),
+                    "F32",
+                    wrapper.round_id,
+                    1,
+                    wrapper.loss,
+                )
 
-            print(f"calling train in round {wrapper.round_id}")
-            # print(f"model: {model[-1]}")
+        wrapper.round_id = 0
+        wrapper.loss = 0.0
 
-            model = func(model, *args, **kwargs)
+        return wrapper
 
-            logger.log(
-                INFO,
-                f"Client {wrapper.client_id} | training round: {wrapper.round_id} | loss: {wrapper.loss}",
-            )
-            _update(
-                wrapper.client_id,
-                wrapper.server_address,
-                _get_torch_weights(model),
-                "F32",
-                wrapper.round_id,
-                1,
-                wrapper.loss,
-            )
-
-    wrapper.round_id = 0
-    wrapper.loss = 0.0
-    wrapper.client_id = 1
-    wrapper.server_address = "[::]:8080"
-
-    return wrapper
+    return inner_train

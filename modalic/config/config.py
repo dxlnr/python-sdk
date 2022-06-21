@@ -15,7 +15,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from logging import WARNING
 from typing import Any
+
+import toml
+
+from modalic.logging.logging import logger
 
 
 @dataclass
@@ -24,11 +29,18 @@ class Conf(object):
 
     Args:
         server_address: GRPC endpoint for aggregation server.
+        client_id: Client identifier which must be unique.
         timeout: Defines a timeout length in seconds which is mainly used for
                  simulating some waiting periode after each training round.
         training_rounds: Number of training rounds that should be performed.
+        participants: Number of required clients (edge device) participating in a single training round.
+        data_type: Models data type which defines the (de-)serialization of the model.
+
+    Examples:
+        >>> conf = Conf.create_conf({})
     """
     server_address: str = "[::]:8080"
+    client_id: int = 0
     timeout: float = 0.0
     training_rounds: int = 0
     participants: int = 0
@@ -64,4 +76,21 @@ class Conf(object):
         """
         instance = cls()
         instance.set_params(conf)
+        return instance
+
+    @classmethod
+    def from_toml(cls, path: str) -> Conf:
+        r"""Constructs a conig object from external .toml configuration file.
+
+        Args:
+            path: String path to .toml config file.
+        """
+        instance = cls()
+        try:
+            instance.set_params(toml.load(path))
+        except FileNotFoundError:
+            logger.log(
+                WARNING,
+                f"Config .toml via path '{path}' cannot be found. Default configuration parameters are used.",
+            )
         return instance

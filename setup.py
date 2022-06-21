@@ -39,6 +39,7 @@ setup(
     install_requires=[
         "grpcio>=1.43.0",
         "grpcio-tools>=1.43.0",
+        "toml>=0.10.2",
     ],
     rust_extensions=[
         RustExtension(
