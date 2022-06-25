@@ -35,7 +35,8 @@ def _set_torch_weights(
     state_dict = OrderedDict(
         {k: torch.tensor(v) for k, v in zip(model.state_dict().keys(), weights)}
     )
-    return model.load_state_dict(state_dict, strict=True)
+    model.load_state_dict(state_dict, strict=True)
+    return model
 
 
 def _get_torch_weights(model: torch.nn.Module) -> shared.Weights:

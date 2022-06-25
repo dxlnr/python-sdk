@@ -54,17 +54,33 @@ class Conf(object):
                   of conf will overwrite the default values.
         """
         if conf is not None:
-            for key, value in conf.items():
-                if "server_address" in value.keys():
-                    self.server_address = value["server_address"]
-                if "timeout" in value.keys():
-                    self.timeout = value["timeout"]
-                if "training_rounds" in value.keys():
-                    self.training_rounds = value["training_rounds"]
-                if "participants" in value.keys():
-                    self.participants = value["participants"]
-                if "data_type" in value.keys():
-                    self.data_type = value["data_type"]
+            if value := self._find_keys(conf, "server_address"):
+                self.server_address = value
+            if value := self._find_keys(conf, "client_id"):
+                self.client_id = value
+            if value := self._find_keys(conf, "timeout"):
+                self.timeout = value
+            if value := self._find_keys(conf, "training_rounds"):
+                self.training_rounds = value
+            if value := self._find_keys(conf, "participants"):
+                self.participants = value
+            if value := self._find_keys(conf, "data_type"):
+                self.data_type = value
+
+    def _find_keys(self, blob: dict[str, dict[str, Any]], key_str: str = "") -> Any:
+        r"""Finds the value for certain key in dictionary with arbitrary depth.
+
+        Args:
+            blob: Dictionary which is searched for the key value pair.
+            key_str: Key that is searched for.
+        Returns:
+            Any value that belongs to the key.
+        """
+        for (k, v) in blob.items():
+            if k == key_str:
+                return v
+            if isinstance(v, dict):
+                return self._find_keys(v, key_str)
 
     @classmethod
     def create_conf(cls, conf: dict[str, dict[str, Any]]) -> Conf:

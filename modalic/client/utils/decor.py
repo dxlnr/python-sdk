@@ -55,9 +55,6 @@ def train(conf: Conf = Conf()):
                     )
                 wrapper.round_id += 1
 
-                print(f"calling {func.__name__} in round {wrapper.round_id}")
-                # print(f"model: {model[-1]}")
-
                 model = func(model, *args, **kwargs)
 
                 logger.log(
@@ -68,7 +65,7 @@ def train(conf: Conf = Conf()):
                     conf.client_id,
                     conf.server_address,
                     _get_torch_weights(model),
-                    "F32",
+                    conf.data_type,
                     wrapper.round_id,
                     1,
                     wrapper.loss,
