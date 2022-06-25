@@ -12,5 +12,66 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-# def test_() -> None:
-#     pass
+import unittest
+
+from modalic.config.config import Conf
+
+
+class TestConf(unittest.TestCase):
+    def test_create_conf(self):
+        r"""."""
+        default_conf = Conf.create_conf()
+
+        self.assertEqual(default_conf, Conf())
+
+        testing_conf = Conf()
+        testing_conf.client_id = 42
+        testing_conf.training_rounds = 10
+        testing_conf.participants = 10
+
+        custom_settings = {
+            "process": {"training_rounds": 10, "participants": 10},
+            "client_id": 42,
+        }
+        custom_conf = Conf.create_conf(custom_settings)
+
+        self.assertEqual(custom_conf, testing_conf)
+
+    def test_find_keys(self):
+        r"""."""
+        conf = Conf()
+
+        attrs_1 = {
+            "process": {"training_rounds": 10, "participants": 10},
+            "client_id": 42,
+        }
+
+        self.assertEqual(conf._find_keys(attrs_1, "client_id"), 42)
+
+        attrs_2 = {
+            "process": {"training": {"training_rounds": 10}, "participants": 10},
+            "client_id": 42,
+        }
+        self.assertEqual(conf._find_keys(attrs_2, "training_rounds"), 10)
+
+        attrs_3 = {
+            "process": {
+                "training": {"training_rounds": 10, "k": 25},
+                "participants": 10,
+            },
+            "client_id": 42,
+        }
+        self.assertEqual(conf._find_keys(attrs_3, "k"), 25)
+
+        attrs_4 = {
+            "process": {
+                "training": {"training_rounds": 10, "k": 25},
+                "participants": 10,
+            },
+            "client_id": 42,
+        }
+        self.assertIsNone(conf._find_keys(attrs_4, "data_type"))
+
+
+if __name__ == "__main__":
+    unittest.main()

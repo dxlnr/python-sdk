@@ -76,15 +76,17 @@ class Conf(object):
         Returns:
             Any value that belongs to the key.
         """
+        value = None
         for (k, v) in blob.items():
             if k == key_str:
                 return v
             if isinstance(v, dict):
-                return self._find_keys(v, key_str)
+                value = self._find_keys(v, key_str)
+        return value
 
     @classmethod
-    def create_conf(cls, conf: dict[str, dict[str, Any]]) -> Conf:
-        r"""Constructs a conig object with external conf.
+    def create_conf(cls, conf: dict[str, dict[str, Any]] = None) -> Conf:
+        r"""Constructs a (default) conig object with external conf if given.
 
         Args:
             conf: Produced by .toml config. Dict which contains dicts. The values
