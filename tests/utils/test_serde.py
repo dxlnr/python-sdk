@@ -14,7 +14,7 @@
 
 import numpy as np
 
-from modalic.utils.serde import bytes_to_ndarray, get_shape, weights_to_bytes
+from modalic.utils.serde import _bytes_to_ndarray, get_shape, weights_to_bytes
 
 
 def test_serialisation_deserialisation() -> None:
@@ -23,7 +23,7 @@ def test_serialisation_deserialisation() -> None:
     arg = [np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([5.0, 6.0])]
 
     serialized = weights_to_bytes(arg, "!f")
-    deserialized = bytes_to_ndarray(serialized, get_shape(arg), "!f")
+    deserialized = _bytes_to_ndarray(serialized, get_shape(arg), "!f")
 
     # Assert deserialized array is equal to original
     np.testing.assert_equal(deserialized, arg)

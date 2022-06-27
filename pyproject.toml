@@ -1,6 +1,11 @@
 [build-system]
 requires = ["setuptools", "wheel", "setuptools-rust"]
 
+[tool.pytest.ini_options]
+testpaths = [
+  "tests",
+]
+
 [tool.tox]
 name = "modalic"
 authors = ["Daniel Illner <daniel.illner@outlook.de>"]
