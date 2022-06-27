@@ -11,3 +11,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
+
+# import sklearn.datasets as datasets
+#
+#
+# @pytest.fixture(scope="module")
+# def data():
+#     iris = datasets.load_iris()
+#     data = pd.DataFrame(
+#         data=np.c_[iris["data"], iris["target"]], columns=iris["feature_names"] + ["target"]
+#     )
+#     y = data["target"]
+#     x = data.drop("target", axis=1)
+#     yield x, y

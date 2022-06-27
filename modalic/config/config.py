@@ -45,6 +45,7 @@ class Conf(object):
     training_rounds: int = 0
     participants: int = 0
     data_type: str = "F32"
+    certificates: str = ""
 
     def set_params(self, conf: dict[str, dict[str, Any]]) -> None:
         r"""Overwrites default parameters with external is stated.
@@ -66,6 +67,8 @@ class Conf(object):
                 self.participants = value
             if value := self._find_keys(conf, "data_type"):
                 self.data_type = value
+            if value := self._find_keys(conf, "certificates"):
+                self.certificates = value
 
     def _find_keys(self, blob: dict[str, dict[str, Any]], key_str: str = "") -> Any:
         r"""Finds the value for certain key in dictionary with arbitrary depth.

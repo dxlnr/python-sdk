@@ -14,7 +14,13 @@
 
 import numpy as np
 
-from modalic.utils.serde import _bytes_to_ndarray, get_shape, weights_to_bytes
+from modalic.client.utils.torch_utils import _get_model_dtype, _get_torch_weights
+from modalic.utils.serde import (
+    _bytes_to_ndarray,
+    _dtype_to_struct,
+    get_shape,
+    weights_to_bytes,
+)
 
 
 def test_serialisation_deserialisation() -> None:
@@ -29,15 +35,26 @@ def test_serialisation_deserialisation() -> None:
     np.testing.assert_equal(deserialized, arg)
 
 
-# def test_serialisation_deserialisation_w_arg(
-#     arg: np.ndarray, shape: List, dtype: str
-# ) -> None:
-#     r"""Testing the serialization/deserialisation process of the models.
-#         Args:
-#             input (np.ndarray): Tested array.
-#     """
-#     serialized = weights_to_bytes(arg, dtype)
-#     deserialized = bytes_to_ndarray(serialized, shape, dtype)
-#
-#     # Assert deserialized array is equal to original
-#     np.testing.assert_equal(deserialized, arg)
+def test_serialisation_deserialisation_w_torch(torch_model) -> None:
+    r"""Testing the serialization/deserialisation process of the models.
+    Args:
+        torch_model (torch.nn.Module): Arbitray simple torch model which the test is examined on.
+    """
+    weights = _get_torch_weights(torch_model)
+    print("weights: ", weights)
+
+    # Hyperparameters
+    dtype = _get_model_dtype(torch_model)
+    assert dtype == "F32"
+
+    dstruct = _dtype_to_struct(dtype)
+    assert dstruct == "!f"
+
+    model_shape = get_shape(weights)
+    print(model_shape)
+
+    serialized = weights_to_bytes(weights, dstruct)
+    deserialized = _bytes_to_ndarray(serialized, model_shape, dstruct)
+    print(deserialized)
+
+    np.testing.assert_equal(deserialized, weights)

@@ -30,7 +30,7 @@ def weights_to_parameters(
     weights: shared.Weights, dtype: str, model_version: int
 ) -> protocol.Parameters:
     r"""Convert NumPy weights to parameters object."""
-    tensor = weights_to_bytes(weights, dtype_to_struct(dtype))
+    tensor = weights_to_bytes(weights, _dtype_to_struct(dtype))
     return protocol.Parameters(
         tensor=tensor, data_type=dtype, model_version=model_version
     )
@@ -42,7 +42,7 @@ def parameters_to_weights(
 ) -> shared.Weights:
     r"""Convert parameters object to NumPy weights."""
     return _bytes_to_ndarray(
-        parameters.tensor, shapes, dtype_to_struct(parameters.data_type)
+        parameters.tensor, shapes, _dtype_to_struct(parameters.data_type)
     )
 
 
@@ -66,30 +66,31 @@ def _bytes_to_ndarray(
     r"""Deserialize NumPy ndarray from u8 bytes."""
     layer: list[Any] = list()
     if dtype == "!f":
-        for content in chunk(tensor, 4):
+        for content in _chunk(tensor, 4):
             layer.append(struct.unpack(">f", bytes(content)))
     elif dtype == "!d":
-        for content in chunk(tensor, 8):
+        for content in _chunk(tensor, 8):
             layer.append(struct.unpack(">d", bytes(content)))
     else:
         raise TypeError(f"data type {dtype} is not known.")
 
-    layers = np.split(np.array(layer), indexing([np.prod(s) for s in layer_shape]))
+    layers = np.split(np.array(layer), _indexing([np.prod(s) for s in layer_shape]))
 
     return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
 
 def get_shape(weights: shared.Weights) -> list[Any]:
     r"""Reads in the weights and returns its shape as a list object."""
-    return [np.array(layer.size) for layer in weights]
+    # return [np.array(layer.size) for layer in weights]
+    return [np.array(layer.shape) for layer in weights]
 
 
-def chunk(iterable: Iterable[Any], chunksize: int) -> zip[Any]:
+def _chunk(iterable: Iterable[Any], chunksize: int) -> zip[Any]:
     r"""helper chunking an iterable with fixed size."""
     return zip(*[iter(iterable)] * chunksize)
 
 
-def indexing(length: list[int]) -> list[int]:
+def _indexing(length: list[int]) -> list[int]:
     r"""helper for preparing the indices at which array is splitted."""
     for idx, _ in enumerate(length):
         if idx == 0:
@@ -100,7 +101,7 @@ def indexing(length: list[int]) -> list[int]:
     return length
 
 
-def dtype_to_struct(dtype: str) -> str:
+def _dtype_to_struct(dtype: str) -> str:
     r"""Prepare dtype for conversion with struct.
 
     Args:

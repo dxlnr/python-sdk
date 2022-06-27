@@ -15,7 +15,7 @@
 from modalic.config.config import Conf
 
 
-def test_create_conf():
+def test_create_conf() -> None:
     r"""."""
     default_conf = Conf.create_conf()
 
@@ -35,7 +35,7 @@ def test_create_conf():
     assert custom_conf == testing_conf
 
 
-def test_find_keys():
+def test_find_keys() -> None:
     r"""."""
     conf = Conf()
 
