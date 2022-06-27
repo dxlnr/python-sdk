@@ -38,7 +38,7 @@ class CustomFormatter(logging.Formatter):
             + self.reset
         )
 
-    def custom_format(self) -> dict:
+    def custom_format(self) -> dict[int, str]:
         r"""."""
         return {
             logging.DEBUG: self.custom_format_str(self.yellow),
@@ -48,7 +48,8 @@ class CustomFormatter(logging.Formatter):
             logging.CRITICAL: self.custom_format_str(self.bold_red),
         }
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
+        r"""."""
         log_fmt = self.custom_format().get(record.levelno)
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)

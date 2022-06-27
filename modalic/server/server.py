@@ -19,10 +19,10 @@ import subprocess
 from modalic.server.api import find_bin_path
 
 
-def run_server(cfg_path: str = None) -> None:
+def run_server(cfg_path: str = "") -> None:
     r"""Runs the Federated Learning server."""
     command = [find_bin_path()]
-    if cfg_path is not None:
+    if cfg_path and cfg_path.strip():
         command.extend(["-c", cfg_path])
     try:
         subprocess.run(command, shell=False)

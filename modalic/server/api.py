@@ -63,7 +63,7 @@ def find_bin_path() -> str:
             + sys.prefix
             + "\nSee: "
             + link
-            + " for installing XGBoost."
+            + " for installing aggregation server Mosaic of Modalic."
         )
         raise ServerBinaryNotFound(excpt)
     return mosaic[0]

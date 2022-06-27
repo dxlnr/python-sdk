@@ -22,6 +22,7 @@ from modalic.client.utils.torch_utils import (
     _set_torch_weights,
 )
 from modalic.config import Conf
+from modalic.data.misc import get_dataset_length
 from modalic.logging.logging import logger
 from modalic.utils.serde import parameters_to_weights
 
@@ -40,8 +41,13 @@ def train(conf: Conf = Conf()):
         )
 
         @functools.wraps(func)
-        def wrapper(model, *args, **kwargs):
+        def wrapper(model, dataset=None, *args, **kwargs):
             wrapper.model_shape = _get_model_shape(model)
+
+            if dataset is not None:
+                wrapper.data_stack = get_dataset_length(dataset, conf.client_id)
+            else:
+                wrapper.data_stack = 1
 
             while wrapper.round_id < conf.training_rounds:
                 params = _get_global_model(conf.client_id, conf.server_address)
@@ -55,7 +61,7 @@ def train(conf: Conf = Conf()):
                     )
                 wrapper.round_id += 1
 
-                model = func(model, *args, **kwargs)
+                model = func(model, dataset, *args, **kwargs)
 
                 logger.log(
                     INFO,
@@ -67,7 +73,7 @@ def train(conf: Conf = Conf()):
                     _get_torch_weights(model),
                     conf.data_type,
                     wrapper.round_id,
-                    1,
+                    wrapper.data_stack,
                     wrapper.loss,
                 )
 

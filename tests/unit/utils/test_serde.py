@@ -36,12 +36,11 @@ def test_serialisation_deserialisation() -> None:
 
 
 def test_serialisation_deserialisation_w_torch(torch_model) -> None:
-    r"""Testing the serialization/deserialisation process of the models.
+    r"""Testing the serialization/deserialisation process of a pytorch model.
     Args:
         torch_model (torch.nn.Module): Arbitray simple torch model which the test is examined on.
     """
     weights = _get_torch_weights(torch_model)
-    print("weights: ", weights)
 
     # Hyperparameters
     dtype = _get_model_dtype(torch_model)
@@ -51,10 +50,8 @@ def test_serialisation_deserialisation_w_torch(torch_model) -> None:
     assert dstruct == "!f"
 
     model_shape = get_shape(weights)
-    print(model_shape)
 
     serialized = weights_to_bytes(weights, dstruct)
     deserialized = _bytes_to_ndarray(serialized, model_shape, dstruct)
-    print(deserialized)
 
     np.testing.assert_equal(deserialized, weights)

@@ -75,7 +75,7 @@ def _grpc_connection(
         if logback:
             logger.log(
                 INFO,
-                "Client {} established insecure gRPC connection.".format(client_id),
+                f"Client {client_id} established insecure gRPC connection.",
             )
     return (channel, CommunicationStub(channel))
 
