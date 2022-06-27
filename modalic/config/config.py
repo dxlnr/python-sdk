@@ -73,6 +73,7 @@ class Conf(object):
         Args:
             blob: Dictionary which is searched for the key value pair.
             key_str: Key that is searched for.
+
         Returns:
             Any value that belongs to the key.
         """

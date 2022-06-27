@@ -1,7 +1,7 @@
 setuptools_rust
 pytest
 tox
-black
+black==22.3.0
 mypy
 isort
 types-protobuf

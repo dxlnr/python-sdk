@@ -7,7 +7,7 @@ import numpy as np
 
 def read_from_path(dir: str = "") -> tuple[np.array, np.array, np.array, np.array]:
     r"""relies on The MNIST database of handwritten digits
-        http://yann.lecun.com/exdb/mnist/
+    http://yann.lecun.com/exdb/mnist/
     """
     train_raw = gzip.open(os.path.join(dir, "train-images-idx3-ubyte.gz"), "r")
     test_raw = gzip.open(os.path.join(dir, "t10k-images-idx3-ubyte.gz"), "r")

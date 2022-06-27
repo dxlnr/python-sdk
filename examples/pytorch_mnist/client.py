@@ -25,13 +25,19 @@ class CNN(nn.Module):
         super(CNN, self).__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(
-                in_channels=1, out_channels=16, kernel_size=5, stride=1, padding=2,
+                in_channels=1,
+                out_channels=16,
+                kernel_size=5,
+                stride=1,
+                padding=2,
             ),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
         self.conv2 = nn.Sequential(
-            nn.Conv2d(16, 32, 5, 1, 2), nn.ReLU(), nn.MaxPool2d(2),
+            nn.Conv2d(16, 32, 5, 1, 2),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
         )
         self.out = nn.Linear(32 * 7 * 7, 10)
 
@@ -51,7 +57,10 @@ class Trainer(object):
     """
 
     def __init__(
-        self, device: torch.device, dataset: Dataloader, epochs: int = 1,
+        self,
+        device: torch.device,
+        dataset: Dataloader,
+        epochs: int = 1,
     ):
         self.device = device
         self.dataset = dataset
@@ -94,7 +103,10 @@ def main():
 
     client = modalic.PytorchClient(
         Trainer(
-            device, Dataloader(train_data[args.client_id - 1], train_labels[args.client_id - 1])
+            device,
+            Dataloader(
+                train_data[args.client_id - 1], train_labels[args.client_id - 1]
+            ),
         ),
         args.client_id,
         conf={
