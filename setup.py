@@ -37,6 +37,7 @@ except ImportError:
 
 setup(
     install_requires=[
+        "numpy>=1.23.0",
         "grpcio>=1.43.0",
         "grpcio-tools>=1.43.0",
         "toml>=0.10.2",

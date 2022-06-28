@@ -1,4 +1,4 @@
-setuptools_rust
+setuptools-rust
 pytest
 tox
 black==22.3.0
@@ -9,4 +9,3 @@ autoflake
 flake8
 pre-commit
 sphinx
-numpy

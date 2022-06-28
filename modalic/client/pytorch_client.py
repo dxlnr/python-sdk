@@ -133,15 +133,10 @@ class PytorchClient(Communicator):
     def get_weights(self) -> shared.Weights:
         r"""Returns model weights as a list of NumPy ndarrays."""
         return _get_torch_weights(self.model)
-        # return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
     def _get_model_shape(self) -> list[np.ndarray]:
         r"""Extracts the shape of the pytorch model."""
         return _get_model_shape(self.model)
-        # shapes: list[np.ndarray] = list()
-        # for param_tensor in self.model.state_dict().keys():
-        #     shapes.append(np.array(self.model.state_dict()[param_tensor].size()))
-        # return shapes
 
     def _get_model_dtype(self) -> None:
         r"""Extracts the data type of the pytorch model.
@@ -151,16 +146,6 @@ class PytorchClient(Communicator):
                    "F32" and "F64".
         """
         self._dtype = _get_model_dtype(self.model)
-        # torch_type = list(self.trainer.model.state_dict().items())[0][1].dtype
-        # if torch_type == "torch.float32" or "torch.float":
-        #     self._dtype = "F32"
-        # elif torch_type == "torch.float64" or "torch.double":
-        #     self._dtype = "F64"
-        # else:
-        #     raise ValueError(
-        #         f"{torch_type} is not supported by aggregation server. \
-        #         Federation will fail. Please use 'torch.float' or 'torch.double'."
-        #     )
 
     def _train(self) -> None:
         r"""Runs the train method of custom trainer object for single model."""

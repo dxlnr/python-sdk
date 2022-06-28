@@ -11,3 +11,32 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
+
+import numpy as np
+
+from modalic.client.utils.torch_utils import (
+    _get_model_dtype,
+    _get_model_shape,
+    _get_torch_weights,
+    _set_torch_weights,
+)
+
+
+def test_get_set_torch_weights(torch_model) -> None:
+    r"""."""
+    weights = _get_torch_weights(torch_model)
+    processed = _set_torch_weights(torch_model, weights)
+
+    assert torch_model == processed
+
+
+def test_get_model_dtype(torch_model) -> None:
+    r"""."""
+    assert _get_model_dtype(torch_model) == "F32"
+
+
+def test_get_model_shape(torch_model) -> None:
+    r"""."""
+    np.testing.assert_equal(
+        _get_model_shape(torch_model), [np.array([1, 4]), np.array([1])]
+    )
