@@ -17,7 +17,7 @@ from __future__ import annotations
 import time
 import traceback
 from logging import DEBUG, INFO
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 import numpy as np
 
@@ -134,8 +134,13 @@ class PytorchClient(Communicator):
         r"""Returns model weights as a list of NumPy ndarrays."""
         return _get_torch_weights(self.model)
 
-    def _get_model_shape(self) -> list[np.ndarray]:
-        r"""Extracts the shape of the pytorch model."""
+    def _get_model_shape(self) -> List[np.ndarray]:
+        r"""Extracts the shape of the pytorch model.
+
+        Returns:
+            List of np.array representing the model shape.
+                Example: [np.array([1, 4]), np.array([1])]
+        """
         return _get_model_shape(self.model)
 
     def _get_model_dtype(self) -> None:

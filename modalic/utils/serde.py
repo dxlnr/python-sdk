@@ -46,7 +46,7 @@ def parameters_to_weights(
     )
 
 
-def _ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> list[int]:
+def _ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> List[int]:
     r"""Serialize NumPy ndarray to list of u8 bytes."""
     res: list[int] = list()
     for single in np.nditer(ndarray):
@@ -61,7 +61,7 @@ def _weights_to_bytes(weights: shared.Weights, dtype: str) -> bytes:
 
 
 def _bytes_to_ndarray(
-    tensor: bytes, layer_shape: list[np.ndarray], dtype: str
+    tensor: bytes, layer_shape: List[np.ndarray], dtype: str
 ) -> shared.Weights:
     r"""Deserialize NumPy ndarray from u8 bytes."""
     layer: list[Any] = list()
@@ -79,7 +79,7 @@ def _bytes_to_ndarray(
     return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
 
-def get_shape(weights: shared.Weights) -> list[Any]:
+def get_shape(weights: shared.Weights) -> List[Any]:
     r"""Reads in the weights and returns its shape as a list object."""
     # return [np.array(layer.size) for layer in weights]
     return [np.array(layer.shape) for layer in weights]
@@ -90,7 +90,7 @@ def _chunk(iterable: Iterable[Any], chunksize: int) -> zip[Any]:
     return zip(*[iter(iterable)] * chunksize)
 
 
-def _indexing(length: list[int]) -> list[int]:
+def _indexing(length: List[int]) -> List[int]:
     r"""helper for preparing the indices at which array is splitted."""
     for idx, _ in enumerate(length):
         if idx == 0:

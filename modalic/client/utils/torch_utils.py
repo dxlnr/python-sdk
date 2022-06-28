@@ -13,6 +13,7 @@
 #  permissions and limitations under the License.
 
 from collections import OrderedDict
+from typing import List
 
 import numpy as np
 import torch
@@ -77,7 +78,7 @@ def _get_model_dtype(model: torch.nn.Module) -> str:
     return _dtype
 
 
-def _get_model_shape(model: torch.nn.Module) -> list[np.ndarray]:
+def _get_model_shape(model: torch.nn.Module) -> List[np.ndarray]:
     r"""Extracts the shape of the pytorch model.
 
     Args:

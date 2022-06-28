@@ -17,7 +17,7 @@ from __future__ import annotations
 import dataclasses
 from dataclasses import dataclass
 from logging import WARNING
-from typing import Any
+from typing import Any, Dict
 
 import toml
 
@@ -72,7 +72,7 @@ class Conf(object):
             if value := self._find_keys(conf, "certificates"):
                 self.certificates = value
 
-    def _find_keys(self, blob: dict[str, dict[str, Any]], key_str: str = "") -> Any:
+    def _find_keys(self, blob: Dict[str, dict[str, Any]], key_str: str = "") -> Any:
         r"""Finds the value for certain key in dictionary with arbitrary depth.
 
         Args:

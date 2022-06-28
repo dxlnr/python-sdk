@@ -13,6 +13,7 @@
 #  permissions and limitations under the License.
 
 import logging
+from typing import Dict
 
 
 class CustomFormatter(logging.Formatter):
@@ -38,7 +39,7 @@ class CustomFormatter(logging.Formatter):
             + self.reset
         )
 
-    def custom_format(self) -> dict[int, str]:
+    def custom_format(self) -> Dict[int, str]:
         r"""."""
         return {
             logging.DEBUG: self.custom_format_str(self.yellow),

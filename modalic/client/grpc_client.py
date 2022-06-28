@@ -122,7 +122,7 @@ class Communicator(CommunicationLayer):
         )
 
     def get_global_model(
-        self, model_shape: list[np.ndarray], retry: float = 5.0
+        self, model_shape: List[np.ndarray], retry: float = 5.0
     ) -> None:
         r"""Client request to get the latest version of the global model from server.
 

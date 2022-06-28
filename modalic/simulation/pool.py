@@ -15,7 +15,7 @@
 import multiprocessing
 import traceback
 from logging import DEBUG, ERROR, INFO
-from typing import Any
+from typing import Any, List
 
 from modalic.logging.logging import logger
 
@@ -28,7 +28,7 @@ class ClientPool:
         num_clients: Number of clients you want to run the federated learning with.
     """
 
-    def __init__(self, clients: list[Any], num_clients: int = 0):
+    def __init__(self, clients: List[Any], num_clients: int = 0):
         self.clients = clients
         self.num_clients = len(clients) if num_clients == 0 else num_clients
 

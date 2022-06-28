@@ -38,6 +38,7 @@ cd python-sdk
 git submodule sync
 git submodule update --init --recursive
 git submodule -q foreach git pull -q origin main
+git pull --recurse-submodules
 ```
 
 #### Install Modalic Python-SDK

@@ -15,10 +15,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import List
 
 import numpy as np
 
-Weights = list[np.ndarray]
+Weights = List[np.ndarray]
 
 
 @dataclass
