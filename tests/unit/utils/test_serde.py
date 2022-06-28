@@ -18,8 +18,8 @@ from modalic.client.utils.torch_utils import _get_model_dtype, _get_torch_weight
 from modalic.utils.serde import (
     _bytes_to_ndarray,
     _dtype_to_struct,
+    _weights_to_bytes,
     get_shape,
-    weights_to_bytes,
 )
 
 
@@ -28,7 +28,7 @@ def test_serialisation_deserialisation() -> None:
     identical."""
     arg = [np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([5.0, 6.0])]
 
-    serialized = weights_to_bytes(arg, "!f")
+    serialized = _weights_to_bytes(arg, "!f")
     deserialized = _bytes_to_ndarray(serialized, get_shape(arg), "!f")
 
     # Assert deserialized array is equal to original
@@ -51,7 +51,7 @@ def test_serialisation_deserialisation_w_torch(torch_model) -> None:
 
     model_shape = get_shape(weights)
 
-    serialized = weights_to_bytes(weights, dstruct)
+    serialized = _weights_to_bytes(weights, dstruct)
     deserialized = _bytes_to_ndarray(serialized, model_shape, dstruct)
 
     np.testing.assert_equal(deserialized, weights)

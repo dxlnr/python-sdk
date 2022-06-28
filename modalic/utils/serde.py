@@ -30,7 +30,7 @@ def weights_to_parameters(
     weights: shared.Weights, dtype: str, model_version: int
 ) -> protocol.Parameters:
     r"""Convert NumPy weights to parameters object."""
-    tensor = weights_to_bytes(weights, _dtype_to_struct(dtype))
+    tensor = _weights_to_bytes(weights, _dtype_to_struct(dtype))
     return protocol.Parameters(
         tensor=tensor, data_type=dtype, model_version=model_version
     )
@@ -46,7 +46,7 @@ def parameters_to_weights(
     )
 
 
-def ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> list[int]:
+def _ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> list[int]:
     r"""Serialize NumPy ndarray to list of u8 bytes."""
     res: list[int] = list()
     for single in np.nditer(ndarray):
@@ -54,9 +54,9 @@ def ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> lis
     return res
 
 
-def weights_to_bytes(weights: shared.Weights, dtype: str) -> bytes:
+def _weights_to_bytes(weights: shared.Weights, dtype: str) -> bytes:
     r"""Serialize NumPy ndarray to bytes."""
-    layers = [ndarray_to_bytes(ndarray, dtype) for ndarray in weights]
+    layers = [_ndarray_to_bytes(ndarray, dtype) for ndarray in weights]
     return bytes(list(itertools.chain(*layers)))
 
 
