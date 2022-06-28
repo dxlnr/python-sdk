@@ -17,10 +17,10 @@ import torch
 
 
 def get_torch_model_definition():
-    """
-    Defines a PyTorch model class that inherits from ``torch.nn.Module``. This method can be invoked
-    within a pytest fixture to define the model class in the ``__main__`` scope. Alternatively, it
-    can be invoked within a module to define the class in the module's scope.
+    r"""
+    Defines a PyTorch model class that inherits from ``torch.nn.Module``.
+    This method can be invoked within a pytest fixture to define the model class in the ``__main__`` scope.
+    Alternatively, it can be invoked within a module to define the class in the module's scope.
     """
 
     # pylint: disable=W0223
@@ -39,7 +39,7 @@ def get_torch_model_definition():
 
 @pytest.fixture(scope="module")
 def torch_model():
-    """
+    r"""
     A custom PyTorch model inheriting from ``torch.nn.Module`` whose class is defined in the
     "__main__" scope.
     """

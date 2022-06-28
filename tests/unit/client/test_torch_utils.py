@@ -11,14 +11,3 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
-
-
-class Monitor(object):
-    r"""Monitoring the Modalic client while training.
-
-    Args:
-        log_name: logging name that gets printed by default.
-    """
-
-    def __init__(self, log_name: str = "modalic"):
-        self.log_name = log_name

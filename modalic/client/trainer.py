@@ -14,14 +14,16 @@
 
 from abc import ABC, abstractmethod
 
+import torch
+
 
 class Trainer(ABC):
     r"""Trainer class provides an API for feature-complete training in PyTorch."""
 
-    # model: Any = NotImplemented
-    # dataset: Any = NotImplemented
+    model: torch.nn.Module = NotImplemented
+    # dataset: Optional[Any] = None
 
     @abstractmethod
-    def train(self) -> None:
+    def train(self, *args, **kwargs) -> None:
         r"""runs the training."""
         raise NotImplementedError()

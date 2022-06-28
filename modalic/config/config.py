@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass
 from logging import WARNING
 from typing import Any
@@ -35,6 +36,7 @@ class Conf(object):
         training_rounds: Number of training rounds that should be performed.
         participants: Number of required clients (edge device) participating in a single training round.
         data_type: Models data type which defines the (de-)serialization of the model.
+        certificates: TLS certificates for establishing secure channel with server.
 
     Examples:
         >>> conf = Conf.create_conf({})
@@ -116,3 +118,12 @@ class Conf(object):
                 f"Config .toml via path '{path}' cannot be found. Default configuration parameters are used.",
             )
         return instance
+
+    def __str__(self) -> str:
+        r"""Custom output."""
+        s = ", ".join(
+            f"{field.name}={getattr(self, field.name)!r}"
+            for field in dataclasses.fields(self)
+            if field.name != "certificates"
+        )
+        return f"{type(self).__name__}({s})"

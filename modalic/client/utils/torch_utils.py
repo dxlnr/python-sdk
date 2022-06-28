@@ -86,7 +86,11 @@ def _get_model_shape(model: torch.nn.Module) -> list[np.ndarray]:
     Returns:
         shape: List of np.ndarray which contains the shape (size) of each individual layer of the model.
     """
-    shapes: list[np.ndarray] = list()
-    for param_tensor in model.state_dict().keys():
-        shapes.append(np.array(model.state_dict()[param_tensor].size()))
-    return shapes
+    # shapes: list[np.ndarray] = list()
+    # for param_tensor in model.state_dict().keys():
+    #     shapes.append(np.array(model.state_dict()[param_tensor].size()))
+    # return shapes
+    return [
+        np.array(model.state_dict()[param_tensor].size())
+        for param_tensor in model.state_dict().keys()
+    ]

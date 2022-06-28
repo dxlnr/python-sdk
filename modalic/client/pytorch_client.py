@@ -22,8 +22,14 @@ from typing import Any, Optional
 import numpy as np
 
 from modalic.client.grpc_client import Communicator
-from modalic.client.utils.torch_utils import _set_torch_weights
+from modalic.client.utils.torch_utils import (
+    _get_model_dtype,
+    _get_model_shape,
+    _get_torch_weights,
+    _set_torch_weights,
+)
 from modalic.config import Conf
+from modalic.data.misc import get_dataset_length
 from modalic.logging.logging import logger
 from modalic.utils import shared
 
@@ -36,12 +42,12 @@ class PytorchClient(Communicator):
 
     Args:
         trainer: Pytorch Trainer object.
-        data: Dataset object that can be set for the Pytorch Trainer object.
         conf: Configuration object that stores all the parameters concerning the process.
+        data: Dataset object that can be set for the Pytorch Trainer object.
         client_id: Client id which uniquely identifies the client within the process.
 
     Examples:
-        >>> client = modalic.PytorchClient(Trainer(), 1)
+        >>> client = modalic.PytorchClient(Trainer(), conf, 1)
         >>> client.run()
     Raises:
         AttributeError: Input object trainer has to contain a model & train() function.
@@ -50,13 +56,18 @@ class PytorchClient(Communicator):
     def __init__(
         self,
         trainer: Any,
-        client_id: Optional[int] = 0,
         conf: Optional[dict] = None,
+        client_id: Optional[int] = 0,
         # data: Optional[Any] = None,
     ):
         self.trainer = trainer
         self.conf = Conf.create_conf(conf)
-        self.client_id = client_id
+
+        if client_id != 0:
+            self.client_id = client_id
+            self.conf.client_id = client_id
+        else:
+            self.client_id = self.conf.client_id
 
         super().__init__(self.conf.server_address, self.client_id)
 
@@ -70,10 +81,7 @@ class PytorchClient(Communicator):
         self._model_shape = self._get_model_shape()
         self._get_model_dtype()
         if hasattr(self.trainer, "dataset"):
-            if isinstance(self.trainer.dataset, list):
-                self._data_size = len(self.trainer.dataset)
-            else:
-                self._data_size = 1
+            self._data_size = get_dataset_length(self.trainer.dataset)
         else:
             logger.log(
                 DEBUG,
@@ -85,6 +93,7 @@ class PytorchClient(Communicator):
         self._loss = 0.0
 
     def __repr__(self) -> str:
+        r"""Returns string representative of object."""
         return f"Modalic Pytorch Client Object {self.client_id}"
 
     @property
@@ -123,14 +132,16 @@ class PytorchClient(Communicator):
 
     def get_weights(self) -> shared.Weights:
         r"""Returns model weights as a list of NumPy ndarrays."""
-        return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
+        return _get_torch_weights(self.model)
+        # return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
     def _get_model_shape(self) -> list[np.ndarray]:
         r"""Extracts the shape of the pytorch model."""
-        shapes: list[np.ndarray] = list()
-        for param_tensor in self.model.state_dict().keys():
-            shapes.append(np.array(self.model.state_dict()[param_tensor].size()))
-        return shapes
+        return _get_model_shape(self.model)
+        # shapes: list[np.ndarray] = list()
+        # for param_tensor in self.model.state_dict().keys():
+        #     shapes.append(np.array(self.model.state_dict()[param_tensor].size()))
+        # return shapes
 
     def _get_model_dtype(self) -> None:
         r"""Extracts the data type of the pytorch model.
@@ -139,16 +150,17 @@ class PytorchClient(Communicator):
             dtype: Encodes the data type of the model as a String. Options are
                    "F32" and "F64".
         """
-        torch_type = list(self.trainer.model.state_dict().items())[0][1].dtype
-        if torch_type == "torch.float32" or "torch.float":
-            self._dtype = "F32"
-        elif torch_type == "torch.float64" or "torch.double":
-            self._dtype = "F64"
-        else:
-            raise ValueError(
-                f"{torch_type} is not supported by aggregation server. \
-                Federation will fail. Please use 'torch.float' or 'torch.double'."
-            )
+        self._dtype = _get_model_dtype(self.model)
+        # torch_type = list(self.trainer.model.state_dict().items())[0][1].dtype
+        # if torch_type == "torch.float32" or "torch.float":
+        #     self._dtype = "F32"
+        # elif torch_type == "torch.float64" or "torch.double":
+        #     self._dtype = "F64"
+        # else:
+        #     raise ValueError(
+        #         f"{torch_type} is not supported by aggregation server. \
+        #         Federation will fail. Please use 'torch.float' or 'torch.double'."
+        #     )
 
     def _train(self) -> None:
         r"""Runs the train method of custom trainer object for single model."""
@@ -163,7 +175,7 @@ class PytorchClient(Communicator):
     # def val_get_global_model(self, params: shared.Parameters) -> bool:
     #     r"""Validates the response from server."""
 
-    def _run(self) -> None:
+    def _run_single_round(self) -> None:
         r"""Runs a single trainings round for a single modalic client."""
         self.get_global_model(self._model_shape)
         self._round_id += 1
@@ -175,7 +187,7 @@ class PytorchClient(Communicator):
         self.update(self._dtype, self._round_id, self._data_size, self._loss)
         time.sleep(self.conf.timeout)
 
-    def run(self) -> None:
-        r"""Looping the whole process for a single modalic client."""
+    def train(self) -> None:
+        r"""Looping the whole training process for a single modalic client."""
         while self._round_id < self._training_rounds:
-            self._run()
+            self._run_single_round()
