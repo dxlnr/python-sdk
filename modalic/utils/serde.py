@@ -81,7 +81,6 @@ def _bytes_to_ndarray(
 
 def get_shape(weights: shared.Weights) -> List[Any]:
     r"""Reads in the weights and returns its shape as a list object."""
-    # return [np.array(layer.size) for layer in weights]
     return [np.array(layer.shape) for layer in weights]
 
 
@@ -104,11 +103,8 @@ def _indexing(length: List[int]) -> List[int]:
 def _dtype_to_struct(dtype: str) -> str:
     r"""Prepare dtype for conversion with struct.
 
-    Args:
-        dtype: String that represents the data type that is used for the pytorch model.
-
-    Raises:
-        TypeError: When dtype is unkown. Choose 'F32' or 'F64'.
+    :param dtype: String that represents the data type that is used for the pytorch model.
+    :raises TypeError: When dtype is unkown. Choose 'F32' or 'F64'.
     """
     if dtype == "F32":
         return "!f"

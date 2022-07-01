@@ -23,9 +23,8 @@ from modalic.logging.logging import logger
 class ClientPool:
     r"""Object holds and manages a bunch of individual simulated clients.
 
-    Args:
-        clients: List of modalic client object. Options are [`PytorchClient`] or [`TensorflowClient`]
-        num_clients: Number of clients you want to run the federated learning with.
+    :param clients: List of modalic client object. Options are [`PytorchClient`] or [`TensorflowClient`]
+    :param num_clients: Number of clients you want to run the federated learning with.
     """
 
     def __init__(self, clients: List[Any], num_clients: int = 0):
@@ -44,7 +43,10 @@ class ClientPool:
         self.spawn_pool(self.num_clients)
 
     def spawn_pool(self, num_workers: int = 1) -> None:
-        r"""Launching a pool of separated clients using concurrent.futures ThreadPoolExecutor."""
+        r"""Launching a pool of separated clients using concurrent.futures ThreadPoolExecutor.
+
+        :param num_workers: Number of workers.
+        """
         with multiprocessing.Pool(processes=num_workers) as pool:
             pool.map(self.exec_single_thread, range(1, num_workers + 1))
 

@@ -16,8 +16,7 @@
 class Monitor(object):
     r"""Monitoring the Modalic client while training.
 
-    Args:
-        log_name: logging name that gets printed by default.
+    :param log_name: logging name that gets printed by default.
     """
 
     def __init__(self, log_name: str = "modalic"):

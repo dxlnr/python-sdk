@@ -23,10 +23,8 @@ from modalic.logging.logging import logger
 def get_dataset_length(dataset: Any, client_id: Optional[int] = 0) -> int:
     r"""Returns the length of the dataset.
 
-    Args:
-        dataset (Any): Custom dataset object.
-    Returns:
-        length of dataset object. If len() cannot be called, 1 is returned.
+    :param dataset: (Any) Custom dataset object.
+    :returns: Length of dataset object. If len() cannot be called, 1 is returned.
     """
     if hasattr(dataset, "__len__"):
         return len(dataset)

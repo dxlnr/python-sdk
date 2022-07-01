@@ -122,7 +122,7 @@ class PytorchClient(Communicator):
     #     pass
 
     def _set_weights(self, weights: shared.Weights) -> None:
-        r"""Sets model weights from a list of NumPy ndarrays.
+        r"""Sets the model weights from a list of NumPy ndarrays.
 
         :param weights: Model weights as a list of NumPy ndarrays.
         """

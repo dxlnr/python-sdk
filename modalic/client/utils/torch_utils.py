@@ -26,12 +26,9 @@ def _set_torch_weights(
 ) -> torch.nn.Module:
     r"""Set model weights from a list of NumPy ndarrays.
 
-    Args:
-        model: Pytorch model object.
-        weights: Model weights as a list of NumPy ndarrays.
-
-    Returns:
-        model: Pytorch model object that is updated with input weights,
+    :param model: Pytorch model object.
+    :param weights: Model weights as a list of NumPy ndarrays.
+    :returns: Pytorch model object that is updated with input weights,
     """
     state_dict = OrderedDict(
         {k: torch.tensor(v) for k, v in zip(model.state_dict().keys(), weights)}
@@ -43,11 +40,8 @@ def _set_torch_weights(
 def _get_torch_weights(model: torch.nn.Module) -> shared.Weights:
     r"""Get model weights as a list of NumPy ndarrays.
 
-    Args:
-        model: Pytorch model object.
-
-    Returns:
-        model: Weights as a list of NumPy ndarrays.
+    :param model: Pytorch model object.
+    :returns: Weights as a list of NumPy ndarrays.
     """
     return [val.cpu().numpy() for _, val in model.state_dict().items()]
 
@@ -76,11 +70,8 @@ def _get_model_dtype(model: torch.nn.Module) -> str:
 def _get_model_shape(model: torch.nn.Module) -> List[np.ndarray]:
     r"""Extracts the shape of the pytorch model.
 
-    Args:
-        model: Pytorch model object.
-
-    Returns:
-        shape: List of np.ndarray which contains the shape (size) of each individual layer of the model.
+    :param model: Pytorch model object.
+    :returns: List of np.ndarray which contains the shape (size) of each individual layer of the model.
     """
     return [
         np.array(model.state_dict()[param_tensor].size())

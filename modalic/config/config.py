@@ -53,9 +53,8 @@ class Conf(object):
     def set_params(self, conf: dict[str, dict[str, Any]]) -> None:
         r"""Overwrites default parameters with external is stated.
 
-        Args:
-            conf: Produced by .toml config. Dict which contains dicts. The values
-                  of conf will overwrite the default values.
+        :param conf: Produced by .toml config. Dict which contains dicts. The values
+        of conf will overwrite the default values.
         """
         if conf is not None:
             if value := self._find_keys(conf, "server_address"):
@@ -76,12 +75,9 @@ class Conf(object):
     def _find_keys(self, blob: Dict[str, dict[str, Any]], key_str: str = "") -> Any:
         r"""Finds the value for certain key in dictionary with arbitrary depth.
 
-        Args:
-            blob: Dictionary which is searched for the key value pair.
-            key_str: Key that is searched for.
-
-        Returns:
-            Any value that belongs to the key.
+        :param blob: Dictionary which is searched for the key value pair.
+        :param key_str: Key that is searched for.
+        :returns: Any value that belongs to the key.
         """
         value = None
         for (k, v) in blob.items():
@@ -95,9 +91,8 @@ class Conf(object):
     def create_conf(cls, conf: dict[str, dict[str, Any]] = None) -> Conf:
         r"""Constructs a (default) conig object with external conf if given.
 
-        Args:
-            conf: Produced by .toml config. Dict which contains dicts. The values
-                  of conf will overwrite the default values.
+        :param conf: Produced by .toml config. Dict which contains dicts. The values
+        of conf will overwrite the default values.
         """
         instance = cls()
         instance.set_params(conf)
@@ -107,8 +102,7 @@ class Conf(object):
     def from_toml(cls, path: str) -> Conf:
         r"""Constructs a conig object from external .toml configuration file.
 
-        Args:
-            path: String path to .toml config file.
+        :param path: String path to .toml config file.
         """
         instance = cls()
         try:
@@ -121,7 +115,7 @@ class Conf(object):
         return instance
 
     def __str__(self) -> str:
-        r"""Custom output."""
+        r"""Custom output string."""
         s = ", ".join(
             f"{field.name}={getattr(self, field.name)!r}"
             for field in dataclasses.fields(self)

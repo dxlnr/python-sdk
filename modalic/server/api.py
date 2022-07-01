@@ -23,8 +23,7 @@ class ServerBinaryNotFound(Exception):
 def find_bin_path() -> str:
     r"""Find the path to binary files.
 
-    Returns:
-        mosaic: path to binary.
+    :returns: Path to binary which is the server application.
     """
     curr_path = os.path.dirname(os.path.abspath(os.path.expanduser(__file__)))
 

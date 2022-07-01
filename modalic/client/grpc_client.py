@@ -88,7 +88,6 @@ class Communicator(CommunicationLayer):
         :param root_certificates: (optional) Can be set in order to establish a encrypted connection
         between client & server.
         :param logback: (optional) bool for setting logging or not. Default: False
-
         :returns: (channel, stub): Tuple containing the thread-safe grpc channel
         to server & the grpc stub.
         """
