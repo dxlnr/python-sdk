@@ -40,14 +40,15 @@ class PytorchClient(Communicator):
     Serves as a simple layer and API that enables participating within a
     Federated Learning process.
 
-    :param trainer: Pytorch Trainer object.
+    :param trainer: Pytorch Trainer object. Can be custom.
     :param conf: Configuration object that stores all the parameters concerning the process.
     :param data: Dataset object that can be set for the Pytorch Trainer object.
-    :param client_id: Client id which uniquely identifies the client within the process.
+    :param client_id: Client id which uniquely identifies the client object within the program.
 
-    Examples:
-        >>> client = modalic.PytorchClient(Trainer(), conf, 1)
-        >>> client.run()
+    :Example:
+
+    >>> client = modalic.PytorchClient(Trainer(), conf, 1)
+    >>> client.run()
 
     :raises AttributeError: Input object trainer has to contain a model & train() function.
     """
