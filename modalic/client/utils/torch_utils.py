@@ -55,15 +55,10 @@ def _get_torch_weights(model: torch.nn.Module) -> shared.Weights:
 def _get_model_dtype(model: torch.nn.Module) -> str:
     r"""Extracts the data type of the pytorch model.
 
-    Args:
-        model: Pytorch model object.
-
-    Returns:
-        dtype: Encodes the data type of the model as a String. Options are
+    :param model: Pytorch model object.
+    :returns: dtype: Encodes the data type of the model as a String. Options are
                "F32" and "F64".
-
-    Raises:
-        ValueError: If torch type is not either 'torch.float' or 'torch.double'.
+    :raises ValueError: If torch type is not either 'torch.float' or 'torch.double'.
     """
     torch_type = list(model.state_dict().items())[0][1].dtype
     if torch_type == "torch.float32" or "torch.float":

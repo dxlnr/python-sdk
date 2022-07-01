@@ -51,12 +51,12 @@ class CommunicationLayer(ABC):
 
 
 class Communicator(CommunicationLayer):
-    r"""Communicator class object implements the grpc protocol functionality
+    r"""
+    Communicator class object implements the grpc protocol functionality
     which will be inherited by some client class object.
 
-    Args:
-        server_address: static ip address of the aggregation server.
-        client_id: client identifier via unique integer.
+    :param server_address: static ip address of the aggregation server.
+    :param client_id: client identifier via unique integer.
     """
 
     def __init__(self, server_address: str, client_id: int):
@@ -65,12 +65,12 @@ class Communicator(CommunicationLayer):
         self._round_id = 0
 
     @abstractmethod
-    def set_weights(self, weights: shared.Weights) -> None:
+    def _set_weights(self, weights: shared.Weights) -> None:
         r"""Set model weights from a list of NumPy ndarrays."""
         raise NotImplementedError()
 
     @abstractmethod
-    def get_weights(self) -> shared.Weights:
+    def _get_weights(self) -> shared.Weights:
         r"""Returns the model weights as a list of NumPy ndarrays."""
         raise NotImplementedError()
 
@@ -83,16 +83,14 @@ class Communicator(CommunicationLayer):
     ) -> Tuple[grpc.Channel, CommunicationStub]:
         r"""Establishes a grpc connection to the server.
 
-        Args:
-            server_address: Determines the IP address for connecting to the server.
-            max_message_length: Maximum grpc message size.
-            root_certificates: (optional) Can be set in order to establish a encrypted connection
-                               between client & server.
-            logback: (optional) bool for setting logging or not. Default: False
+        :param server_address: Determines the IP address for connecting to the server.
+        :param max_message_length: Maximum grpc message size.
+        :param root_certificates: (optional) Can be set in order to establish a encrypted connection
+        between client & server.
+        :param logback: (optional) bool for setting logging or not. Default: False
 
-        Returns:
-            (channel, stub): Tuple containing the thread-safe grpc channel
-            to server & the grpc stub.
+        :returns: (channel, stub): Tuple containing the thread-safe grpc channel
+        to server & the grpc stub.
         """
         return _grpc_connection(
             server_address,
@@ -105,16 +103,15 @@ class Communicator(CommunicationLayer):
     def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
         r"""Sends an updated model version to the server.
 
-        Args:
-            dtype: Data Type of the trained model. Important as it determines the de-/serialization.
-            round_id: Training round id.
-            stake: Sets the number of samples the local model was trained on.
-            loss: Loss of the local model during training.
+        :param dtype: Data Type of the trained model. Important as it determines the de-/serialization.
+        :param round_id: Training round id.
+        :param stake: Sets the number of samples the local model was trained on.
+        :param loss: Loss of the local model during training.
         """
         _update(
             self.client_id,
             self.server_address,
-            self.get_weights(),
+            self._get_weights(),
             dtype,
             round_id,
             stake,
@@ -126,15 +123,14 @@ class Communicator(CommunicationLayer):
     ) -> None:
         r"""Client request to get the latest version of the global model from server.
 
-        Args:
-            model_shape: Holds the shape of the model architecture for serialization & deserialization.
+        :param model_shape: Holds the shape of the model architecture for serialization & deserialization.
         """
         params = _sync_model_version(
             self.client_id, self.server_address, self._round_id, retry_period=retry
         )
         if params is not None:
             weights = parameters_to_weights(params, model_shape)
-            self.set_weights(weights)
+            self._set_weights(weights)
             logger.log(
                 INFO,
                 f"Client {self.client_id} received global model from aggregation server.",

@@ -40,17 +40,16 @@ class PytorchClient(Communicator):
     Serves as a simple layer and API that enables participating within a
     Federated Learning process.
 
-    Args:
-        trainer: Pytorch Trainer object.
-        conf: Configuration object that stores all the parameters concerning the process.
-        data: Dataset object that can be set for the Pytorch Trainer object.
-        client_id: Client id which uniquely identifies the client within the process.
+    :param trainer: Pytorch Trainer object.
+    :param conf: Configuration object that stores all the parameters concerning the process.
+    :param data: Dataset object that can be set for the Pytorch Trainer object.
+    :param client_id: Client id which uniquely identifies the client within the process.
 
     Examples:
         >>> client = modalic.PytorchClient(Trainer(), conf, 1)
         >>> client.run()
-    Raises:
-        AttributeError: Input object trainer has to contain a model & train() function.
+
+    :raises AttributeError: Input object trainer has to contain a model & train() function.
     """
 
     def __init__(
@@ -122,34 +121,27 @@ class PytorchClient(Communicator):
     #     """
     #     pass
 
-    def set_weights(self, weights: shared.Weights) -> None:
+    def _set_weights(self, weights: shared.Weights) -> None:
         r"""Sets model weights from a list of NumPy ndarrays.
 
-        Args:
-            weights: Model weights as a list of NumPy ndarrays.
+        :param weights: Model weights as a list of NumPy ndarrays.
         """
         self.model = _set_torch_weights(self.model, weights)
 
-    def get_weights(self) -> shared.Weights:
+    def _get_weights(self) -> shared.Weights:
         r"""Returns model weights as a list of NumPy ndarrays."""
         return _get_torch_weights(self.model)
 
     def _get_model_shape(self) -> List[np.ndarray]:
         r"""Extracts the shape of the pytorch model.
 
-        Returns:
-            List of np.array representing the model shape.
-                Example: [np.array([1, 4]), np.array([1])]
+        :returns: List of np.array representing the model shape.
+                  Example: [np.array([1, 4]), np.array([1])]
         """
         return _get_model_shape(self.model)
 
     def _get_model_dtype(self) -> None:
-        r"""Extracts the data type of the pytorch model.
-
-        Returns:
-            dtype: Encodes the data type of the model as a String. Options are
-                   "F32" and "F64".
-        """
+        r"""Extracts the data type of the pytorch model."""
         self._dtype = _get_model_dtype(self.model)
 
     def _train(self) -> None:

@@ -33,6 +33,7 @@ class Conf(object):
         client_id: Client identifier which must be unique.
         timeout: Defines a timeout length in seconds which is mainly used for
                  simulating some waiting periode after each training round.
+                 Should always be non-negative. (default: 0)
         training_rounds: Number of training rounds that should be performed.
         participants: Number of required clients (edge device) participating in a single training round.
         data_type: Models data type which defines the (de-)serialization of the model.

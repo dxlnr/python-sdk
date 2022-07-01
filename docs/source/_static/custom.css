@@ -1,0 +1,22 @@
+/* -- body styles --------------------------------------------------------- */
+
+a {
+    color: #6834d5;
+}
+
+a:visited {
+    color: #6834d5;
+}
+
+div.sphinxsidebar a:hover {
+    color: #6834d5;
+}
+
+a.headerlink {
+    color: #6834d5;
+}
+
+a.headerlink:hover {
+    background-color: #6834d5;
+    color: #fff;
+}
