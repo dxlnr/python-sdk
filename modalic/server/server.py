@@ -20,7 +20,14 @@ from modalic.server.api import find_bin_path
 
 
 def run_server(cfg_path: str = "") -> None:
-    r"""Runs the Federated Learning server."""
+    r"""Runs the Federated Learning server.
+
+    :param cfg_path: Path to an external .toml configuration file.
+
+    :Example:
+    >>> args = parser.parse_args()
+    >>> modalic.run_server(args.cfg)
+    """
     command = [find_bin_path()]
     if cfg_path and cfg_path.strip():
         command.extend(["-c", cfg_path])
