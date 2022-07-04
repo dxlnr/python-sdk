@@ -20,12 +20,16 @@ from modalic.server.api import find_bin_path
 
 
 def run_server(cfg_path: str = "") -> None:
-    r"""Runs the Federated Learning server.
+    r"""Runs the Federated Learning aggregation server.
 
     :param cfg_path: Path to an external .toml configuration file.
 
     :Example:
+    >>> import argparse
+    >>> parser = argparse.ArgumentParser(description="Server arguments.")
+    >>> parser.add_argument("--cfg", type=str, help="configuration file (path)")
     >>> args = parser.parse_args()
+
     >>> modalic.run_server(args.cfg)
     """
     command = [find_bin_path()]

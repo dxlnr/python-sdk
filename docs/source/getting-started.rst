@@ -24,13 +24,27 @@ Important to note, that the SDK does not imply what type of model for what kind 
 defined but rather lets the developer control the stack entirely.
 
 
-SDK Entrypoints
----------------
+SDK Endpoints
+-------------
 
-There are basically two main entrypoints that enable the client's ability to participate in a Federated Learning
+There are basically two main endpoints that enable the client's ability to participate in a Federated Learning
 procedure. The two different possibilities of integrating FL into one's Machine Learning stack,
 represent two different programming paradigms, one object-oriented and one functional.
 
+Aggregation Server
+------------------
+
+Modalic provides a lightweight server application which the Python SDK compliments. The server is modular,
+which allows for integrating the server with your own custom API in any programming language.
+The communication is handled via `gRPC <https://grpc.io/>`_ which is an open source high performance Remote Procedure Call (RPC) framework that can run in any environment.
+It can efficiently connect services in and across data centers with pluggable support for load balancing, tracing, health checking and authentication.
+
+Even though the server is a separate software stack, it is possible to start the server via Python script from the SDK by running::
+
+  modalic.run_server(conf_path="config.toml")
+
+It is optional but recommended to add a `TOML <https://toml.io/en/>`_ configuration file which allows for setting certain hyperparameters which control the
+Federated Learning process. An `example config <https://github.com/modalic/python-sdk/blob/main/examples/pytorch_mnist/config.toml>`_ file can be found here.
 
 
 Frameworks Support: Pytorch

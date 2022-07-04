@@ -45,7 +45,7 @@ class Conf(object):
     client_id: int = 0
     timeout: float = 0.0
     training_rounds: int = 0
-    participants: int = 0
+    # participants: int = 0
     data_type: str = "F32"
     certificates: str = ""
 
@@ -64,8 +64,8 @@ class Conf(object):
                 self.timeout = value
             if value := self._find_keys(conf, "training_rounds"):
                 self.training_rounds = value
-            if value := self._find_keys(conf, "participants"):
-                self.participants = value
+            # if value := self._find_keys(conf, "participants"):
+            #     self.participants = value
             if value := self._find_keys(conf, "data_type"):
                 self.data_type = value
             if value := self._find_keys(conf, "certificates"):
