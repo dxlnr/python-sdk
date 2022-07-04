@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>modalic.client.grpc_client</title>
+    
+          <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../index.html" class="home-link">
+    
+      <img class="logo" src="../../../_static/mo-logo.svg" alt="logo"/>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/modalic"
+        class="nav-link external">
+          Github <outboundlink></outboundlink>
+      </a>
+    </div>
+  
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/modalic"
+        class="nav-link external">
+          Github <outboundlink></outboundlink>
+      </a>
+    </div>
+  
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../index.html#content">content</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../installation.html" class="reference internal ">Installing Modalic</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../quickstart.html" class="reference internal ">Quickstart</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../tutorials-and-examples/index.html" class="reference internal ">Tutorials and Examples</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../concepts.html" class="reference internal ">Concepts</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../sdk/index.html" class="reference internal ">Python SDK Reference</a>
+            
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../index.html">Module code</a> &raquo;</li>
+    
+    <li>modalic.client.grpc_client</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for modalic.client.grpc_client</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) modalic 2022. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1">#  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#  you may not use this file except in compliance with the License.</span>
+<span class="c1">#  You may obtain a copy of the License at:</span>
+<span class="c1">#</span>
+<span class="c1">#       https://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1">#  Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express</span>
+<span class="c1">#  or implied. See the License for the specific language governing</span>
+<span class="c1">#  permissions and limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">INFO</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">modalic.client.proto.mosaic_pb2_grpc</span> <span class="kn">import</span> <span class="n">CommunicationStub</span>
+<span class="kn">from</span> <span class="nn">modalic.client.utils.communication</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_grpc_connection</span><span class="p">,</span>
+    <span class="n">_sync_model_version</span><span class="p">,</span>
+    <span class="n">_update</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">modalic.logging.logging</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">shared</span>
+<span class="kn">from</span> <span class="nn">modalic.utils.serde</span> <span class="kn">import</span> <span class="n">parameters_to_weights</span>
+
+
+<div class="viewcode-block" id="CommunicationLayer"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.CommunicationLayer">[docs]</a><span class="k">class</span> <span class="nc">CommunicationLayer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Abstract communicatio base layer for ensuring the grpc protocol.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CommunicationLayer.update"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.CommunicationLayer.update">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stake</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sends an updated model version to the server.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CommunicationLayer.get_global_model"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.CommunicationLayer.get_global_model">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_global_model</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">model_shape</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Client request to get the latest version of the global model</span>
+<span class="sd">        from server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="Communicator"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.Communicator">[docs]</a><span class="k">class</span> <span class="nc">Communicator</span><span class="p">(</span><span class="n">CommunicationLayer</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Communicator class object implements the grpc protocol functionality</span>
+<span class="sd">    which will be inherited by some client class object.</span>
+
+<span class="sd">    :param server_address: static ip address of the aggregation server.</span>
+<span class="sd">    :param client_id: client identifier via unique integer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_address</span> <span class="o">=</span> <span class="n">server_address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span> <span class="o">=</span> <span class="n">client_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_set_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set model weights from a list of NumPy ndarrays.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the model weights as a list of NumPy ndarrays.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Communicator.grpc_connection"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.Communicator.grpc_connection">[docs]</a>    <span class="k">def</span> <span class="nf">grpc_connection</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">server_address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">max_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">536870912</span><span class="p">,</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">logback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">grpc</span><span class="o">.</span><span class="n">Channel</span><span class="p">,</span> <span class="n">CommunicationStub</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Establishes a grpc connection to the server.</span>
+
+<span class="sd">        :param server_address: Determines the IP address for connecting to the server.</span>
+<span class="sd">        :param max_message_length: Maximum grpc message size.</span>
+<span class="sd">        :param root_certificates: (optional) Can be set in order to establish a encrypted connection</span>
+<span class="sd">        between client &amp; server.</span>
+<span class="sd">        :param logback: (optional) bool for setting logging or not. Default: False</span>
+<span class="sd">        :returns: (channel, stub): Tuple containing the thread-safe grpc channel</span>
+<span class="sd">        to server &amp; the grpc stub.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_grpc_connection</span><span class="p">(</span>
+            <span class="n">server_address</span><span class="p">,</span>
+            <span class="n">max_message_length</span><span class="p">,</span>
+            <span class="n">root_certificates</span><span class="p">,</span>
+            <span class="n">logback</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Communicator.update"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.Communicator.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stake</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sends an updated model version to the server.</span>
+
+<span class="sd">        :param dtype: Data Type of the trained model. Important as it determines the de-/serialization.</span>
+<span class="sd">        :param round_id: Training round id.</span>
+<span class="sd">        :param stake: Sets the number of samples the local model was trained on.</span>
+<span class="sd">        :param loss: Loss of the local model during training.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_update</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server_address</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights</span><span class="p">(),</span>
+            <span class="n">dtype</span><span class="p">,</span>
+            <span class="n">round_id</span><span class="p">,</span>
+            <span class="n">stake</span><span class="p">,</span>
+            <span class="n">loss</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Communicator.get_global_model"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.Communicator.get_global_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_global_model</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">model_shape</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">retry</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Client request to get the latest version of the global model from server.</span>
+
+<span class="sd">        :param model_shape: Holds the shape of the model architecture for serialization &amp; deserialization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">_sync_model_version</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_address</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_round_id</span><span class="p">,</span> <span class="n">retry_period</span><span class="o">=</span><span class="n">retry</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">parameters_to_weights</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">model_shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="n">INFO</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Client </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2"> received global model from aggregation server.&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2022, modalic.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

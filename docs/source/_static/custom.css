@@ -4,19 +4,56 @@ a {
     color: #6834d5;
 }
 
-a:visited {
-    color: #6834d5;
+a:hover {
+    color: #6834d5 !important;
 }
 
-div.sphinxsidebar a:hover {
-    color: #6834d5;
+li:hover {
+  color: #6834d5 !important;
 }
 
-a.headerlink {
-    color: #6834d5;
+.toc-backref {
+    color: #6834d5 !important;
 }
 
-a.headerlink:hover {
-    background-color: #6834d5;
-    color: #fff;
+.viewcode-link {
+    color: #6834d5 !important;
 }
+
+.nav-links a:hover{
+  color: #6834d5;
+}
+
+.toctree-l1 a:hover{
+  color: #6834d5;
+}
+
+.toctree-l1.current a{
+  border-left:.25rem solid rgba(47, 84, 209, 0.6) !important;
+}
+.toctree-l1 a.current{
+  color: #6834d5 !important;
+  border-left-color: #2F54D1 !important;
+}
+
+.toctree-l2 a:hover{
+  color: #6834d5 !important;
+}
+.toctree-l2 a.current{
+  color: #6834d5 !important;
+}
+
+.nav-links a.router-link-active{
+  color: #6834d5 !important;
+}
+
+.nav-item>a:not(.external):hover{
+  margin-bottom:-2px;
+  border-bottom: 2px solid #6834d5 !important;
+}
+
+/* -- For the highlighting sections.------------------------------------- */
+
+.highlight pre{
+  background-color: #2f2f33 !important;
+}.content

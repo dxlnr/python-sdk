@@ -28,19 +28,18 @@ from modalic.logging.logging import logger
 class Conf(object):
     r"""Configuration object class that stores the parameters regarding the federated learning process.
 
-    Args:
-        server_address: GRPC endpoint for aggregation server.
-        client_id: Client identifier which must be unique.
-        timeout: Defines a timeout length in seconds which is mainly used for
-                 simulating some waiting periode after each training round.
-                 Should always be non-negative. (default: 0)
-        training_rounds: Number of training rounds that should be performed.
-        participants: Number of required clients (edge device) participating in a single training round.
-        data_type: Models data type which defines the (de-)serialization of the model.
-        certificates: TLS certificates for establishing secure channel with server.
+    :param server_address: GRPC endpoint for aggregation server.
+    :param client_id: Client identifier which must be unique.
+    :param timeout: Defines a timeout length in seconds which is mainly used for
+    simulating some waiting periode after each training round.
+    Should always be non-negative. (default: 0)
+    :param training_rounds: Number of training rounds that should be performed.
+    :param participants: Number of required clients (edge device) participating in a single training round.
+    :param data_type: Models data type which defines the (de-)serialization of the model.
+    :param certificates: TLS certificates for establishing secure channel with server.
 
-    Examples:
-        >>> conf = Conf.create_conf({})
+    :Example:
+    >>> conf = Conf.create_conf({})
     """
     server_address: str = "[::]:8080"
     client_id: int = 0

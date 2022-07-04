@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>modalic.utils.protocol</title>
+    
+          <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../index.html" class="home-link">
+    
+      <img class="logo" src="../../../_static/mo-logo.svg" alt="logo"/>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/modalic"
+        class="nav-link external">
+          Github <outboundlink></outboundlink>
+      </a>
+    </div>
+  
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/modalic"
+        class="nav-link external">
+          Github <outboundlink></outboundlink>
+      </a>
+    </div>
+  
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../index.html#content">content</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../installation.html" class="reference internal ">Installing Modalic</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../quickstart.html" class="reference internal ">Quickstart</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../tutorials-and-examples/index.html" class="reference internal ">Tutorials and Examples</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../concepts.html" class="reference internal ">Concepts</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../sdk/index.html" class="reference internal ">Python SDK Reference</a>
+            
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../index.html">Module code</a> &raquo;</li>
+    
+    <li>modalic.utils.protocol</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for modalic.utils.protocol</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) modalic 2022. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1">#  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#  you may not use this file except in compliance with the License.</span>
+<span class="c1">#  You may obtain a copy of the License at:</span>
+<span class="c1">#</span>
+<span class="c1">#       https://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1">#  Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express</span>
+<span class="c1">#  or implied. See the License for the specific language governing</span>
+<span class="c1">#  permissions and limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;gRPC action script.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">modalic.client.proto.mosaic_pb2</span> <span class="kn">import</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">ProcessMeta</span>
+<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">shared</span>
+
+
+<div class="viewcode-block" id="parameters_to_proto"><a class="viewcode-back" href="../../../sdk/modalic.utils.html#modalic.utils.protocol.parameters_to_proto">[docs]</a><span class="k">def</span> <span class="nf">parameters_to_proto</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Parameters</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">tensor</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span>
+        <span class="n">model_version</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">model_version</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="parameters_from_proto"><a class="viewcode-back" href="../../../sdk/modalic.utils.html#modalic.utils.protocol.parameters_from_proto">[docs]</a><span class="k">def</span> <span class="nf">parameters_from_proto</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">Parameters</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
+    <span class="n">tensor</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shared</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">tensor</span><span class="o">=</span><span class="n">tensor</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span>
+        <span class="n">model_version</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">model_version</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="process_meta_to_proto"><a class="viewcode-back" href="../../../sdk/modalic.utils.html#modalic.utils.protocol.process_meta_to_proto">[docs]</a><span class="k">def</span> <span class="nf">process_meta_to_proto</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProcessMeta</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ProcessMeta</span><span class="p">(</span><span class="n">round_id</span><span class="o">=</span><span class="n">meta</span><span class="o">.</span><span class="n">round_id</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">meta</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_meta"><a class="viewcode-back" href="../../../sdk/modalic.utils.html#modalic.utils.protocol.to_meta">[docs]</a><span class="k">def</span> <span class="nf">to_meta</span><span class="p">(</span><span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">shared</span><span class="o">.</span><span class="n">ProcessMeta</span><span class="p">(</span><span class="n">round_id</span><span class="o">=</span><span class="n">round_id</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2022, modalic.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

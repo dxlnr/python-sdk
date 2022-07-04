@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>modalic.utils.serde</title>
+    
+          <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../index.html" class="home-link">
+    
+      <img class="logo" src="../../../_static/mo-logo.svg" alt="logo"/>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/modalic"
+        class="nav-link external">
+          Github <outboundlink></outboundlink>
+      </a>
+    </div>
+  
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+  
+    <div class="nav-item">
+      <a href="https://github.com/modalic"
+        class="nav-link external">
+          Github <outboundlink></outboundlink>
+      </a>
+    </div>
+  
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../index.html#content">content</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../installation.html" class="reference internal ">Installing Modalic</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../quickstart.html" class="reference internal ">Quickstart</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../tutorials-and-examples/index.html" class="reference internal ">Tutorials and Examples</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../concepts.html" class="reference internal ">Concepts</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../../sdk/index.html" class="reference internal ">Python SDK Reference</a>
+            
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../index.html">Module code</a> &raquo;</li>
+    
+    <li>modalic.utils.serde</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for modalic.utils.serde</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) modalic 2022. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1">#  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#  you may not use this file except in compliance with the License.</span>
+<span class="c1">#  You may obtain a copy of the License at:</span>
+<span class="c1">#</span>
+<span class="c1">#       https://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1">#  Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express</span>
+<span class="c1">#  or implied. See the License for the specific language governing</span>
+<span class="c1">#  permissions and limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;ProtoBuf serialization and deserialization.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">modalic.utils</span> <span class="kn">import</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">shared</span>
+
+
+<div class="viewcode-block" id="weights_to_parameters"><a class="viewcode-back" href="../../../sdk/modalic.utils.html#modalic.utils.serde.weights_to_parameters">[docs]</a><span class="nd">@typing</span><span class="o">.</span><span class="n">no_type_check</span>
+<span class="k">def</span> <span class="nf">weights_to_parameters</span><span class="p">(</span>
+    <span class="n">weights</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_version</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">protocol</span><span class="o">.</span><span class="n">Parameters</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert NumPy weights to parameters object.&quot;&quot;&quot;</span>
+    <span class="n">tensor</span> <span class="o">=</span> <span class="n">_weights_to_bytes</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">_dtype_to_struct</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">protocol</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">tensor</span><span class="o">=</span><span class="n">tensor</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">model_version</span><span class="o">=</span><span class="n">model_version</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="parameters_to_weights"><a class="viewcode-back" href="../../../sdk/modalic.utils.html#modalic.utils.serde.parameters_to_weights">[docs]</a><span class="nd">@typing</span><span class="o">.</span><span class="n">no_type_check</span>
+<span class="k">def</span> <span class="nf">parameters_to_weights</span><span class="p">(</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="n">protocol</span><span class="o">.</span><span class="n">Parameters</span><span class="p">,</span> <span class="n">shapes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert parameters object to NumPy weights.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_bytes_to_ndarray</span><span class="p">(</span>
+        <span class="n">parameters</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">shapes</span><span class="p">,</span> <span class="n">_dtype_to_struct</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_ndarray_to_bytes</span><span class="p">(</span><span class="n">ndarray</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Serialize NumPy ndarray to list of u8 bytes.&quot;&quot;&quot;</span>
+    <span class="n">res</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">single</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">single</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">_weights_to_bytes</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Serialize NumPy ndarray to bytes.&quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">_ndarray_to_bytes</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">ndarray</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">_bytes_to_ndarray</span><span class="p">(</span>
+    <span class="n">tensor</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">layer_shape</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Deserialize NumPy ndarray from u8 bytes.&quot;&quot;&quot;</span>
+    <span class="n">layer</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;!f&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">_chunk</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;f&quot;</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;!d&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">_chunk</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;d&quot;</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> is not known.&quot;</span><span class="p">)</span>
+
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">layer</span><span class="p">),</span> <span class="n">_indexing</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">layer_shape</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">shapes</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">layer_shape</span><span class="p">)]</span>
+
+
+<div class="viewcode-block" id="get_shape"><a class="viewcode-back" href="../../../sdk/modalic.utils.html#modalic.utils.serde.get_shape">[docs]</a><span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">shared</span><span class="o">.</span><span class="n">Weights</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reads in the weights and returns its shape as a list object.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">]</span></div>
+
+
+<span class="k">def</span> <span class="nf">_chunk</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">chunksize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">zip</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;helper chunking an iterable with fixed size.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)]</span> <span class="o">*</span> <span class="n">chunksize</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_indexing</span><span class="p">(</span><span class="n">length</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;helper for preparing the indices at which array is splitted.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+            <span class="k">break</span>
+        <span class="n">length</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">length</span><span class="p">[</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">length</span>
+
+
+<span class="k">def</span> <span class="nf">_dtype_to_struct</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Prepare dtype for conversion with struct.</span>
+
+<span class="sd">    :param dtype: String that represents the data type that is used for the pytorch model.</span>
+<span class="sd">    :raises TypeError: When dtype is unkown. Choose &#39;F32&#39; or &#39;F64&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;F32&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;!f&quot;</span>
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;F64&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;!d&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> is not known.&quot;</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2022, modalic.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

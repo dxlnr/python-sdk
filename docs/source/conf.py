@@ -54,13 +54,21 @@ exclude_patterns = []
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = 'alabaster'
+html_theme = 'press'
+html_logo = '_static/mo-logo.svg'
 html_theme_options = {
-    'logo': 'mo-logo.svg',
-    'github_user': 'modalic',
-    'github_repo': 'python-sdk',
+  "external_links": [
+      ("Github", "https://github.com/modalic"),
+  ]
 }
+#
+# html_theme = 'alabaster'
+# html_theme_options = {
+#     'logo': 'mo-logo.svg',
+#     'description': 'MLOps Federated Learning Platform',
+#     # 'github_user': 'modalic',
+#     # 'github_repo': 'python-sdk',
+# }
 
 # html_theme_path = [sphinx_readable_theme.get_html_theme_path()]
 
