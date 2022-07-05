@@ -30,15 +30,14 @@ class Conf(object):
 
     :param server_address: GRPC endpoint for aggregation server.
     :param client_id: Client identifier which must be unique.
-    :param timeout: Defines a timeout length in seconds which is mainly used for
-    simulating some waiting periode after each training round.
-    Should always be non-negative. (default: 0)
+    :param timeout: Defines a timeout length in seconds which is mainly used for simulating some waiting periode after each training round. Should always be non-negative. (default: 0)
     :param training_rounds: Number of training rounds that should be performed.
     :param participants: Number of required clients (edge device) participating in a single training round.
     :param data_type: Models data type which defines the (de-)serialization of the model.
     :param certificates: TLS certificates for establishing secure channel with server.
 
     :Example:
+
     >>> conf = Conf.create_conf({})
     """
     server_address: str = "[::]:8080"

@@ -51,9 +51,10 @@ class CNN(nn.Module):
 
 class Trainer(object):
     r"""Trainer class object to perform the Learning.
-    Args:
-        device (torch.device): model running device. GPUs are recommended for model training and inference.
-        dataset: (data.Dataloader) Dataloader object.
+
+    :param device: (torch.device) Model running device. GPUs are recommended for model training and inference.
+    :param dataset: (data.Dataloader) Custom Dataloader object.
+    :param epochs: (int) Epochs hyperparameter.
     """
 
     def __init__(
@@ -114,7 +115,7 @@ def main():
             "process": {"training_rounds": 10, "timeout": 5.0},
         },
     )
-    client.run()
+    client.train()
 
 
 if __name__ == "__main__":

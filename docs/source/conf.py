@@ -13,8 +13,6 @@
 import os
 import sys
 
-import sphinx_readable_theme
-
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.append(os.path.abspath(
     os.path.join(__file__, "../../modalic")
@@ -77,3 +75,5 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ["custom.css"]
+
+html_context = {'show_sphinx': False}

@@ -2,13 +2,13 @@ import os
 import sys
 
 import torch
+from data import collate_batch, train_iter, vocab
 from torch import nn
 from torchtext.data.functional import to_map_style_dataset
 
 import modalic
 
 from . import create_arg_parser, get_project_root
-from .data import collate_batch, train_iter, vocab
 
 # Parsing the .toml config
 arg_parser = create_arg_parser()

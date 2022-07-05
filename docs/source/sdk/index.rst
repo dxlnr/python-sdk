@@ -3,11 +3,15 @@
 Python SDK Reference
 ====================
 
+The main SDK components are listed below.
+
 .. _modalic-client-apiref:
 
 Pytorch Client SDK Modules
 --------------------------
 .. automodule:: modalic.client
+
+.. _modalic-pytorch-client:
 
 PytorchClient Object
 ~~~~~~~~~~~~~~~~~~~~
@@ -25,6 +29,12 @@ Functional Training Decorator
 Aggregation Server
 ------------------
 .. autofunction:: modalic.run_server
+
+.. _modalic-conf-apiref:
+
+Configuration Object
+--------------------
+.. autofunction:: modalic.Conf
 
 Modalic Module
 --------------
