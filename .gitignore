@@ -27,3 +27,6 @@ docs/build
 
 #examples
 examples/tensorflow_cifar10
+
+#wheels
+wheelhouse
