@@ -1,6 +1,21 @@
 [build-system]
 requires = ["setuptools", "wheel", "setuptools-rust"]
 
+[tool.cibuildwheel]
+build = ["cp38-*", "cp39-*"]
+skip = ["*-win32", "*-i686-unknown-linux-musl"]
+environment = { PATH="$HOME/.cargo/bin:$PATH" }
+manylinux-x86_64-image = "manylinux2014"
+manylinux-i686-image = "manylinux2014"
+before-all = "pip install --upgrade pip && pip install -U setuptools-rust"
+before-build = "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=nightly --profile=minimal -y && rustup component add rustfmt && chmod +x scripts/build_openssl.sh && ./scripts/build_openssl.sh"
+
+[tool.cibuildwheel.linux]
+before-all = "chmod +x scripts/install_dependencies.sh && ./scripts/install_dependencies.sh"
+# before-all = "yum install -y openssl-devel pkgconfig"
+# before-all = "apt-get install -y libssl-dev pkg-config"
+# before-all = "apk add openssl-dev pkgconfig"
+
 [tool.pytest.ini_options]
 testpaths = [
   "tests",
