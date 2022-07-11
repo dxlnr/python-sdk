@@ -57,3 +57,7 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: >
             chmod +x scripts/install_dependencies.sh &&
             ./scripts/install_dependencies.sh
+
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./wheelhouse/*.whl
