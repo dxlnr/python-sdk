@@ -13,7 +13,7 @@ jobs:
         # it also takes care of procuring the correct python version for us
         os: [ubuntu-latest, macos-latest]
         python-version: [cp38, cp39]
-    steps:
+      steps:
       - uses: actions/checkout@v2
 
       - name: Setting up Python
