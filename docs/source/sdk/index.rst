@@ -35,11 +35,3 @@ Aggregation Server
 Configuration Object
 --------------------
 .. autofunction:: modalic.Conf
-
-Modalic Module
---------------
-
-.. toctree::
-    :maxdepth: 1
-
-    modules

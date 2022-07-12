@@ -25,12 +25,15 @@ def run_server(cfg_path: str = "") -> None:
     :param cfg_path: Path to an external .toml configuration file.
 
     :Example:
-    >>> import argparse
-    >>> parser = argparse.ArgumentParser(description="Server arguments.")
-    >>> parser.add_argument("--cfg", type=str, help="configuration file (path)")
-    >>> args = parser.parse_args()
 
-    >>> modalic.run_server(args.cfg)
+    The server needs an external configuration file for defining important hyperparameters. This can be done by:
+        >>> import argparse
+        >>> parser = argparse.ArgumentParser(description="Server arguments.")
+        >>> parser.add_argument("--cfg", type=str, help="configuration file (path)")
+        >>> args = parser.parse_args()
+
+    Then starting the server via.
+        >>> modalic.run_server(args.cfg)
     """
     command = [find_bin_path()]
     if cfg_path and cfg_path.strip():

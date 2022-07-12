@@ -1,6 +1,6 @@
 name: Build wheels
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build_wheels:
@@ -33,13 +33,13 @@ jobs:
         with:
           python-version: '3.8'
 
-      # - name: Setting up Rust
-      #   # if: matrix.os != 'ubuntu'
-      #   uses: actions-rs/toolchain@v1
-      #   with:
-      #     profile: minimal
-      #     toolchain: nightly
-      #     override: true
+      - name: set up rust
+        if: matrix.target != 'sdist' && matrix.os != 'ubuntu-latest'
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
 
       - name: Install dependencies
         run: |
@@ -51,8 +51,9 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.python-version }}-*
           CIBW_SKIP: >
-            "*-win32"
-            "*-i686-unknown-linux-musl"
+            *-win32
+            *-musllinux_i686
+            *-i686-unknown-linux-musl
           # CIBW_TEST_REQUIRES: pytest
           # CIBW_TEST_COMMAND: pytest {project}/tests -s
           CIBW_ENVIRONMENT: PATH="$HOME/.cargo/bin:$PATH"
@@ -63,7 +64,7 @@ jobs:
             pip install --upgrade pip &&
             pip install -U setuptools &&
             pip install -U setuptools-rust
-          CIBW_BEFORE_BUILD: >
+          CIBW_BEFORE_BUILD_LINUX: >
             curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=nightly --profile=minimal -y &&
             rustup component add rustfmt &&
             chmod +x scripts/build_openssl.sh &&
@@ -71,9 +72,9 @@ jobs:
             chmod +x scripts/install_dependencies.sh &&
             ./scripts/install_dependencies.sh
 
-          # CIBW_BEFORE_BUILD_LINUX: >
-          #   chmod +x scripts/install_dependencies.sh &&
-          #   ./scripts/install_dependencies.sh
+          CIBW_BEFORE_BUILD_MACOS: >
+            pip install -U setuptools-rust &&
+            rustup component add rustfmt
 
       - uses: actions/upload-artifact@v3
         with:

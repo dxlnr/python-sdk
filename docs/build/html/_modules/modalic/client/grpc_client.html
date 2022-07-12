@@ -101,7 +101,7 @@
         
           <li class="toctree-l1 ">
             
-              <a href="../../../quickstart.html" class="reference internal ">Quickstart</a>
+              <a href="../../../getting-started.html" class="reference internal ">Getting Started</a>
             
 
             
@@ -214,8 +214,7 @@
 
 
 <div class="viewcode-block" id="Communicator"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.Communicator">[docs]</a><span class="k">class</span> <span class="nc">Communicator</span><span class="p">(</span><span class="n">CommunicationLayer</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Communicator class object implements the grpc protocol functionality</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Communicator class object implements the grpc protocol functionality</span>
 <span class="sd">    which will be inherited by some client class object.</span>
 
 <span class="sd">    :param server_address: static ip address of the aggregation server.</span>
@@ -249,10 +248,10 @@
 <span class="sd">        :param server_address: Determines the IP address for connecting to the server.</span>
 <span class="sd">        :param max_message_length: Maximum grpc message size.</span>
 <span class="sd">        :param root_certificates: (optional) Can be set in order to establish a encrypted connection</span>
-<span class="sd">        between client &amp; server.</span>
+<span class="sd">            between client &amp; server.</span>
 <span class="sd">        :param logback: (optional) bool for setting logging or not. Default: False</span>
 <span class="sd">        :returns: (channel, stub): Tuple containing the thread-safe grpc channel</span>
-<span class="sd">        to server &amp; the grpc stub.</span>
+<span class="sd">            to server &amp; the grpc stub.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_grpc_connection</span><span class="p">(</span>
             <span class="n">server_address</span><span class="p">,</span>
@@ -286,6 +285,7 @@
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Client request to get the latest version of the global model from server.</span>
 
 <span class="sd">        :param model_shape: Holds the shape of the model architecture for serialization &amp; deserialization.</span>
+<span class="sd">        :param retry: (Default: ``5.0``) Defines the periode after which a retry is performed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">_sync_model_version</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_address</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_round_id</span><span class="p">,</span> <span class="n">retry_period</span><span class="o">=</span><span class="n">retry</span>
@@ -304,8 +304,6 @@
             <div class="inner"><ul class="page-nav">
 </ul><div class="footer" role="contentinfo">
       &#169; Copyright 2022, modalic.
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
 </div>
             </div>
           </div>

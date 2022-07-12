@@ -42,16 +42,13 @@ def _grpc_connection(
 ) -> Tuple[grpc.Channel, CommunicationStub]:
     r"""Establishes a grpc connection to the server.
 
-    Args:
-        server_address: Determines the IP address for connecting to the server.
-        max_message_length: Maximum grpc message size. Default: 536870912 which are 512MB : 512 * 1024 * 1024
-        root_certificates: (optional) Can be set in order to establish a encrypted connection
-                           between client & server. Default: None
-        logback: (optional) bool for setting logging or not. Default: False
-        client_id: (optional) Client ID used for logging purposes.
-
-    Returns:
-        (channel, stub): Tuple containing the thread-safe grpc channel
+    :param server_address: Determines the IP address for connecting to the server.
+    :param max_message_length: Maximum grpc message size. Default: ``536870912`` which are 512MB : 512 * 1024 * 1024
+    :param root_certificates: (optional) Can be set in order to establish a encrypted connection
+        between client & server. Default: None
+    :param logback: (optional) Bool for setting logging or not. (Default: ``False``)
+    :param client_id: (optional) Client ID used for logging purposes.
+    :returns: (channel, stub): Tuple containing the thread-safe grpc channel
         to server & the grpc stub.
     """
     channel_options = [
@@ -176,7 +173,7 @@ def _sync_model_version(
         round_id: Curretn training round id for checking the global model version.
         n_retry: Number of retries that should be performed before ignoring
                  getting an updated global model.
-        retry_period: Defines how long a logstep should take before retrying.
+        retry_period: Defines how long a halt should take before retrying.
     """
     # TODO: This function need testing and rewriting.
     for n in range(n_retry):

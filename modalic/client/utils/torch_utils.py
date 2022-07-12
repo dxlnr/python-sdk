@@ -28,7 +28,7 @@ def _set_torch_weights(
 
     :param model: Pytorch model object.
     :param weights: Model weights as a list of NumPy ndarrays.
-    :returns: Pytorch model object that is updated with input weights,
+    :returns: Pytorch model object that is updated with input weights.
     """
     state_dict = OrderedDict(
         {k: torch.tensor(v) for k, v in zip(model.state_dict().keys(), weights)}
@@ -51,7 +51,7 @@ def _get_model_dtype(model: torch.nn.Module) -> str:
 
     :param model: Pytorch model object.
     :returns: dtype: Encodes the data type of the model as a String. Options are
-               "F32" and "F64".
+        "F32" and "F64".
     :raises ValueError: If torch type is not either 'torch.float' or 'torch.double'.
     """
     torch_type = list(model.state_dict().items())[0][1].dtype

@@ -28,13 +28,13 @@ from modalic.logging.logging import logger
 class Conf(object):
     r"""Configuration object class that stores the parameters regarding the federated learning process.
 
-    :param server_address: GRPC endpoint for aggregation server.
-    :param client_id: Client identifier which must be unique.
-    :param timeout: Defines a timeout length in seconds which is mainly used for simulating some waiting periode after each training round. Should always be non-negative. (default: 0)
-    :param training_rounds: Number of training rounds that should be performed.
-    :param participants: Number of required clients (edge device) participating in a single training round.
-    :param data_type: Models data type which defines the (de-)serialization of the model.
-    :param certificates: TLS certificates for establishing secure channel with server.
+    :param server_address: (Default: ``'[::]:8080'``) GRPC endpoint for aggregation server.
+    :param client_id: (Default: ``0``) Client identifier which must be unique.
+    :param timeout: (Default: ``0``) Defines a timeout length in seconds which is mainly used for simulating some waiting periode
+        after each training round. Should always be non-negative.
+    :param training_rounds: (Default: ``0``) Number of training rounds that should be performed.
+    :param data_type: (Default: ``'F32'``) Models data type which defines the (de-)serialization of the model.
+    :param certificates: (Default: ``''``) TLS certificates for establishing secure channel with server.
 
     :Example:
 
@@ -44,7 +44,6 @@ class Conf(object):
     client_id: int = 0
     timeout: float = 0.0
     training_rounds: int = 0
-    # participants: int = 0
     data_type: str = "F32"
     certificates: str = ""
 
@@ -52,7 +51,7 @@ class Conf(object):
         r"""Overwrites default parameters with external is stated.
 
         :param conf: Produced by .toml config. Dict which contains dicts. The values
-        of conf will overwrite the default values.
+            of conf will overwrite the default values.
         """
         if conf is not None:
             if value := self._find_keys(conf, "server_address"):
@@ -63,8 +62,6 @@ class Conf(object):
                 self.timeout = value
             if value := self._find_keys(conf, "training_rounds"):
                 self.training_rounds = value
-            # if value := self._find_keys(conf, "participants"):
-            #     self.participants = value
             if value := self._find_keys(conf, "data_type"):
                 self.data_type = value
             if value := self._find_keys(conf, "certificates"):
@@ -90,7 +87,7 @@ class Conf(object):
         r"""Constructs a (default) conig object with external conf if given.
 
         :param conf: Produced by .toml config. Dict which contains dicts. The values
-        of conf will overwrite the default values.
+            of conf will overwrite the default values.
         """
         instance = cls()
         instance.set_params(conf)

@@ -51,8 +51,7 @@ class CommunicationLayer(ABC):
 
 
 class Communicator(CommunicationLayer):
-    r"""
-    Communicator class object implements the grpc protocol functionality
+    r"""Communicator class object implements the grpc protocol functionality
     which will be inherited by some client class object.
 
     :param server_address: static ip address of the aggregation server.
@@ -86,10 +85,10 @@ class Communicator(CommunicationLayer):
         :param server_address: Determines the IP address for connecting to the server.
         :param max_message_length: Maximum grpc message size.
         :param root_certificates: (optional) Can be set in order to establish a encrypted connection
-        between client & server.
+            between client & server.
         :param logback: (optional) bool for setting logging or not. Default: False
         :returns: (channel, stub): Tuple containing the thread-safe grpc channel
-        to server & the grpc stub.
+            to server & the grpc stub.
         """
         return _grpc_connection(
             server_address,
@@ -123,6 +122,7 @@ class Communicator(CommunicationLayer):
         r"""Client request to get the latest version of the global model from server.
 
         :param model_shape: Holds the shape of the model architecture for serialization & deserialization.
+        :param retry: (Default: ``5.0``) Defines the periode after which a retry is performed.
         """
         params = _sync_model_version(
             self.client_id, self.server_address, self._round_id, retry_period=retry

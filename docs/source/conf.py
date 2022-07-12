@@ -56,7 +56,7 @@ html_theme = 'press'
 html_logo = '_static/mo-logo.svg'
 html_theme_options = {
   "external_links": [
-      ("Github", "https://github.com/modalic"),
+      ("Github", "https://github.com/modalic/python-sdk"),
   ]
 }
 #

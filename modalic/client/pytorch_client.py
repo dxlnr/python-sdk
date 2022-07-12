@@ -46,9 +46,8 @@ class PytorchClient(Communicator):
     :param client_id: Client id which uniquely identifies the client object within the program.
 
     :Example:
-
-    >>> client = modalic.PytorchClient(Trainer(), conf, 1)
-    >>> client.run()
+        >>> client = modalic.PytorchClient(Trainer(), conf, 1)
+        >>> client.run()
 
     :raises AttributeError: Input object trainer has to contain a model & train() function.
     """
@@ -98,22 +97,22 @@ class PytorchClient(Communicator):
 
     @property
     def dtype(self):
-        r"""."""
+        r"""Returns the underlying data type that is set via Conf."""
         return self._dtype
 
     @property
     def round_id(self):
-        r"""."""
+        r"""Holds state of the training round the local model is in."""
         return self._round_id
 
     @property
     def loss(self):
-        r"""."""
+        r"""Holds state of the current loss computed by the loss function of the clients model."""
         return self._loss
 
     @property
     def model_shape(self):
-        r"""."""
+        r"""Returns the shape of model architecture the client holds."""
         return self._model_shape
 
     # def _validate_trainer(self):
@@ -137,7 +136,7 @@ class PytorchClient(Communicator):
         r"""Extracts the shape of the pytorch model.
 
         :returns: List of np.array representing the model shape.
-                  Example: [np.array([1, 4]), np.array([1])]
+            (Example: [np.array([1, 4]), np.array([1])])
         """
         return _get_model_shape(self.model)
 
