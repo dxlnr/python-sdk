@@ -8,4 +8,5 @@ types-protobuf
 autoflake
 flake8
 pre-commit
-sphinx
+sphinx==5.0.2
+sphinx-press-theme==0.8.0

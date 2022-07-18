@@ -1,5 +1,4 @@
 ![Modalic Logo](https://github.com/modalic/python-sdk/blob/main/docs/source/_static/mo-logo.png)
-<!-- ![test](https://raw.githubusercontent.com/modalic/python-sdk/main/docs/source/_static/mo-logo.svg?token=GHSAT0AAAAAABRDIVC2OKVSTFHDANG5FISUYWVIGDA) -->
 
 --------------------------------------------------------------------------------
 
