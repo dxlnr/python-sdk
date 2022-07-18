@@ -80,8 +80,7 @@ def _grpc_connection(
 def _error_grpc(rpc_error: grpc.RpcError, **kwargs: dict[str, Any]) -> None:
     r"""Common grpc error message when exception is thrown.
 
-    Args:
-        rpc_error: grpc.RpcError which defines the kind of error message.
+    :param rpc_error: grpc.RpcError which defines the kind of error message.
     """
     if rpc_error.code() == grpc.StatusCode.UNAVAILABLE:
         logger.log(
@@ -109,14 +108,13 @@ def _update(
 ) -> None:
     r"""Sends an updated model version to the server.
 
-    Args:
-        client_id: Client identifier
-        server_address: Determines the IP address for connecting to the server.
-        weights: The local model weights which are sent to the aggregation server.
-        dtype: Data Type of the trained model. Important as it determines the de-/serialization.
-        round_id: Training round id.
-        stake: Sets the number of samples the local model was trained on.
-        loss: Loss of the local model during training.
+    :param client_id: Client identifier
+    :param server_address: Determines the IP address for connecting to the server.
+    :param weights: The local model weights which are sent to the aggregation server.
+    :param dtype: Data Type of the trained model. Important as it determines the de-/serialization.
+    :param round_id: Training round id.
+    :param stake: Sets the number of samples the local model was trained on.
+    :param loss: Loss of the local model during training.
     """
     parameters = parameters_to_proto(
         weights_to_parameters(weights, dtype=dtype, model_version=round_id)
@@ -143,9 +141,9 @@ def _update(
 def _get_global_model(client_id: int, server_address: str) -> shared.Parameters:
     r"""Client request to get the latest version of the global model from server.
 
-    Args:
-        client_id: Client identifier
-        server_address: Determines the IP address for connecting to the server.
+    :param client_id: Client identifier
+    :param server_address: Determines the IP address for connecting to the server.
+    :returns: Model parameters that contain the model weights.
     """
     (channel, stub) = _grpc_connection(server_address)
     try:
@@ -167,24 +165,23 @@ def _sync_model_version(
 ) -> shared.Parameters:
     r"""Checks and syncs model version to current training round.
 
-    Args:
-        client_id: Client identifier
-        server_address: Determines the IP address for connecting to the server.
-        round_id: Curretn training round id for checking the global model version.
-        n_retry: Number of retries that should be performed before ignoring
-                 getting an updated global model.
-        retry_period: Defines how long a halt should take before retrying.
+    :param client_id: Client identifier
+    :param server_address: Determines the IP address for connecting to the server.
+    :param round_id: Current training round id for checking the global model version.
+    :param n_retry: Number of retries that should be performed before ignoring
+        getting an updated global model.
+    :param retry_period: Defines how long a halt should take before retrying.
+    :returns: Model parameters that contain the model weights.
     """
-    # TODO: This function need testing and rewriting.
     for n in range(n_retry):
-        params = _get_global_model(client_id, server_address)
-        if params is not None:
+        try:
+            params = _get_global_model(client_id, server_address)
             if not params.tensor:
                 logger.log(
                     WARNING,
                     f"Client {client_id} did not receive global model from aggregation server.",
                 )
-                return
+                break
             else:
                 if params.model_version == round_id:
                     return params
@@ -195,5 +192,7 @@ def _sync_model_version(
                         Client goes in lockstep for {retry_period}s.",
                     )
                     time.sleep(retry_period)
-        else:
-            return
+                continue
+        except grpc.RpcError as rpc_error:
+            _error_grpc(rpc_error, server_address=server_address)
+            continue
