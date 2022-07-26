@@ -3,7 +3,7 @@
 Python SDK Reference
 ====================
 
-The main SDK components are listed below.
+The main Python SDK components are listed below.
 
 .. _modalic-client-apiref:
 
