@@ -7,7 +7,7 @@ Installation
 ------------
 
 For installing the Python SDK and further information regarding the process,
-please visit the `installation guide <getting-started>`_.
+please visit the `installation guide<installation>`_.
 
 It is recommended to create a virtual environment with `Ananconda <https://anaconda.org/>`_ and run everything within
 the `conda <https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html>`_ setup.

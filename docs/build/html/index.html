@@ -166,7 +166,19 @@
             
   <section id="documentation">
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
-<p>Modalic aims to provide an open-source MLOps Platform for performing Federated Learning.</p>
+<p>Modalic aims to provide an <strong>Open-Source FLOps Platform</strong> for performing Federated Learning reliably.
+In order to foster adoption of Federated Learning, the creation of various kind of use cases and
+ultimately bringing these into production, accessible technology needs to exist for fast
+development, evaluation and testing.</p>
+<p>Modalic introduces a technology core that includes two main components:</p>
+<ul class="simple">
+<li><p>A <a class="reference external" href="python-sdk-ref">Software Development Kit</a> written in Python that serves as an endpoint for the client (edge device) to participate in a Federated Learning setup.
+The Python SDK is compatible with the main Machine Learning frameworks like <a class="reference external" href="https://pytorch.org/">PyTorch</a> and <a class="reference external" href="https://www.tensorflow.org/">Tensorflow</a> (will follow soon).
+This allows for custom Machine Learning development without any compromise. The Modalic Python SDK serves then as an extra layer, abstracting functionality and prepares the client for collaboration.
+The collaboration is then coordinated by a central aggregation instance.</p></li>
+<li><p>An Aggregation Server application which can be directly called by <a class="reference external" href="modalic-server-apiref">using the SDK</a>. The aggregation server is the backbone of Federated Learning
+and defines the algorithm of how the local models are compromised into a global model.</p></li>
+</ul>
 <p>Get started using the <a class="reference internal" href="getting-started.html#getting-started"><span class="std std-ref">Getting Started</span></a> or by reading about the <a class="reference internal" href="concepts.html#concepts"><span class="std std-ref">key concepts</span></a>.</p>
 <section id="content">
 <h2>Content<a class="headerlink" href="#content" title="Permalink to this headline">¶</a></h2>
@@ -191,7 +203,7 @@
        title="next chapter">Installing Modalic →</a>
   </li>
 </ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2022, modalic.
+      &#169; Copyright 2022, Modalic. All rights reserved..
 </div>
             </div>
           </div>
