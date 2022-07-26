@@ -8,11 +8,11 @@
 
 <p align="center">
     <a href="https://www.python.org/">
-      <img src="https://img.shields.io/badge/Python-3.8-ff69b4.svg" /></a>
+      <img src="https://img.shields.io/badge/Python-3.8-2F54D1.svg" /></a>
     <a href="https://github.com/modalic/python-sdk/blob/main/LICENSE">
-      <img src="https://img.shields.io/badge/license-apache2-green.svg" /></a>
+      <img src="https://img.shields.io/badge/license-apache2-351c75.svg" /></a>
     <a href="https://github.com/modalic/python-sdk/blob/main/CONTRIBUTING.md">
-      <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" /></a>
+      <img src="https://img.shields.io/badge/PRs-welcome-6834D5.svg" /></a>
 </p>
 
 Python SDK library for using the **Modalic Federated Learning Operations Platform**.
@@ -46,7 +46,8 @@ modalic.run_server(cfg)
   # strategy = "FedAvg"
 
 # (2) Construct the client logic.
-# Trainer object that contains all the ML logic.
+
+# Define a Trainer object that contains all the ML logic.
 class Trainer():
 
   def __init__():
@@ -57,13 +58,15 @@ class Trainer():
   def train():
     ...
 
-# Put Modalic layer on top of ML logic.
+# Put the Modalic client layer on top of the ML logic.
 client = modalic.PytorchClient(Trainer())
-# (3) Run training.
+
+# (3) Run training for single client.
 client.run()
 ```
 
-Please keep in mind that this code snippet shows only the logic and the general idea. For more details, check out the examples folder that contains more such examples that are actually actionable.
+Please keep in mind that this code snippet shows only the logic and the general idea. For more details,
+check out the */examples* folder that contains more in-depth and complete instruction sets and examples that are actually actionable.
 
 ## Installation
 

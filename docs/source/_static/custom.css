@@ -51,5 +51,107 @@ a:hover {
 /* -- For the highlighting sections.------------------------------------- */
 
 .highlight pre{
-  background-color: #2f2f33 !important;
+  background-color: #f8f8f8 !important;
+  /* background-color: #000 !important; */
+  font-size: 14px !important;
 }.content
+
+.highlight .n{
+  color: #000000 !important;
+  font-weight: bold !important;
+  /* color: #fff !important; */
+  /* color: #13479c !important; */
+}
+
+.highlight .p{
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+.highlight .k{
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+.highlight .o{
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+.highlight .c1{
+  color: #6c6c6d !important;
+}
+
+.highlight .mf{
+  color: #009999 !important;
+}
+
+.highlight .mi{
+  color: #009999 !important;
+}
+
+.highlight .nb{
+  color: #0086B3 !important;
+  font-weight: bold !important;
+}
+
+.highlight .nc{
+  color: #445588 !important;
+  font-weight: bold !important;
+}
+
+.highlight .ne{
+  color: #990000 !important;
+  font-weight: bold !important;
+}
+
+.highlight .nf{
+  color: #990000 !important;
+  font-weight: bold !important;
+}
+
+.highlight .nn{
+  color: #555555 !important;
+}
+
+.highlight .gp{
+  color: #4e3c63 !important;
+}
+
+.highlight .bp{
+  color: #525252 !important;
+}
+
+.highlight .fm{
+  color: #0000FF !important;
+  font-weight: bold !important;
+}
+
+.highlight .kc{
+  color: #6834d5 !important;
+}
+
+.highlight .kn{
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+.highlight .s2{
+  color: #d14 !important;
+}
+
+.highlight .sa{
+  color: #BA2121 !important;
+}
+
+.highlight .si{
+  color: #d14 !important;
+}
+
+.highlight .vm{
+  color: #19177C !important;
+}
+
+/* .highlighted{
+  background-color: #fff !important;
+} */
