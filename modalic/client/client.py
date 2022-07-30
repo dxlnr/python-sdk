@@ -15,66 +15,31 @@
 from __future__ import annotations
 
 import time
-import traceback
+from abc import abstractmethod
 from logging import DEBUG, INFO
-from typing import Any, List, Optional
+from typing import Any, List
 
 import numpy as np
 
-from modalic.client.grpc_client import Communicator
-from modalic.client.utils.torch_utils import (
-    _get_model_dtype,
-    _get_model_shape,
-    _get_torch_weights,
-    _set_torch_weights,
-)
+from modalic.client.utils.communication import _sync_model_version, _update
 from modalic.config import Conf
 from modalic.data.misc import get_dataset_length
 from modalic.logging.logging import logger
 from modalic.utils import shared
+from modalic.utils.communication import CommunicationLayer
+from modalic.utils.serde import parameters_to_weights
 
 
-class PytorchClient(Communicator):
-    r"""
-    Pytorch compatible client object which abstracts all the distributed communication.
-    Serves as a simple layer and API that enables participating within a
-    Federated Learning process.
+class Client(CommunicationLayer):
+    r""".
 
-    :param trainer: Pytorch Trainer object. Can be custom.
-    :param conf: Configuration object that stores all the parameters concerning the process.
-    :param data: Dataset object that can be set for the Pytorch Trainer object.
-    :param client_id: Client id which uniquely identifies the client object within the program.
-
-    :Example:
-        >>> client = modalic.PytorchClient(Trainer(), conf, 1)
-        >>> client.run()
-
-    :raises AttributeError: Input object trainer has to contain a model & train() function.
+    :param trainer: Custom Trainer object.
+    :param conf: :ref
     """
 
     def __init__(
-        self,
-        trainer: Any,
-        conf: Optional[dict] = None,
-        client_id: Optional[int] = 0,
-        # data: Optional[Any] = None,
+        self, trainer: Any, conf: Conf, model_shape: List[np.ndarray], dtype: str
     ):
-        self.trainer = trainer
-        self.conf = Conf.create_conf(conf)
-
-        if client_id != 0:
-            self.client_id = client_id
-            self.conf.client_id = client_id
-        else:
-            self.client_id = self.conf.client_id
-
-        super().__init__(self.conf.server_address, self.client_id)
-
-        try:
-            self.model = self.trainer.model
-        except AttributeError:
-            traceback.print_exc()
-
         # Setting all the internal necessary attributes.
         self._training_rounds = self.conf.training_rounds
         self._model_shape = self._get_model_shape()
@@ -92,9 +57,10 @@ class PytorchClient(Communicator):
         self._loss = 0.0
         self._round_id = 0
 
-    def __repr__(self) -> str:
-        r"""Returns string representative of object."""
-        return f"Modalic Pytorch Client Object {self.client_id}"
+    @property
+    def client_id(self):
+        r"""Returns the client identifier."""
+        return self._client_id
 
     @property
     def dtype(self):
@@ -116,34 +82,62 @@ class PytorchClient(Communicator):
         r"""Returns the shape of model architecture the client holds."""
         return self._model_shape
 
-    # def _validate_trainer(self):
-    #     r"""Raises exception if trainer object does not contain certain attributes
-    #     and functionalities.
-    #     """
-    #     pass
-
+    @abstractmethod
     def _set_weights(self, weights: shared.Weights) -> None:
         r"""Sets the model weights from a list of NumPy ndarrays.
 
         :param weights: Model weights as a list of NumPy ndarrays.
         """
-        self.model = _set_torch_weights(self.model, weights)
+        raise NotImplementedError()
 
+    @abstractmethod
     def _get_weights(self) -> shared.Weights:
         r"""Returns model weights as a list of NumPy ndarrays."""
-        return _get_torch_weights(self.model)
+        raise NotImplementedError()
 
+    @abstractmethod
     def _get_model_shape(self) -> List[np.ndarray]:
-        r"""Extracts the shape of the pytorch model.
+        r"""Extracts the shape of the model.
 
         :returns: List of np.array representing the model shape.
-            (Example: [np.array([1, 4]), np.array([1])])
         """
-        return _get_model_shape(self.model)
+        raise NotImplementedError()
 
+    @abstractmethod
     def _get_model_dtype(self) -> None:
-        r"""Extracts the data type of the pytorch model."""
-        self._dtype = _get_model_dtype(self.model)
+        r"""Extracts the data type of the model."""
+        raise NotImplementedError()
+
+    def _update(self) -> None:
+        r"""Sends an updated model version to the server."""
+        _update(
+            self._client_id,
+            self._server_address,
+            self._get_weights(),
+            self._dtype,
+            self._round_id,
+            self._stake,
+            self._loss,
+        )
+
+    def _get_global_model(
+        self, model_shape: List[np.ndarray], retry: float = 5.0
+    ) -> None:
+        r"""Client request to get the latest version of the global model from server.
+
+        :param model_shape: Holds the shape of the model architecture for serialization & deserialization.
+        :param retry: (Default: ``5.0``) Defines the periode after which a retry is performed.
+        """
+        params = _sync_model_version(
+            self.client_id, self.server_address, self._round_id, retry_period=retry
+        )
+        if params is not None:
+            weights = parameters_to_weights(params, self._model_shape)
+            self._set_weights(weights)
+            logger.log(
+                INFO,
+                f"Client {self._client_id} received global model from aggregation server.",
+            )
 
     def _train(self) -> None:
         r"""Runs the train method of custom trainer object for single model."""
@@ -152,12 +146,6 @@ class PytorchClient(Communicator):
         except AttributeError:
             raise AttributeError(f"{self.trainer} has no train() functionality.")
 
-    # def eval(self) -> None:
-    #     pass
-
-    # def val_get_global_model(self, params: shared.Parameters) -> bool:
-    #     r"""Validates the response from server."""
-
     def _run_single_round(self) -> None:
         r"""Runs a single trainings round for a single modalic client."""
         self.get_global_model(self._model_shape)
@@ -165,7 +153,7 @@ class PytorchClient(Communicator):
         self._train()
         logger.log(
             INFO,
-            f"Client {self.client_id} | training round: {self._round_id} | loss: {self._loss}",
+            f"Client {self._client_id} | training round: {self._round_id} | loss: {self._loss}",
         )
         self.update(self._dtype, self._round_id, self._data_size, self._loss)
         time.sleep(self.conf.timeout)
@@ -174,3 +162,9 @@ class PytorchClient(Communicator):
         r"""Looping the whole training process for a single modalic client."""
         while self._round_id < self._training_rounds:
             self._run_single_round()
+
+    # def eval(self) -> None:
+    #     pass
+
+    # def val_get_global_model(self, params: shared.Parameters) -> bool:
+    #     r"""Validates the response from server."""

@@ -17,7 +17,7 @@ from __future__ import annotations
 import dataclasses
 from dataclasses import dataclass
 from logging import WARNING
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import toml
 
@@ -83,14 +83,18 @@ class Conf(object):
         return value
 
     @classmethod
-    def create_conf(cls, conf: dict[str, dict[str, Any]] = None) -> Conf:
+    def create_conf(
+        cls, conf: dict[str, dict[str, Any]] = None, client_id: Optional[int] = 0
+    ) -> Conf:
         r"""Constructs a (default) conig object with external conf if given.
 
         :param conf: Produced by .toml config. Dict which contains dicts. The values
             of conf will overwrite the default values.
+        :param client_id: (Optional) Overwrite client_id when creating a conf.
         """
         instance = cls()
         instance.set_params(conf)
+        instance.client_id = client_id
         return instance
 
     @classmethod

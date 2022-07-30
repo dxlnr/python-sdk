@@ -33,15 +33,15 @@ from modalic.utils.serde import parameters_to_weights
 
 
 class CommunicationLayer(ABC):
-    r"""Abstract communicatio base layer for ensuring the grpc protocol."""
+    r"""Abstract communication base layer for ensuring the grpc protocol."""
 
     @abstractmethod
-    def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
+    def _update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
         r"""Sends an updated model version to the server."""
         raise NotImplementedError()
 
     @abstractmethod
-    def get_global_model(
+    def _get_global_model(
         self, model_shape: List[np.ndarray[int, np.dtype[Any]]]
     ) -> None:
         r"""Client request to get the latest version of the global model
@@ -98,7 +98,7 @@ class Communicator(CommunicationLayer):
             self.client_id,
         )
 
-    def update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
+    def _update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
         r"""Sends an updated model version to the server.
 
         :param dtype: Data Type of the trained model. Important as it determines the de-/serialization.
@@ -116,7 +116,7 @@ class Communicator(CommunicationLayer):
             loss,
         )
 
-    def get_global_model(
+    def _get_global_model(
         self, model_shape: List[np.ndarray], retry: float = 5.0
     ) -> None:
         r"""Client request to get the latest version of the global model from server.

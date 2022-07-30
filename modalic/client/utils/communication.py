@@ -15,10 +15,12 @@
 from __future__ import annotations
 
 import time
+from abc import ABC, abstractmethod
 from logging import ERROR, INFO, WARNING
-from typing import Any, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import grpc
+import numpy as np
 
 from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
 from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
@@ -31,6 +33,24 @@ from modalic.utils.protocol import (
     to_meta,
 )
 from modalic.utils.serde import weights_to_parameters
+
+
+class CommunicationLayer(ABC):
+    r"""Abstract communication base layer for ensuring the grpc protocol."""
+
+    @abstractmethod
+    def _update(self, dtype: str, round_id: int, stake: int, loss: float) -> None:
+        r"""Sends an updated model version to the server."""
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _get_global_model(
+        self, model_shape: List[np.ndarray[int, np.dtype[Any]]]
+    ) -> None:
+        r"""Client request to get the latest version of the global model
+        from server.
+        """
+        raise NotImplementedError()
 
 
 def _grpc_connection(

@@ -77,3 +77,8 @@ def _get_model_shape(model: torch.nn.Module) -> List[np.ndarray]:
         np.array(model.state_dict()[param_tensor].size())
         for param_tensor in model.state_dict().keys()
     ]
+
+
+def _det_torch(model: any) -> bool:
+    r"""Determines wether the model is a Pytorch model or not."""
+    return isinstance(model, torch.nn.Module)

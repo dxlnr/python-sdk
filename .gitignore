@@ -30,3 +30,6 @@ examples/tensorflow_cifar10
 
 #wheels
 wheelhouse
+
+
+modalic/client/test.py
