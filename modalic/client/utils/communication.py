@@ -53,7 +53,7 @@ class CommunicationLayer(ABC):
         raise NotImplementedError()
 
 
-def _grpc_connection(
+def grpc_connection(
     server_address: str,
     max_message_length: int = 536870912,
     root_certificates: Optional[bytes] = None,
@@ -97,7 +97,7 @@ def _grpc_connection(
     return (channel, CommunicationStub(channel))
 
 
-def _error_grpc(rpc_error: grpc.RpcError, **kwargs: dict[str, Any]) -> None:
+def error_grpc(rpc_error: grpc.RpcError, **kwargs: dict[str, Any]) -> None:
     r"""Common grpc error message when exception is thrown.
 
     :param rpc_error: grpc.RpcError which defines the kind of error message.
@@ -117,7 +117,7 @@ def _error_grpc(rpc_error: grpc.RpcError, **kwargs: dict[str, Any]) -> None:
         return
 
 
-def _update(
+def update(
     client_id: int,
     server_address: str,
     weights: shared.Weights,
@@ -141,7 +141,7 @@ def _update(
     )
     process_meta = process_meta_to_proto(to_meta(round_id, loss))
 
-    (channel, stub) = _grpc_connection(server_address)
+    (channel, stub) = grpc_connection(server_address)
     try:
         _ = stub.Update(
             ClientUpdate(
@@ -152,30 +152,30 @@ def _update(
             )
         )
     except grpc.RpcError as rpc_error:
-        _error_grpc(rpc_error, server_address=server_address)
+        error_grpc(rpc_error, server_address=server_address)
     else:
         channel.close()
         logger.log(INFO, f"Client {client_id} sent update to aggregation server.")
 
 
-def _get_global_model(client_id: int, server_address: str) -> shared.Parameters:
+def get_global_model(client_id: int, server_address: str) -> shared.Parameters:
     r"""Client request to get the latest version of the global model from server.
 
     :param client_id: Client identifier
     :param server_address: Determines the IP address for connecting to the server.
     :returns: Model parameters that contain the model weights.
     """
-    (channel, stub) = _grpc_connection(server_address)
+    (channel, stub) = grpc_connection(server_address)
     try:
         response = stub.GetGlobalModel(ClientMessage(id=client_id))
     except grpc.RpcError as rpc_error:
-        _error_grpc(rpc_error, server_address=server_address)
+        error_grpc(rpc_error, server_address=server_address)
     else:
         channel.close()
         return parameters_from_proto(response)
 
 
-def _sync_model_version(
+def sync_model_version(
     client_id: int,
     server_address: str,
     round_id: int,
@@ -195,7 +195,7 @@ def _sync_model_version(
     """
     for n in range(n_retry):
         try:
-            params = _get_global_model(client_id, server_address)
+            params = get_global_model(client_id, server_address)
             if not params.tensor:
                 logger.log(
                     WARNING,
@@ -209,10 +209,10 @@ def _sync_model_version(
                     logger.log(
                         INFO,
                         f"Client {client_id} in training round {round_id} received global model version {params.model_version}.\
-                        Client goes in lockstep for {retry_period}s.",
+                        Client pauses for {retry_period}s.",
                     )
                     time.sleep(retry_period)
                 continue
         except grpc.RpcError as rpc_error:
-            _error_grpc(rpc_error, server_address=server_address)
+            error_grpc(rpc_error, server_address=server_address)
             continue

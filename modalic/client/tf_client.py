@@ -49,9 +49,7 @@ class TfClient(Client):
                 f"Custom {trainer} object has no model. Please define the model architecture that should be trained."
             )
 
-        super().__init__(
-            self.trainer, self.conf, self._get_model_shape(), self._get_model_dtype()
-        )
+        super().__init__(self.trainer, self.conf)
 
     def _set_weights(self, weights: shared.Weights) -> None:
         r"""Sets the model weights from a list of NumPy ndarrays.
@@ -72,9 +70,9 @@ class TfClient(Client):
         """
         return _get_tf_model_shape(self.model)
 
-    def _get_model_dtype(self) -> None:
+    def _get_model_dtype(self) -> str:
         r"""Extracts the data type of the tensorflow model."""
-        self._dtype = _get_tf_model_dtype(self.model)
+        return _get_tf_model_dtype(self.model)
 
     def run(self, mode: str = "train"):
         r"""Endpoint for running the Machine Learning setup as Modalic client."""

@@ -4,7 +4,7 @@ Quickstart PyTorch
 ==================
 
 This example aims for a quick start into the functionality modalic core provides, by walking through a basic example.
-The Federated Learning example will classify hand-written digits using the well-known `MNIST <http://yann.lecun.com/exdb/mnist/>`_ dataset. 
+The Federated Learning example will classify hand-written digits using the well-known `MNIST <http://yann.lecun.com/exdb/mnist/>`_ dataset.
 The setup is based on `Pytorch <https://pytorch.org/>`_.
 
 The example can be run as a standalone project via::
@@ -12,7 +12,7 @@ The example can be run as a standalone project via::
     git clone --depth=1 https://github.com/modalic/python-sdk.git && mv python-sdk/examples/pytorch_mnist . && rm -rf python_sdk && cd pytorch_mnist
 
 And subsequently installing all the dependencies is done by running::
-    
+
     python3 -m venv modalic-env
     source modalic-env/bin/activate
     pip install --editable .
@@ -78,7 +78,7 @@ The :code:`server.py` file contains the logic to start the server.
 
     args = parser.parse_args()
 
-Besides the import of some dependencies, this allows for adding a config file via commandline for controlling important hyperparameter
+Besides the import of some dependencies, this allows for adding a config file via command-line for controlling important hyperparameters.
 for the Federated Learning process.
 
 
@@ -93,7 +93,7 @@ The server itself is then started by adding the following line:
 Client Side
 -----------
 
-The individual logic for the client is implemented in the :code:`client.py` file. Besides some necessary dependencies, 
+The individual logic for the client is implemented in the :code:`client.py` file. Besides some necessary dependencies,
 there is the possiblity to alter the client ID via commandline argument using a parser.
 
 .. code-block:: python
@@ -255,6 +255,3 @@ Start additional clients accordingly:
     $ python client.py --client_id 2
 
 Start as many clients in order to match the overall number of participants stated in the config file.
-
-
-

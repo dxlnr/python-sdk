@@ -14,13 +14,11 @@
 
 from abc import ABC, abstractmethod
 
-import torch
-
 
 class Trainer(ABC):
     r"""Trainer class provides an API for feature-complete training in PyTorch."""
 
-    model: torch.nn.Module = NotImplemented
+    # model: torch.nn.Module = NotImplemented
     # dataset: Optional[Any] = None
 
     @abstractmethod

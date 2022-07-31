@@ -15,7 +15,7 @@
 import functools
 from logging import INFO
 
-from modalic.client.utils.communication import _get_global_model, _update
+from modalic.client.utils.communication import get_global_model, update
 from modalic.client.utils.torch_utils import (
     _get_model_shape,
     _get_torch_weights,
@@ -50,7 +50,7 @@ def train(conf: Conf = Conf()):
                 wrapper.data_stack = 1
 
             while wrapper.round_id < conf.training_rounds:
-                params = _get_global_model(conf.client_id, conf.server_address)
+                params = get_global_model(conf.client_id, conf.server_address)
 
                 if params is not None and len(params.tensor) != 0:
                     weights = parameters_to_weights(params, wrapper.model_shape)
@@ -67,7 +67,7 @@ def train(conf: Conf = Conf()):
                     INFO,
                     f"Client {conf.client_id} | training round: {wrapper.round_id} | loss: {wrapper.loss}",
                 )
-                _update(
+                update(
                     conf.client_id,
                     conf.server_address,
                     _get_torch_weights(model),

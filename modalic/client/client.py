@@ -23,8 +23,8 @@ import numpy as np
 
 from modalic.client.utils.communication import (
     CommunicationLayer,
-    _sync_model_version,
-    _update,
+    sync_model_version,
+    update,
 )
 from modalic.config import Conf
 from modalic.data.misc import get_dataset_length
@@ -34,28 +34,30 @@ from modalic.utils.serde import parameters_to_weights
 
 
 class Client(CommunicationLayer):
-    r""".
+    r"""Client object implements all the functionality that enables Federated Learning.
+    It serves also for a base class for the specific child classes that implement
+    specific functions for specific ML frameworks.
 
     :param trainer: Custom Trainer object.
-    :param conf: :ref
+    :param conf:
     """
 
-    def __init__(
-        self, trainer: Any, conf: Conf, model_shape: List[np.ndarray], dtype: str
-    ):
+    def __init__(self, trainer: Any, conf: Conf):
         # Setting all the internal necessary attributes.
+        self._server_address = self.conf.server_address
+        self._client_id = self.conf.client_id
         self._training_rounds = self.conf.training_rounds
         self._model_shape = self._get_model_shape()
-        self._get_model_dtype()
+        self._dtype = self._get_model_dtype()
         if hasattr(self.trainer, "dataset"):
-            self._data_size = get_dataset_length(self.trainer.dataset)
+            self._stake = get_dataset_length(self.trainer.dataset)
         else:
             logger.log(
                 DEBUG,
                 f"Object {self.trainer} has no attribute dataset.\
                 Federation will proceed with default value 1 as the size of the dataset.",
             )
-            self._data_size = 1
+            self._stake = 1
 
         self._loss = 0.0
         self._round_id = 0
@@ -107,13 +109,13 @@ class Client(CommunicationLayer):
         raise NotImplementedError()
 
     @abstractmethod
-    def _get_model_dtype(self) -> None:
+    def _get_model_dtype(self) -> str:
         r"""Extracts the data type of the model."""
         raise NotImplementedError()
 
     def _update(self) -> None:
         r"""Sends an updated model version to the server."""
-        _update(
+        update(
             self._client_id,
             self._server_address,
             self._get_weights(),
@@ -123,16 +125,14 @@ class Client(CommunicationLayer):
             self._loss,
         )
 
-    def _get_global_model(
-        self, model_shape: List[np.ndarray], retry: float = 5.0
-    ) -> None:
+    def _get_global_model(self, retry: float = 5.0) -> None:
         r"""Client request to get the latest version of the global model from server.
 
         :param model_shape: Holds the shape of the model architecture for serialization & deserialization.
         :param retry: (Default: ``5.0``) Defines the periode after which a retry is performed.
         """
-        params = _sync_model_version(
-            self.client_id, self.server_address, self._round_id, retry_period=retry
+        params = sync_model_version(
+            self._client_id, self._server_address, self._round_id, retry_period=retry
         )
         if params is not None:
             weights = parameters_to_weights(params, self._model_shape)
@@ -151,14 +151,14 @@ class Client(CommunicationLayer):
 
     def _run_single_round(self) -> None:
         r"""Runs a single trainings round for a single modalic client."""
-        self.get_global_model(self._model_shape)
+        self._get_global_model()
         self._round_id += 1
         self._train()
         logger.log(
             INFO,
             f"Client {self._client_id} | training round: {self._round_id} | loss: {self._loss}",
         )
-        self.update(self._dtype, self._round_id, self._data_size, self._loss)
+        self._update()
         time.sleep(self.conf.timeout)
 
     def _loop_training(self) -> None:
