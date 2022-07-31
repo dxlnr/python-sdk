@@ -40,7 +40,7 @@
 
   
     <div class="nav-item">
-      <a href="https://github.com/modalic"
+      <a href="https://github.com/modalic/python-sdk"
         class="nav-link external">
           Github <outboundlink></outboundlink>
       </a>
@@ -63,7 +63,7 @@
 
   
     <div class="nav-item">
-      <a href="https://github.com/modalic"
+      <a href="https://github.com/modalic/python-sdk"
         class="nav-link external">
           Github <outboundlink></outboundlink>
       </a>
@@ -196,21 +196,21 @@
 
 
 <div class="viewcode-block" id="CommunicationLayer"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.CommunicationLayer">[docs]</a><span class="k">class</span> <span class="nc">CommunicationLayer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Abstract communicatio base layer for ensuring the grpc protocol.&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Abstract communication base layer for ensuring the grpc protocol.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="CommunicationLayer.update"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.CommunicationLayer.update">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stake</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stake</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sends an updated model version to the server.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-<div class="viewcode-block" id="CommunicationLayer.get_global_model"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.CommunicationLayer.get_global_model">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_global_model</span><span class="p">(</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_global_model</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">model_shape</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Client request to get the latest version of the global model</span>
 <span class="sd">        from server.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Communicator"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.Communicator">[docs]</a><span class="k">class</span> <span class="nc">Communicator</span><span class="p">(</span><span class="n">CommunicationLayer</span><span class="p">):</span>
@@ -261,7 +261,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Communicator.update"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.Communicator.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stake</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">round_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stake</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sends an updated model version to the server.</span>
 
 <span class="sd">        :param dtype: Data Type of the trained model. Important as it determines the de-/serialization.</span>
@@ -277,9 +277,9 @@
             <span class="n">round_id</span><span class="p">,</span>
             <span class="n">stake</span><span class="p">,</span>
             <span class="n">loss</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
-<div class="viewcode-block" id="Communicator.get_global_model"><a class="viewcode-back" href="../../../sdk/modalic.client.html#modalic.client.grpc_client.Communicator.get_global_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_global_model</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_get_global_model</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">model_shape</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">retry</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Client request to get the latest version of the global model from server.</span>
@@ -296,14 +296,14 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="n">INFO</span><span class="p">,</span>
                 <span class="sa">f</span><span class="s2">&quot;Client </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2"> received global model from aggregation server.&quot;</span><span class="p">,</span>
-            <span class="p">)</span></div></div>
+            <span class="p">)</span></div>
 </pre></div>
 
           </div>
           <div class="page-nav">
             <div class="inner"><ul class="page-nav">
 </ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2022, modalic.
+      &#169; Copyright 2022, Modalic. All rights reserved..
 </div>
             </div>
           </div>

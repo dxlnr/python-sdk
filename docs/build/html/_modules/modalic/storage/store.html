@@ -40,7 +40,7 @@
 
   
     <div class="nav-item">
-      <a href="https://github.com/modalic"
+      <a href="https://github.com/modalic/python-sdk"
         class="nav-link external">
           Github <outboundlink></outboundlink>
       </a>
@@ -63,7 +63,7 @@
 
   
     <div class="nav-item">
-      <a href="https://github.com/modalic"
+      <a href="https://github.com/modalic/python-sdk"
         class="nav-link external">
           Github <outboundlink></outboundlink>
       </a>
@@ -161,9 +161,25 @@
           <div class="content" role="main" v-pre>
             
   <h1>Source code for modalic.storage.store</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="c1">#  Copyright (c) modalic 2022. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1">#  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#  you may not use this file except in compliance with the License.</span>
+<span class="c1">#  You may obtain a copy of the License at:</span>
+<span class="c1">#</span>
+<span class="c1">#       https://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1">#  Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express</span>
+<span class="c1">#  or implied. See the License for the specific language governing</span>
+<span class="c1">#  permissions and limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">minio</span> <span class="kn">import</span> <span class="n">Minio</span>
+
+<span class="kn">from</span> <span class="nn">modalic.config</span> <span class="kn">import</span> <span class="n">Conf</span>
 
 <span class="c1"># from minio.error import S3Error</span>
 
@@ -171,16 +187,16 @@
 <div class="viewcode-block" id="Storage"><a class="viewcode-back" href="../../../sdk/modalic.storage.html#modalic.storage.store.Storage">[docs]</a><span class="k">class</span> <span class="nc">Storage</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Instantiate Storage Object that enables access to S3 layer.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        conf (dict): dictionary containing the configurations.</span>
+<span class="sd">    :param conf: Custom modalic configuration object containing the settings for</span>
+<span class="sd">        using the external stroring service.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf</span><span class="p">:</span> <span class="n">Conf</span> <span class="o">=</span> <span class="n">Conf</span><span class="p">()):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">conf</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">Minio</span><span class="p">(</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;s3_server&quot;</span><span class="p">],</span>
-            <span class="n">access_key</span><span class="o">=</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;access_key&quot;</span><span class="p">],</span>
-            <span class="n">secret_key</span><span class="o">=</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;secret_access_key&quot;</span><span class="p">],</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">s3_endpoint</span><span class="p">,</span>
+            <span class="n">access_key</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">s3_access_key</span><span class="p">,</span>
+            <span class="n">secret_key</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">s3_secret_access_key</span><span class="p">,</span>
             <span class="n">secure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -193,7 +209,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Uploads data object to s3 storage bucket.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;bucket&quot;</span><span class="p">],</span> <span class="n">object_name</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">object_name</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span>
         <span class="p">)</span></div></div>
 
     <span class="c1"># def create_bucket(self):</span>
@@ -205,7 +221,7 @@
           <div class="page-nav">
             <div class="inner"><ul class="page-nav">
 </ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2022, modalic.
+      &#169; Copyright 2022, Modalic. All rights reserved..
 </div>
             </div>
           </div>

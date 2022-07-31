@@ -1,5 +1,5 @@
 # Client API
-from modalic.client import PytorchClient, Trainer
+from modalic.client import PytorchClient, TfClient, Trainer
 
 # Decorators
 from modalic.client.utils.decor import train

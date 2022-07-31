@@ -17,7 +17,7 @@ from typing import Any, List, Optional
 import numpy as np
 
 from modalic.client.client import Client
-from modalic.client.utils.torch_utils import (
+from modalic.client.utils.tf_utils import (
     _get_tf_model_dtype,
     _get_tf_model_shape,
     _get_tf_weights,
@@ -75,3 +75,12 @@ class TfClient(Client):
     def _get_model_dtype(self) -> None:
         r"""Extracts the data type of the tensorflow model."""
         self._dtype = _get_tf_model_dtype(self.model)
+
+    def run(self, mode: str = "train"):
+        r"""Endpoint for running the Machine Learning setup as Modalic client."""
+        if mode == "train":
+            self._loop_training()
+        else:
+            raise AttributeError(
+                f"The input value of mode: {mode} unknown. Consider choosing either 'train' or 'eval'."
+            )

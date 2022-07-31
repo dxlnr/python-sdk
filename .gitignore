@@ -27,6 +27,7 @@ docs/build
 
 #examples
 examples/tensorflow_cifar10
+examples/tf_quickstart
 
 #wheels
 wheelhouse

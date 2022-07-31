@@ -24,6 +24,13 @@ Functional Training Decorator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: modalic.train
 
+.. _modalic-tf-client:
+
+TfClient Object
+---------------
+.. autoclass:: modalic.TfClient
+    :members:
+
 .. _modalic-server-apiref:
 
 Aggregation Server

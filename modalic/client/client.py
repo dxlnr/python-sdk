@@ -21,12 +21,15 @@ from typing import Any, List
 
 import numpy as np
 
-from modalic.client.utils.communication import _sync_model_version, _update
+from modalic.client.utils.communication import (
+    CommunicationLayer,
+    _sync_model_version,
+    _update,
+)
 from modalic.config import Conf
 from modalic.data.misc import get_dataset_length
 from modalic.logging.logging import logger
 from modalic.utils import shared
-from modalic.utils.communication import CommunicationLayer
 from modalic.utils.serde import parameters_to_weights
 
 
@@ -158,7 +161,7 @@ class Client(CommunicationLayer):
         self.update(self._dtype, self._round_id, self._data_size, self._loss)
         time.sleep(self.conf.timeout)
 
-    def train(self) -> None:
+    def _loop_training(self) -> None:
         r"""Looping the whole training process for a single modalic client."""
         while self._round_id < self._training_rounds:
             self._run_single_round()
