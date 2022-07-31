@@ -38,7 +38,17 @@ class Conf(object):
 
     :Example:
 
-    >>> conf = Conf.create_conf({})
+    Two main ways to construct a Conf object.
+        >>> # via dictionary
+        >>> custom_dict = {
+        >>>     "api": {"server_address": "[::]:8080"},
+        >>>     "process":
+        >>>         {"training_rounds": 10, "timeout": 5.0},
+        >>> }
+        >>> conf = Conf.create_conf(custom_dict)
+        >>> #
+        >>> # via .toml
+        >>> conf = Conf.from_toml(path)
     """
     server_address: str = "[::]:8080"
     client_id: int = 0

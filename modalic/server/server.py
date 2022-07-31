@@ -22,11 +22,14 @@ from modalic.server.api import find_bin_path
 def run_server(cfg_path: str = "") -> None:
     r"""Runs the Federated Learning aggregation server with configuration.
 
-    :param cfg_path: Path to an external .toml configuration file.
+    :param cfg_path: Path to an external .toml configuration file. The server operates with default values,
+        therefore the server will start w/o setting a path but
+        training_rounds \& participants if zero will cause an immediate termination of the server.
+        Please see the example below for more information on the .toml file.
 
     :Example:
 
-    The server needs an external configuration file for defining important hyperparameters. This can be done by:
+    The server needs an external configuration file for defining important hyperparameters.
         >>> import argparse
         >>> parser = argparse.ArgumentParser(description="Server arguments.")
         >>> parser.add_argument("--cfg", type=str, help="configuration file (path)")
@@ -35,15 +38,20 @@ def run_server(cfg_path: str = "") -> None:
     Setting the configurations via .toml file:
         >>> # *.toml file
         >>> [api]
-        >>> server_address = "[::]:8080" # This defines the domain under which the server can be reached.
+        >>> # Defines the domain under which the server can be reached.
+        >>> server_address = "[::]:8080"
         >>> #
         >>> [model]
-        >>> data_type = "F32" # This defines the data type of the ML model. Important as the server needs this info.
+        >>> # Defines the data type of the ML model. Important as the server needs this info.
+        >>> data_type = "F32"
         >>> #
         >>> [process]
-        >>> training_rounds = 10 # Sets the number of training rounds that should be performed by the server.
-        >>> participants = 3 # Sets the number of participants for each round.
-        >>> strategy = "FedAvg" # Sets the aggregation algorithm the server performs.
+        >>> # Sets the number of training rounds that should be performed by the server.
+        >>> training_rounds = 10
+        >>> # Sets the number of participants for each round.
+        >>> participants = 3
+        >>> # Sets the aggregation algorithm the server performs.
+        >>> strategy = "FedAvg"
 
     Then starting the server via.
         >>> modalic.run_server(args.cfg)

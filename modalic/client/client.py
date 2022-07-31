@@ -17,7 +17,7 @@ from __future__ import annotations
 import time
 from abc import abstractmethod
 from logging import DEBUG, INFO
-from typing import Any, List
+from typing import Any, List, Optional, Union
 
 import numpy as np
 
@@ -42,7 +42,18 @@ class Client(CommunicationLayer):
     :param conf:
     """
 
-    def __init__(self, trainer: Any, conf: Conf):
+    def __init__(
+        self,
+        trainer: Any,
+        conf: Optional[Union[dict, Conf]] = None,
+        client_id: Optional[int] = 0,
+    ):
+        self.trainer = trainer
+        if conf is None or isinstance(conf, dict):
+            self.conf = Conf.create_conf(conf, client_id)
+        else:
+            self.conf = conf
+
         # Setting all the internal necessary attributes.
         self._server_address = self.conf.server_address
         self._client_id = self.conf.client_id
@@ -63,27 +74,27 @@ class Client(CommunicationLayer):
         self._round_id = 0
 
     @property
-    def client_id(self):
+    def client_id(self) -> int:
         r"""Returns the client identifier."""
         return self._client_id
 
     @property
-    def dtype(self):
+    def dtype(self) -> str:
         r"""Returns the underlying data type that is set via Conf."""
         return self._dtype
 
     @property
-    def round_id(self):
+    def round_id(self) -> int:
         r"""Holds state of the training round the local model is in."""
         return self._round_id
 
     @property
-    def loss(self):
+    def loss(self) -> float:
         r"""Holds state of the current loss computed by the loss function of the clients model."""
         return self._loss
 
     @property
-    def model_shape(self):
+    def model_shape(self) -> List[np.ndarray]:
         r"""Returns the shape of model architecture the client holds."""
         return self._model_shape
 
@@ -171,3 +182,6 @@ class Client(CommunicationLayer):
 
     # def val_get_global_model(self, params: shared.Parameters) -> bool:
     #     r"""Validates the response from server."""
+
+    # def _obj_sanity_check_(self):
+    #     pass
