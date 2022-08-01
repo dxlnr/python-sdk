@@ -79,6 +79,11 @@ class Client(CommunicationLayer):
         return self._client_id
 
     @property
+    def server_address(self) -> int:
+        r"""Returns the server address the client uses to connect."""
+        return self._server_address
+
+    @property
     def dtype(self) -> str:
         r"""Returns the underlying data type that is set via Conf."""
         return self._dtype

@@ -20,8 +20,8 @@ import numpy as np
 
 from modalic.client.client import Client
 from modalic.client.utils.torch_utils import (
-    _get_model_dtype,
-    _get_model_shape,
+    _get_torch_model_dtype,
+    _get_torch_model_shape,
     _get_torch_weights,
     _set_torch_weights,
 )
@@ -77,14 +77,13 @@ class PytorchClient(Client):
         client_id: Optional[int] = 0,
         # dataloaders: Optional[Any] = None
     ):
-        super().__init__(trainer, conf)
-
         try:
-            self.model = self.trainer.model
+            self.model = trainer.model
         except AttributeError:
             raise AttributeError(
                 f"Custom {trainer} object has no model. Please define the model architecture that should be trained."
             )
+        super().__init__(trainer, conf)
 
     def __repr__(self) -> str:
         r"""Returns string representative of object."""
@@ -107,11 +106,11 @@ class PytorchClient(Client):
         :returns: List of np.array representing the model shape.
             (Example: [np.array([1, 4]), np.array([1])])
         """
-        return _get_model_shape(self.model)
+        return _get_torch_model_shape(self.model)
 
     def _get_model_dtype(self) -> str:
         r"""Extracts the data type of the pytorch model."""
-        return _get_model_dtype(self.model)
+        return _get_torch_model_dtype(self.model)
 
     def run(self, mode: str = "train"):
         r"""Endpoint for running the Machine Learning setup as Modalic Pytorch client."""

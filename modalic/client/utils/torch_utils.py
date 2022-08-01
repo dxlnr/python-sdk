@@ -12,6 +12,8 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+"""Pytorch specific utility functions."""
+
 from collections import OrderedDict
 from typing import List
 
@@ -19,6 +21,7 @@ import numpy as np
 import torch
 
 from modalic.utils import shared
+from modalic.utils.misc import all_equal_list
 
 
 def _set_torch_weights(
@@ -46,15 +49,14 @@ def _get_torch_weights(model: torch.nn.Module) -> shared.Weights:
     return [val.cpu().numpy() for _, val in model.state_dict().items()]
 
 
-def _get_model_dtype(model: torch.nn.Module) -> str:
-    r"""Extracts the data type of the pytorch model.
+def _translate_torch_model_dtype(torch_type: str) -> str:
+    r"""Translates the torch data type to server interpretable dtype.
 
-    :param model: Pytorch model object.
+    :param torch_type: Extracted torch dtype (https://pytorch.org/docs/stable/tensors.html)
     :returns: dtype: Encodes the data type of the model as a String. Options are
         "F32" and "F64".
     :raises ValueError: If torch type is not either 'torch.float' or 'torch.double'.
     """
-    torch_type = list(model.state_dict().items())[0][1].dtype
     if torch_type == "torch.float32" or "torch.float":
         _dtype = "F32"
     elif torch_type == "torch.float64" or "torch.double":
@@ -67,7 +69,30 @@ def _get_model_dtype(model: torch.nn.Module) -> str:
     return _dtype
 
 
-def _get_model_shape(model: torch.nn.Module) -> List[np.ndarray]:
+def _get_torch_model_dtype(model: torch.nn.Module) -> str:
+    r"""Extracts the data type of the pytorch model.
+
+    :param model: Pytorch model object.
+    :returns: dtype: Encodes the data type of the model as a String. Options are
+        "F32" and "F64".
+    :raises ValueError:
+    """
+    if isinstance(model, torch.nn.Module):
+        dtype_list = [layer[1].dtype for layer in list(model.state_dict().items())]
+        if torch_type := all_equal_list(dtype_list):
+            return _translate_torch_model_dtype(torch_type)
+        else:
+            raise ValueError(
+                f"Found inconsistent data type for {model}. Mixed precision policy is not allowed at this point.\
+             Consider reimplementing model with consistent data type above all layers."
+            )
+    else:
+        raise TypeError(
+            f"Unknown model type: {type(model)}. Consider inheriting from torch.nn.Module."
+        )
+
+
+def _get_torch_model_shape(model: torch.nn.Module) -> List[np.ndarray]:
     r"""Extracts the shape of the pytorch model.
 
     :param model: Pytorch model object.
@@ -79,6 +104,6 @@ def _get_model_shape(model: torch.nn.Module) -> List[np.ndarray]:
     ]
 
 
-def _det_torch(model: any) -> bool:
+def check_torch_model(model: any) -> bool:
     r"""Determines wether the model is a Pytorch model or not."""
     return isinstance(model, torch.nn.Module)

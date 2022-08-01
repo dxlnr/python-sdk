@@ -20,34 +20,71 @@ import tensorflow as tf
 from modalic.utils import shared
 
 
+def check_keras_model(func):
+    r"""Determines wether the model is a Tf keras model object or not."""
+
+    def inner(model, *args, **kwargs):
+        if isinstance(model, tf.keras.Model):
+            func()
+        else:
+            raise TypeError(
+                f"Unknown model type: {type(model)}. Consider to inherite from tf.keras.Model."
+            )
+
+    return inner
+
+
+@check_keras_model
 def _set_tf_weights(model: tf.keras.Model, weights: shared.Weights) -> tf.keras.Model:
     r"""Set model weights from a list of NumPy ndarrays.
 
-    :param model: Tensorflow model object.
+    :param model: Tf keras model object.
     :param weights: Model weights as a list of NumPy ndarrays.
     :returns: Tensorflow model object that is updated with input weights.
     """
-    print("NotImplementedError")
+    update = model.set_weights(weights)
+    return update
 
 
+@check_keras_model
 def _get_tf_weights(model: tf.keras.Model) -> shared.Weights:
     r"""Get model weights as a list of NumPy ndarrays.
 
-    :param model: Tensorflow model object.
+    :param model: Tf keras model object.
     :returns: Weights as a list of NumPy ndarrays.
     """
-    print("NotImplementedError")
+    return model.get_weights()
 
 
+def _translate_tf_model_dtype(tf_type: str) -> str:
+    r"""Translates the data type of tensorflow model to server interpretable dtype.
+
+    :param tf_type: Extracted tf dtype (https://www.tensorflow.org/api_docs/python/tf/dtypes)
+    :returns: dtype: Encodes the data type of the model as a String. Options are
+        "F32" and "F64".
+    :raises ValueError: If data type is not either 'float32' or 'float64'."""
+    if tf_type == "float32":
+        _dtype = "F32"
+    elif tf_type == "float64":
+        _dtype = "F64"
+    else:
+        raise ValueError(
+            f"{tf_type} is not supported by aggregation server. \
+            Federation will fail. Please use 'float32' or 'float64'."
+        )
+    return _dtype
+
+
+@check_keras_model
 def _get_tf_model_dtype(model: tf.keras.Model) -> str:
     r"""Extracts the data type of the Tensorflow model.
 
-    :param model: Tensorflow model object.
+    :param model: Tf keras model object.
     :returns: dtype: Encodes the data type of the model as a String. Options are
         "F32" and "F64".
-    :raises ValueError:
+    :raises TypeError:
     """
-    print("NotImplementedError")
+    return _translate_tf_model_dtype(model.dtype)
 
 
 def _get_tf_model_shape(model: tf.keras.Model) -> List[np.ndarray]:
@@ -57,8 +94,3 @@ def _get_tf_model_shape(model: tf.keras.Model) -> List[np.ndarray]:
     :returns: List of np.ndarray which contains the shape (size) of each individual layer of the model.
     """
     print("NotImplementedError")
-
-
-# def _det_torch(model: any) -> bool:
-#     r"""Determines wether the model is a Tensorflow model or not."""
-#     return isinstance(model, tf.keras.Model)

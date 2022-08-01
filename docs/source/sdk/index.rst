@@ -40,7 +40,6 @@ modalic.TfClient
 
 .. _modalic-server-apiref:
 
-The aggregation server can also be started from SDK.
 
 Aggregation Server
 ------------------

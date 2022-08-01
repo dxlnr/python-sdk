@@ -196,7 +196,7 @@ def sync_model_version(
     for n in range(n_retry):
         try:
             params = get_global_model(client_id, server_address)
-            if not params.tensor:
+            if params is None:
                 logger.log(
                     WARNING,
                     f"Client {client_id} did not receive global model from aggregation server.",

@@ -34,6 +34,7 @@ class Conf(object):
         after each training round. Should always be non-negative.
     :param training_rounds: (Default: ``0``) Number of training rounds that should be performed.
     :param data_type: (Default: ``'F32'``) Models data type which defines the (de-)serialization of the model.
+        Type is determined automatically for the endpoints.
     :param certificates: (Default: ``''``) TLS certificates for establishing secure channel with server.
 
     :Example:
@@ -46,8 +47,16 @@ class Conf(object):
         >>>         {"training_rounds": 10, "timeout": 5.0},
         >>> }
         >>> conf = Conf.create_conf(custom_dict)
+        >>> # ----------------------------------------------
+        >>> # via .toml (example config.toml below)
+        >>> [api]
+        >>> server_address = "[::]:8080"
+        >>>
+        >>> [process]
+        >>> training_rounds = 10
+        >>> participants = 3
+        >>> strategy = "FedAvg"
         >>> #
-        >>> # via .toml
         >>> conf = Conf.from_toml(path)
     """
     server_address: str = "[::]:8080"
@@ -80,7 +89,7 @@ class Conf(object):
     def _find_keys(self, blob: Dict[str, dict[str, Any]], key_str: str = "") -> Any:
         r"""Finds the value for certain key in dictionary with arbitrary depth.
 
-        :param blob: Dictionary which is searched for the key value pair.
+        :param blob: Dictionary in which the key value pair is searched for.
         :param key_str: Key that is searched for.
         :returns: Any value that belongs to the key.
         """

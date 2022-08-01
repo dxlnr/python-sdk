@@ -12,7 +12,7 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 import numpy as np
 
@@ -33,23 +33,18 @@ class TfClient(Client):
     def __init__(
         self,
         trainer: Any,
-        conf: Optional[dict] = None,
+        conf: Optional[Union[dict, Conf]] = None,
+        client_id: Optional[int] = 0,
         # data: Optional[Any] = None,
     ):
-        self.trainer = trainer
-        if conf is None:
-            self.conf = Conf.create_conf(conf)
-        else:
-            self.conf = conf
-
         try:
-            self.model = self.trainer.model
+            self.model = trainer.model
         except AttributeError:
             raise AttributeError(
                 f"Custom {trainer} object has no model. Please define the model architecture that should be trained."
             )
 
-        super().__init__(self.trainer, self.conf)
+        super().__init__(trainer, conf)
 
     def _set_weights(self, weights: shared.Weights) -> None:
         r"""Sets the model weights from a list of NumPy ndarrays.
