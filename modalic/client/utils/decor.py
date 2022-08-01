@@ -17,7 +17,8 @@ from logging import INFO
 
 from modalic.client.utils.communication import get_global_model, update
 from modalic.client.utils.torch_utils import (
-    _get_model_shape,
+    _get_torch_model_dtype,
+    _get_torch_model_shape,
     _get_torch_weights,
     _set_torch_weights,
 )
@@ -42,7 +43,8 @@ def train(conf: Conf = Conf()):
 
         @functools.wraps(func)
         def wrapper(model, dataset=None, *args, **kwargs):
-            wrapper.model_shape = _get_model_shape(model)
+            wrapper.model_shape = _get_torch_model_shape(model)
+            wrapper.dtype = _get_torch_model_dtype(model)
 
             if dataset is not None:
                 wrapper.data_stack = get_dataset_length(dataset, conf.client_id)
@@ -71,7 +73,7 @@ def train(conf: Conf = Conf()):
                     conf.client_id,
                     conf.server_address,
                     _get_torch_weights(model),
-                    conf.data_type,
+                    wrapper.dtype,
                     wrapper.round_id,
                     wrapper.data_stack,
                     wrapper.loss,

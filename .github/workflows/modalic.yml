@@ -53,6 +53,7 @@ jobs:
           python setup.py egg_info
           pip install -r modalic.egg-info/requires.txt
           python -m pip install -U torch
+          python -m pip install -U tensorflow
 
       - name: test
         run: bash scripts/testing.sh

@@ -103,17 +103,18 @@ class Conf(object):
 
     @classmethod
     def create_conf(
-        cls, conf: dict[str, dict[str, Any]] = None, client_id: Optional[int] = 0
+        cls, conf: dict[str, dict[str, Any]] = None, cid: Optional[int] = None
     ) -> Conf:
         r"""Constructs a (default) conig object with external conf if given.
 
         :param conf: Produced by .toml config. Dict which contains dicts. The values
             of conf will overwrite the default values.
-        :param client_id: (Optional) Overwrite client_id when creating a conf.
+        :param cid: (Optional) Overwrite client_id when creating a conf.
         """
         instance = cls()
         instance.set_params(conf)
-        instance.client_id = client_id
+        if cid:
+            instance.client_id = cid
         return instance
 
     @classmethod

@@ -21,20 +21,19 @@ from modalic.utils import shared
 
 
 def check_keras_model(func):
-    r"""Determines wether the model is a Tf keras model object or not."""
+    r"""Decorator that determines wether the model is a Tf keras model object or not."""
 
     def inner(model, *args, **kwargs):
         if isinstance(model, tf.keras.Model):
-            func()
+            return func(model)
         else:
             raise TypeError(
-                f"Unknown model type: {type(model)}. Consider to inherite from tf.keras.Model."
+                f"Unknown model type: {type(model)}. Consider inheriting from tf.keras.Model."
             )
 
     return inner
 
 
-@check_keras_model
 def _set_tf_weights(model: tf.keras.Model, weights: shared.Weights) -> tf.keras.Model:
     r"""Set model weights from a list of NumPy ndarrays.
 
@@ -64,15 +63,15 @@ def _translate_tf_model_dtype(tf_type: str) -> str:
         "F32" and "F64".
     :raises ValueError: If data type is not either 'float32' or 'float64'."""
     if tf_type == "float32":
-        _dtype = "F32"
+        dtype = "F32"
     elif tf_type == "float64":
-        _dtype = "F64"
+        dtype = "F64"
     else:
         raise ValueError(
             f"{tf_type} is not supported by aggregation server. \
             Federation will fail. Please use 'float32' or 'float64'."
         )
-    return _dtype
+    return dtype
 
 
 @check_keras_model
@@ -87,6 +86,7 @@ def _get_tf_model_dtype(model: tf.keras.Model) -> str:
     return _translate_tf_model_dtype(model.dtype)
 
 
+@check_keras_model
 def _get_tf_model_shape(model: tf.keras.Model) -> List[np.ndarray]:
     r"""Extracts the shape of the Tensorflow model.
 
