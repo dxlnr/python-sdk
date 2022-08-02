@@ -19,11 +19,11 @@ modalic.PytorchClient
 .. autoclass:: modalic.api.torch.pytorch_client.PytorchClient
     :members:
 
-.. _modalic-decor-apiref:
+.. _modalic-torch-decor-apiref:
 
 Functional Training Decorator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autofunction:: modalic.train
+.. autofunction:: modalic.api.torch.torch_train
 
 
 .. _modalic-tf-apiref:
@@ -38,8 +38,14 @@ modalic.TfClient
 .. autoclass:: modalic.api.tf.tf_client.TfClient
     :members:
 
-.. _modalic-server-apiref:
+.. _modalic-tf-decor-apiref:
 
+Functional Training Decorator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autofunction:: modalic.api.tf.tf_train
+
+
+.. _modalic-server-apiref:
 
 Aggregation Server
 ------------------

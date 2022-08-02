@@ -39,7 +39,7 @@ class Client(CommunicationLayer):
     specific functions for specific ML frameworks.
 
     :param trainer: Custom Trainer object.
-    :param conf:
+    :param conf: :class:`modalic.Conf` that stores all the parameters concerning the process.
     """
 
     def __init__(
@@ -151,7 +151,7 @@ class Client(CommunicationLayer):
             self._client_id, self._server_address, self._round_id, retry_period=retry
         )
         if params is not None:
-            weights = parameters_to_weights(params, self._model_shape)
+            weights = parameters_to_weights(params, self._model_shape, self._dtype)
             self._set_weights(weights)
             logger.log(
                 INFO,

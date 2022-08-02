@@ -110,7 +110,7 @@ class Conf(object):
 
         :param conf: Produced by .toml config. Dict which contains dicts. The values
             of conf will overwrite the default values.
-        :param cid: (Optional) Overwrite client_id when creating a conf.
+        :param cid: (Optional) Option to overwrite client_id when creating a conf.
         """
         instance = cls()
         instance.set_params(conf)
@@ -119,14 +119,17 @@ class Conf(object):
         return instance
 
     @classmethod
-    def from_toml(cls, path: str) -> Conf:
+    def from_toml(cls, path: str, cid: Optional[int] = None) -> Conf:
         r"""Constructs a conig object from external .toml configuration file.
 
         :param path: String path to .toml config file.
+        :param cid: (Optional) Option to overwrite client_id when creating a conf.
         """
         instance = cls()
         try:
             instance.set_params(toml.load(path))
+            if cid:
+                instance.client_id = cid
         except FileNotFoundError:
             logger.log(
                 WARNING,

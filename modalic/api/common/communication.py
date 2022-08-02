@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import time
 from abc import ABC, abstractmethod
-from logging import ERROR, INFO, WARNING
+from logging import DEBUG, ERROR, INFO, WARNING
 from typing import Any, List, Optional, Tuple
 
 import grpc
@@ -196,18 +196,18 @@ def sync_model_version(
     for n in range(n_retry):
         try:
             params = get_global_model(client_id, server_address)
-            if params is None:
+            if not params.tensor:
                 logger.log(
                     WARNING,
-                    f"Client {client_id} did not receive global model from aggregation server.",
+                    f"Client {client_id} did not receive global model from aggregation server in training round {round_id}.",
                 )
                 break
             else:
-                if params.model_version == round_id:
+                if params.model_version >= round_id:
                     return params
                 else:
                     logger.log(
-                        INFO,
+                        DEBUG,
                         f"Client {client_id} in training round {round_id} received global model version {params.model_version}.\
                         Client pauses for {retry_period}s.",
                     )

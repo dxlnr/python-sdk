@@ -33,9 +33,9 @@ python server.py --cfg config.toml
 ### Clients
 An individual client can be started simply by running
 ```shell
-python client.py --cid 1
-# Additional clients can be started with a different cid.
-python client.py --cid 2
+python client.py --client_id 1
+# Additional clients can be started with a different client_id.
+python client.py --client_id 2
 # ...
 ```
 in additional terminals.

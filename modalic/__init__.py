@@ -5,12 +5,16 @@ if "torch" in sys.modules:
     from modalic.api.torch import PytorchClient
 
 if "tensorflow" in sys.modules:
-    from modalic.api.tf.tf_client import TfClient
+    from modalic.api.tf import TfClient
 
 # from modalic.client.trainer import Trainer
 
 # Decorators
-from modalic.api.torch.torch_func import train
+if "torch" in sys.modules:
+    from modalic.api.torch import torch_train
+
+if "tensorflow" in sys.modules:
+    from modalic.api.tf import tf_train
 
 # Configuration
 from modalic.config import Conf

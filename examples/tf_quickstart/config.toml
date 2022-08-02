@@ -5,6 +5,6 @@ server_address = "[::]:8080"
 data_type = "F32"
 
 [process]
-training_rounds = 5
-participants = 2
+training_rounds = 10
+participants = 3
 strategy = "FedAvg"

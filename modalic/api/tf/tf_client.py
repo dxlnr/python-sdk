@@ -28,7 +28,15 @@ from modalic.utils import shared
 
 
 class TfClient(Client):
-    r"""."""
+    r"""
+    Tensorflow Keras compatible client object which abstracts all the distributed communication.
+    Serves as a simple layer and API that enables participating within a
+    Federated Learning process.
+
+    :param trainer: Custom Tensorflow Keras Trainer object implementing all the learning procedure.
+        See the example below for the structure, functions & attributes or check out usage in /examples folder.
+    :param conf: (Optional) :class:`modalic.Conf` that stores all the parameters concerning the process.
+    """
 
     def __init__(
         self,

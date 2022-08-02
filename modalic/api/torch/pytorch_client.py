@@ -35,8 +35,8 @@ class PytorchClient(Client):
     Serves as a simple layer and API that enables participating within a
     Federated Learning process.
 
-    :param trainer: Custom Pytorch Trainer object implementing all the learning procdure.
-        See the example below for the structure, functions & attributes or check out
+    :param trainer: Custom Pytorch Trainer object implementing all the learning procedure.
+        See the example below for the structure, functions & attributes or check out usage in /examples folder.
     :param conf: (Optional) Configuration object that stores all the parameters concerning the process.
         Although conf is optional, should be set as important parameters are stored there that
         will influence the sucess of the process. Union type as it can be either :class:`modalic.Conf` directly or

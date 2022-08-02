@@ -38,19 +38,21 @@ def weights_to_parameters(
 
 @typing.no_type_check
 def parameters_to_weights(
-    parameters: protocol.Parameters, shapes: List[np.ndarray[int, np.dtype[Any]]]
+    parameters: protocol.Parameters,
+    shapes: List[np.ndarray[int, np.dtype[Any]]],
+    dtype: str,
 ) -> shared.Weights:
     r"""Convert parameters object to NumPy weights."""
-    return _bytes_to_ndarray(
-        parameters.tensor, shapes, _dtype_to_struct(parameters.data_type)
-    )
+    return _bytes_to_ndarray(parameters.tensor, shapes, _dtype_to_struct(dtype))
 
 
-def _ndarray_to_bytes(ndarray: np.ndarray[Any, np.dtype[Any]], dtype: str) -> List[int]:
+def _ndarray_to_bytes(
+    ndarray: np.ndarray[Any, np.dtype[Any]], sdtype: str
+) -> List[int]:
     r"""Serialize NumPy ndarray to list of u8 bytes."""
     res: list[int] = list()
     for single in np.nditer(ndarray):
-        res.extend(struct.pack(dtype, single))
+        res.extend(struct.pack(sdtype, single))
     return res
 
 
@@ -61,18 +63,18 @@ def _weights_to_bytes(weights: shared.Weights, dtype: str) -> bytes:
 
 
 def _bytes_to_ndarray(
-    tensor: bytes, layer_shape: List[np.ndarray], dtype: str
+    tensor: bytes, layer_shape: List[np.ndarray], sdtype: str
 ) -> shared.Weights:
     r"""Deserialize NumPy ndarray from u8 bytes."""
     layer: list[Any] = list()
-    if dtype == "!f":
+    if sdtype == "!f":
         for content in _chunk(tensor, 4):
             layer.append(struct.unpack(">f", bytes(content)))
-    elif dtype == "!d":
+    elif sdtype == "!d":
         for content in _chunk(tensor, 8):
             layer.append(struct.unpack(">d", bytes(content)))
     else:
-        raise TypeError(f"data type {dtype} is not known.")
+        raise TypeError(f"data type '{sdtype}' is not known.")
 
     layers = np.split(np.array(layer), _indexing([np.prod(s) for s in layer_shape]))
 
@@ -98,7 +100,7 @@ def _indexing(length: List[int]) -> List[int]:
 def _dtype_to_struct(dtype: str) -> str:
     r"""Prepare dtype for conversion with struct.
 
-    :param dtype: String that represents the data type that is used for the pytorch model.
+    :param dtype: String that represents the data type that is used for the model.
     :raises TypeError: When dtype is unkown. Choose 'F32' or 'F64'.
     """
     if dtype == "F32":
@@ -106,4 +108,4 @@ def _dtype_to_struct(dtype: str) -> str:
     elif dtype == "F64":
         return "!d"
     else:
-        raise TypeError(f"data type {dtype} is not known.")
+        raise TypeError(f"data type '{dtype}' is not known.")

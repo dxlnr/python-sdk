@@ -28,12 +28,33 @@ from modalic.logging.logging import logger
 from modalic.utils.serde import parameters_to_weights
 
 
-def train(conf: Conf = Conf()):
-    r"""Training function decorator. Performs the underlying train() function
-    multiply times while participating in a federated learning procedure.
+def torch_train(conf: Conf = Conf()):
+    r"""Training function decorator for Pytorch. Performs the underlying train() function
+    multiply (== `training_rounds`) times while participating in a Federated Learning procedure.
+
+    :param conf: :class:`modalic.Conf` that stores all the parameters concerning the process.
+
+    :important: For the design of the custom training function, please make sure that
+        a model object is defined as an input and will be returned in order to
+        enable the communication with the server to happen.
 
     Examples:
-        >>> @modalic.train()
+        >>> # Decorate a custom function where the training logic is defined.
+        >>> @modalic.torch_train(conf=conf)
+        >>> def train(model: torch.nn.Module, train_loader, optimizer, epochs):
+        >>>     for epoch in range(0, epochs):
+        >>>         for i, (images, labels) in enumerate(train_loader):
+        >>>            optimizer.zero_grad()
+        >>>            output, x = self.model.forward(images)
+        >>>
+        >>>            loss = self.loss(output, labels)
+        >>>            loss.backward()
+        >>>            optimizer.step()
+        >>>
+        >>>     return model
+        >>> ...
+        >>> # Call the custom train() for starting the Federated Learning procedure.
+        >>> train(model, train_loader, optimizer, epochs)
     """
 
     def inner_train(func, *args, **kwargs):
@@ -55,7 +76,9 @@ def train(conf: Conf = Conf()):
                 params = get_global_model(conf.client_id, conf.server_address)
 
                 if params is not None and len(params.tensor) != 0:
-                    weights = parameters_to_weights(params, wrapper.model_shape)
+                    weights = parameters_to_weights(
+                        params, wrapper.model_shape, wrapper.dtype
+                    )
                     model = _set_torch_weights(model, weights)
                     logger.log(
                         INFO,
@@ -67,7 +90,7 @@ def train(conf: Conf = Conf()):
 
                 logger.log(
                     INFO,
-                    f"Client {conf.client_id} | training round: {wrapper.round_id} | loss: {wrapper.loss}",
+                    f"Client {conf.client_id} | training round: {wrapper.round_id}",
                 )
                 update(
                     conf.client_id,
