@@ -16,8 +16,8 @@ from typing import Any, List, Optional, Union
 
 import numpy as np
 
-from modalic.client.client import Client
-from modalic.client.utils.tf_utils import (
+from modalic.api.common.client import Client
+from modalic.api.tf.tf_utils import (
     _get_tf_model_dtype,
     _get_tf_model_shape,
     _get_tf_weights,

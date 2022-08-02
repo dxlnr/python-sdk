@@ -16,22 +16,27 @@ import numpy as np
 import tensorflow as tf
 import torch
 
-from modalic.client.utils.tf_utils import _get_tf_model_dtype, _get_tf_weights
-from modalic.client.utils.torch_utils import _get_torch_model_dtype, _get_torch_weights
-from modalic.utils.serde import (
-    _bytes_to_ndarray,
-    _dtype_to_struct,
-    _weights_to_bytes,
-    get_shape,
+from modalic.api.tf.tf_utils import (
+    _get_tf_model_dtype,
+    _get_tf_model_shape,
+    _get_tf_weights,
 )
+from modalic.api.torch.torch_utils import (
+    _get_torch_model_dtype,
+    _get_torch_model_shape,
+    _get_torch_weights,
+)
+from modalic.utils.serde import _bytes_to_ndarray, _dtype_to_struct, _weights_to_bytes
 
 
 def test_serialisation_deserialisation() -> None:
     r"""Test if after serialization/deserialisation the np.ndarray is identical."""
     arg = [np.array([1.0, 2.0]), np.array([3.0, 4.0]), np.array([5.0, 6.0])]
 
+    arg_shape = [np.array(layer.shape) for layer in arg]
+
     serialized = _weights_to_bytes(arg, "!f")
-    deserialized = _bytes_to_ndarray(serialized, get_shape(arg), "!f")
+    deserialized = _bytes_to_ndarray(serialized, arg_shape, "!f")
 
     # Assert deserialized array is equal to original
     np.testing.assert_equal(deserialized, arg)
@@ -51,7 +56,7 @@ def test_serialisation_deserialisation_w_torch(torch_model: torch.nn.Module) -> 
     dstruct = _dtype_to_struct(dtype)
     assert dstruct == "!f"
 
-    model_shape = get_shape(weights)
+    model_shape = _get_torch_model_shape(torch_model)
 
     serialized = _weights_to_bytes(weights, dstruct)
     deserialized = _bytes_to_ndarray(serialized, model_shape, dstruct)
@@ -59,25 +64,21 @@ def test_serialisation_deserialisation_w_torch(torch_model: torch.nn.Module) -> 
     np.testing.assert_equal(deserialized, weights)
 
 
-def test_serialisation_deserialisation_w_keras(keras_model: tf.keras.Model) -> None:
+def test_serialisation_deserialisation_w_keras(seq_keras_model: tf.keras.Model) -> None:
     r"""Testing the serialization/deserialisation process of a keras model.
 
-    :param keras_model: Arbitray simple keras model which is used for testing.
+    :param seq_keras_model: Arbitrary simple keras model which is used for testing.
     """
-    weights = _get_tf_weights(keras_model)
-
-    print("type of keras: ", type(keras_model))
-    print(isinstance(keras_model, tf.keras.Model))
+    weights = _get_tf_weights(seq_keras_model)
 
     # Hyperparameters
-    dtype = _get_tf_model_dtype(keras_model)
-    print("in serde: ", dtype)
+    dtype = _get_tf_model_dtype(seq_keras_model)
     assert dtype == "F32"
 
     dstruct = _dtype_to_struct(dtype)
     assert dstruct == "!f"
 
-    model_shape = get_shape(weights)
+    model_shape = _get_tf_model_shape(seq_keras_model)
 
     serialized = _weights_to_bytes(weights, dstruct)
     deserialized = _bytes_to_ndarray(serialized, model_shape, dstruct)

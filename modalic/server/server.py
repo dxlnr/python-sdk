@@ -13,7 +13,6 @@
 #  permissions and limitations under the License.
 
 """Aggregation server related API."""
-
 import subprocess
 
 from modalic.server.api import find_bin_path
@@ -42,7 +41,8 @@ def run_server(cfg_path: str = "") -> None:
         >>> server_address = "[::]:8080"
         >>> #
         >>> [model]
-        >>> # Defines the data type of the ML model. Important as the server needs this info.
+        >>> # Defines the data type of the ML model. Important as the server needs this parameter
+        >>> # for correctly encoding the model. This will be automatic in the future.
         >>> data_type = "F32"
         >>> #
         >>> [process]

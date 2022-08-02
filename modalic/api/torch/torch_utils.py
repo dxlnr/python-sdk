@@ -12,8 +12,7 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-"""Pytorch specific utility functions."""
-
+"""Utilities for using Pytorch as primary ML framework."""
 from collections import OrderedDict
 from typing import List
 
@@ -102,8 +101,3 @@ def _get_torch_model_shape(model: torch.nn.Module) -> List[np.ndarray]:
         np.array(model.state_dict()[param_tensor].size())
         for param_tensor in model.state_dict().keys()
     ]
-
-
-def check_torch_model(model: any) -> bool:
-    r"""Determines wether the model is a Pytorch model or not."""
-    return isinstance(model, torch.nn.Module)

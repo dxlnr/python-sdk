@@ -15,8 +15,8 @@
 import functools
 from logging import INFO
 
-from modalic.client.utils.communication import get_global_model, update
-from modalic.client.utils.torch_utils import (
+from modalic.api.common.communication import get_global_model, update
+from modalic.api.torch.torch_utils import (
     _get_torch_model_dtype,
     _get_torch_model_shape,
     _get_torch_weights,

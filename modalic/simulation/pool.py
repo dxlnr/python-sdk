@@ -12,6 +12,7 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+"""Multithreaded Pool of Modalic Clients."""
 import multiprocessing
 import traceback
 from logging import DEBUG, ERROR, INFO
@@ -23,7 +24,7 @@ from modalic.logging.logging import logger
 class ClientPool:
     r"""Object holds and manages a bunch of individual simulated clients.
 
-    :param clients: List of modalic client object. Options are [`PytorchClient`] or [`TensorflowClient`]
+    :param clients: List of modalic client object. Options are [`PytorchClient`] or [`TfClient`]
     :param num_clients: Number of clients you want to run the federated learning with.
     """
 

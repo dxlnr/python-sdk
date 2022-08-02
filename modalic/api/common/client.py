@@ -21,7 +21,7 @@ from typing import Any, List, Optional, Union
 
 import numpy as np
 
-from modalic.client.utils.communication import (
+from modalic.api.common.communication import (
     CommunicationLayer,
     sync_model_version,
     update,

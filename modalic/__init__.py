@@ -1,16 +1,16 @@
 import sys
 
-# Client API
+# Client APIs for main frameworks
 if "torch" in sys.modules:
-    from modalic.client.pytorch_client import PytorchClient
+    from modalic.api.torch import PytorchClient
 
 if "tensorflow" in sys.modules:
-    from modalic.client.tf_client import TfClient
+    from modalic.api.tf.tf_client import TfClient
 
-from modalic.client.trainer import Trainer
+# from modalic.client.trainer import Trainer
 
 # Decorators
-from modalic.client.utils.decor import train
+from modalic.api.torch.torch_func import train
 
 # Configuration
 from modalic.config import Conf

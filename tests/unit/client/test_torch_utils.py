@@ -14,7 +14,7 @@
 
 import numpy as np
 
-from modalic.client.utils.torch_utils import (
+from modalic.api.torch.torch_utils import (
     _get_torch_model_dtype,
     _get_torch_model_shape,
     _get_torch_weights,

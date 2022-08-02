@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import modalic.client.proto.mosaic_pb2 as mosaic__pb2
+import modalic.api.common.proto.mosaic_pb2 as mosaic__pb2
 
 
 class CommunicationStub(object):

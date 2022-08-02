@@ -13,7 +13,6 @@
 #  permissions and limitations under the License.
 
 """Miscellaneous helper functions."""
-
 from typing import Any, List
 
 

@@ -12,6 +12,7 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+"""Shared object types."""
 from __future__ import annotations
 
 from dataclasses import dataclass

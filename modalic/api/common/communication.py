@@ -22,8 +22,8 @@ from typing import Any, List, Optional, Tuple
 import grpc
 import numpy as np
 
-from modalic.client.proto.mosaic_pb2 import ClientMessage, ClientUpdate
-from modalic.client.proto.mosaic_pb2_grpc import CommunicationStub
+from modalic.api.common.proto.mosaic_pb2 import ClientMessage, ClientUpdate
+from modalic.api.common.proto.mosaic_pb2_grpc import CommunicationStub
 from modalic.logging.logging import logger
 from modalic.utils import shared
 from modalic.utils.protocol import (

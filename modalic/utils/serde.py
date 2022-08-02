@@ -79,11 +79,6 @@ def _bytes_to_ndarray(
     return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
 
-def get_shape(weights: shared.Weights) -> List[Any]:
-    r"""Reads in the weights and returns its shape as a list object."""
-    return [np.array(layer.shape) for layer in weights]
-
-
 def _chunk(iterable: Iterable[Any], chunksize: int) -> zip[Any]:
     r"""helper chunking an iterable with fixed size."""
     return zip(*[iter(iterable)] * chunksize)

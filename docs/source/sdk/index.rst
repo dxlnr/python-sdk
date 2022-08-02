@@ -7,16 +7,16 @@ The essential components provided by the Python SDK library are listed below. It
 two main Machine Learning Frameworks `Pytorch <https://github.com/pytorch/pytorch>`_ \& `Tensorflow <https://github.com/tensorflow/tensorflow>`_.
 Each framework has their own API endpoint and can be used in object-oriented or procedural fashion.
 
-.. _modalic-pytorch-client-apiref:
+.. _modalic-pytorch-apiref:
 
-Pytorch Client SDK Modules
---------------------------
+Pytorch API
+-----------
 
 .. _modalic-pytorch-client:
 
 modalic.PytorchClient
 ~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: modalic.client.pytorch_client.PytorchClient
+.. autoclass:: modalic.api.torch.pytorch_client.PytorchClient
     :members:
 
 .. _modalic-decor-apiref:
@@ -26,16 +26,16 @@ Functional Training Decorator
 .. autofunction:: modalic.train
 
 
-.. _modalic-tf-client-apiref:
+.. _modalic-tf-apiref:
 
-Tensorflow Client SDK Modules
------------------------------
+Tensorflow API
+--------------
 
 .. _modalic-tf-client:
 
 modalic.TfClient
 ~~~~~~~~~~~~~~~~
-.. autoclass:: modalic.client.tf_client.TfClient
+.. autoclass:: modalic.api.tf.tf_client.TfClient
     :members:
 
 .. _modalic-server-apiref:

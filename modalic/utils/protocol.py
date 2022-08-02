@@ -12,10 +12,10 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-"""gRPC action script."""
+"""gRPC action scripts."""
 from __future__ import annotations
 
-from modalic.client.proto.mosaic_pb2 import Parameters, ProcessMeta
+from modalic.api.common.proto.mosaic_pb2 import Parameters, ProcessMeta
 from modalic.utils import shared
 
 

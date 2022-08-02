@@ -12,6 +12,7 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
+"""Utilities for using Tensorflow as primary ML framework."""
 from typing import List
 
 import numpy as np
@@ -41,8 +42,8 @@ def _set_tf_weights(model: tf.keras.Model, weights: shared.Weights) -> tf.keras.
     :param weights: Model weights as a list of NumPy ndarrays.
     :returns: Tensorflow model object that is updated with input weights.
     """
-    update = model.set_weights(weights)
-    return update
+    model.set_weights(weights)
+    return model
 
 
 @check_keras_model
@@ -93,4 +94,10 @@ def _get_tf_model_shape(model: tf.keras.Model) -> List[np.ndarray]:
     :param model: Tensorflow model object.
     :returns: List of np.ndarray which contains the shape (size) of each individual layer of the model.
     """
-    print("NotImplementedError")
+    weights = model.get_weights()
+    if len(weights) != 0:
+        return [np.array(layer.shape) for layer in weights]
+    else:
+        raise AttributeError(
+            f"The {model} has never been called, therefore the model is empty and its shape cannot determined."
+        )
