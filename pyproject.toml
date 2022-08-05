@@ -9,6 +9,9 @@ filterwarnings = [
   "ignore::DeprecationWarning"
 ]
 
+# [project.optional-dependencies]
+# dev = ["black", "pytest"]
+
 [tool.tox]
 name = "modalic"
 authors = ["Daniel Illner <daniel.illner@outlook.de>"]
@@ -68,6 +71,7 @@ before-all = [
 ]
 
 [tool.cibuildwheel.macos]
+archs = ["x86_64", "universal2", "arm64"]
 before-all = [
   "pip install -U setuptools-rust",
   "rustup component add rustfmt",
