@@ -7,7 +7,7 @@ Installation
 ------------
 
 For installing the Python SDK and further information regarding the process,
-please visit the `installation guide<installation>`_.
+please visit the `installation guide <installation>`_.
 
 It is recommended to create a virtual environment with `Ananconda <https://anaconda.org/>`_ and run everything within
 the `conda <https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html>`_ setup.
@@ -31,7 +31,8 @@ There are basically two main endpoints that enable the client's ability to parti
 procedure. The two different possibilities of integrating FL into one's Machine Learning stack,
 represent two different programming paradigms, one object-oriented and one functional.
 
-If the object-oriented programming style is preferred, the :ref:`PytorchClient <modalic-pytorch-client>` can be used.
+If the object-oriented programming style is preferred, the :ref:`PytorchClient <modalic-pytorch-client>` and :ref:`TfClient <modalic-tf-client>` can be used.
+If the functional paradigm is preferred, :ref:`@modalic.torch_train <modalic-torch-decor-apiref>` and :ref:`@modalic.tf_train <modalic-tf-decor-apiref>` can be applied.
 
 Aggregation Server
 ------------------
@@ -51,8 +52,8 @@ setting certain hyperparameters which control the Federated Learning process.
 An `example config <https://github.com/modalic/python-sdk/blob/main/examples/pytorch_mnist/config.toml>`_ file can be found here.
 
 
-Framework Support: Pytorch
---------------------------
+Framework Support: Pytorch & Tensorflow
+---------------------------------------
 
-For now, the modalic Python SDK only offers full support for one of the major open source machine learning frameworks
-`Pytorch <https://pytorch.org/>`_ but `Tensorflow <https://www.tensorflow.org/>`_ will come soon.
+For now, the Modalic Python SDK offers full support for the two major Open-Source Machine Learning frameworks
+`Pytorch <https://pytorch.org/>`_ and `Tensorflow <https://www.tensorflow.org/>`_.

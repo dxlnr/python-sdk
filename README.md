@@ -26,10 +26,13 @@ As the main entrypoint to a production ready FLOps Platform, this software packa
 
 ## Usage
 In order to run a Federated Learning procedure two main entities have to instantiated. The client logic and the aggregation server application.
-Both can be started via SDK. This uses Pytorch as framework to construct the ML architecture.
+Both can be started via SDK. Currently Pytorch \& Tensorflow are supported as framework to construct the ML architecture.
+
+#### Run the Aggregation Server
 
 ```python
-# (1) run the aggregation server with configuration using .toml (cfg)
+# (1) Run the aggregation server with configuration using .toml
+cfg = toml.load(".toml")
 modalic.run_server(cfg)
 
   # .toml
@@ -44,7 +47,13 @@ modalic.run_server(cfg)
   # training_rounds = 10
   # participants = 3
   # strategy = "FedAvg"
+```
 
+Construct the client logic using a framework of choice. The Pytorch approach uses an object-oriented paradigm while the Tensorflow examples applies a functional one. Both paradigm are available in both frameworks vice versa.
+
+#### Pytorch
+
+```python
 # (2) Construct the client logic.
 
 # Define a Trainer object that contains all the ML logic.
@@ -65,6 +74,26 @@ client = modalic.PytorchClient(Trainer())
 client.run()
 ```
 
+#### Tensorflow
+
+```python
+# (2) Construct the client logic.
+
+# Wrap the custom defined train function with modalic.tf_train.
+@modalic.tf_train(...)
+def train(model, x_train, y_train):
+    model.fit(x_train, y_train, batch_size=32, epochs=1)
+    return model
+    ...
+
+# Define the model & data
+model = tf.keras.Model(...)
+...
+
+# (3) Run training for single client simply via.
+train(model, x_train, y_train)
+```
+
 Please keep in mind that this code snippet shows only the logic and the general idea. For more details,
 check out the */examples* folder that contains more in-depth and complete instruction sets and examples that are actually actionable.
 
@@ -74,41 +103,6 @@ check out the */examples* folder that contains more in-depth and complete instru
 The latest release of Modalic Python SDK can be installed via pip:
 ```bash
 pip install modalic
-```
-
-### From Source
-
-#### Prerequisites
-Installing from source, the following prerequisites are needed:
-- Python 3.8 or later
-- [Rust](https://www.rust-lang.org/tools/install) Toolchain for compiling the server application.
-- [Anaconda](https://www.anaconda.com/distribution/#download-section) environment is recommended. But any other virtual environment should be fine as well.
-
-#### Install Dependencies
-
-```bash
-# Running in some conda environment
-conda install setuptools, setuptools-rust
-```
-
-#### Get the Modalic Python-SDK Source
-```bash
-git clone --recursive https://github.com/modalic/python-sdk
-cd python-sdk
-
-git submodule sync
-git submodule update --init --recursive
-git pull --recurse-submodules
-```
-
-#### Install Modalic Python-SDK
-On **Linux**
-
-```bash
-# Building the wheel (.whl)
-python setup.py sdist bdist_wheel
-# Installing the wheel locally
-pip install dist/modalic-*.whl
 ```
 
 ## Documentation

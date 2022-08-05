@@ -16,12 +16,12 @@ legacy_tox_ini = """
 [tox]
 isolated_build = True
 skipsdist = true
-envlist = py38,py39
+envlist = py38,py39,py310
 """
 
 [tool.black]
 line-length = 88
-target-version = ["py38", "py39"]
+target-version = ["py38", "py39", "py310"]
 exclude = '''
   modalic/client/proto/
   /(
@@ -51,7 +51,7 @@ follow_imports = "skip"
 follow_imports_for_stubs = true
 
 [tool.cibuildwheel]
-build = ["cp38-*", "cp39-*"]
+build = ["cp38-*", "cp39-*", "cp310-*"]
 skip = ["*-win32", "*-musllinux_i686", "*-i686-unknown-linux-musl"]
 environment = { PATH="$HOME/.cargo/bin:$PATH" }
 manylinux-x86_64-image = "manylinux2014"

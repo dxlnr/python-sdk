@@ -29,7 +29,7 @@ docs/build
 examples/tensorflow_cifar10
 
 #wheels
-wheelhouse
+wheelhouse/*
 
 
 modalic/client/test.py

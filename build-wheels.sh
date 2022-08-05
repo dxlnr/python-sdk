@@ -5,7 +5,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # Compile wheels
-for PYBIN in /opt/python/cp{38,39}*/bin; do
+for PYBIN in /opt/python/cp{38,39,310}*/bin; do
     rm -rf /io/build/
     "${PYBIN}/pip" install -U setuptools setuptools-rust wheel
     "${PYBIN}/pip" wheel /io/ -w /io/dist/ --no-deps
