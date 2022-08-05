@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest new features, enhancements and algorithms that might help improve Federated Learning.
+labels: ['enhancement']
+
+body:
+- type: markdown
+  attributes:
+    value: >
+      Thank you for making the effort to contribute to Modalic.
+- type: textarea
+  attributes:
+    label: Describe the suggested feature
+    description: >
+      A clear and concise description of what you want to be implemented.
+
+- type: markdown
+  attributes:
+    value: >
+      Thanks for the contribution!
