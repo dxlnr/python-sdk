@@ -14,7 +14,9 @@ from . import create_arg_parser, get_project_root
 arg_parser = create_arg_parser()
 args = arg_parser.parse_args(sys.argv[1:])
 
-conf = modalic.Conf.from_toml(path=os.path.join(get_project_root(), "config.toml"))
+conf = modalic.Conf.merge_from_toml(
+    path=os.path.join(get_project_root(), "config.toml")
+)
 conf.client_id = args.client_id
 
 

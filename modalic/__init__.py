@@ -7,8 +7,6 @@ if "torch" in sys.modules:
 if "tensorflow" in sys.modules:
     from modalic.api.tf import TfClient
 
-# from modalic.client.trainer import Trainer
-
 # Decorators
 if "torch" in sys.modules:
     from modalic.api.torch import torch_train
@@ -24,3 +22,13 @@ from modalic.server.server import run_server
 
 # Simulation API
 from modalic.simulation import ClientPool
+
+__all__ = [
+    "PytorchClient",
+    "TfClient",
+    "Conf",
+    "ClientPool",
+    "torch_train",
+    "tf_train",
+    "run_server",
+]

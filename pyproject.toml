@@ -71,8 +71,8 @@ before-all = [
 ]
 
 [tool.cibuildwheel.macos]
-archs = ["x86_64", "universal2", "arm64"]
+archs = ["x86_64", "arm64"]
 before-all = [
-  "pip install -U setuptools-rust",
-  "rustup component add rustfmt",
+  "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=beta -y",
+  "rustup component add rustfmt"
 ]

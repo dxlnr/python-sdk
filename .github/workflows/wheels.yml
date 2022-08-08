@@ -62,7 +62,7 @@ jobs:
           CIBW_ENVIRONMENT_WINDOWS: PATH="$UserProfile\.cargo\bin;$PATH"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
           CIBW_MANYLINUX_I686_IMAGE: manylinux2014
-          CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_BEFORE_ALL: >
             pip install --upgrade pip &&
             pip install -U setuptools &&
@@ -76,8 +76,8 @@ jobs:
             ./scripts/install_dependencies.sh
 
           CIBW_BEFORE_BUILD_MACOS: >
-            pip install -U setuptools-rust &&
-            rustup component add rustfmt
+            curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=beta -y &&
+            rustup component add rustfmt &&
 
       - uses: actions/upload-artifact@v3
         with:
