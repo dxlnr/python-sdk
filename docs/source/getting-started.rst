@@ -52,8 +52,8 @@ setting certain hyperparameters which control the Federated Learning process.
 An `example config <https://github.com/modalic/python-sdk/blob/main/examples/pytorch_mnist/config.toml>`_ file can be found here.
 
 
-Framework Support: Pytorch & Tensorflow
+Framework Support: Pytorch & TensorFlow
 ---------------------------------------
 
 For now, the Modalic Python SDK offers full support for the two major Open-Source Machine Learning frameworks
-`Pytorch <https://pytorch.org/>`_ and `Tensorflow <https://www.tensorflow.org/>`_.
+`Pytorch <https://pytorch.org/>`_ and `TensorFlow <https://www.tensorflow.org/>`_.

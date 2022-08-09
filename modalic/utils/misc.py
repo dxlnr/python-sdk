@@ -13,7 +13,9 @@
 #  permissions and limitations under the License.
 
 """Miscellaneous helper functions."""
-from typing import Any, List
+from typing import Any, Dict, List, Union
+
+from modalic.config import Conf
 
 
 def all_equal_list(iterator: List[Any]) -> bool:
@@ -31,3 +33,24 @@ def all_equal_list(iterator: List[Any]) -> bool:
         return first
     else:
         return None
+
+
+def validate_kwargs(
+    kwargs: Dict[Any],
+    allowed_kwargs: Dict[str],
+    error_message="Keyword argument not understood:",
+) -> None:
+    r"""Checks that all keyword arguments are in the set of allowed keys.
+
+    :param kwargs: Keyword arguments to be checked.
+    :param allowed_kwargs: Keyword arguments that should pass.
+    """
+    for kwarg in kwargs:
+        if kwarg not in allowed_kwargs:
+            raise TypeError(error_message, kwarg)
+
+
+def validate_config(conf: Union[dict, Conf]) -> None:
+    r"""Checks if Conf object is a valid type."""
+    if not isinstance(conf, dict) or not isinstance(conf, Conf):
+        raise TypeError(f"Type of Conf `{type(conf)}` is not valid.")

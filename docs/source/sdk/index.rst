@@ -4,7 +4,7 @@ Python SDK Reference
 ====================
 
 The essential components provided by the Python SDK library are listed below. It supports currently the
-two main Machine Learning Frameworks `Pytorch <https://github.com/pytorch/pytorch>`_ \& `Tensorflow <https://github.com/tensorflow/tensorflow>`_.
+two main Machine Learning Frameworks `Pytorch <https://github.com/pytorch/pytorch>`_ \& `TensorFlow <https://github.com/tensorflow/tensorflow>`_.
 Each framework has their own API endpoint and can be used in object-oriented or procedural fashion.
 
 .. _modalic-pytorch-apiref:
@@ -28,7 +28,7 @@ Functional Training Decorator
 
 .. _modalic-tf-apiref:
 
-Tensorflow API
+TensorFlow API
 --------------
 
 .. _modalic-tf-client:

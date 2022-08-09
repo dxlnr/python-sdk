@@ -151,6 +151,10 @@ class Conf(object):
                 )
         return instance
 
+    def clone(self):
+        r"""Recursively copies this Conf object."""
+        return copy.deepcopy(self)
+
     def __str__(self) -> str:
         r"""Custom output string."""
         s = ", ".join(
@@ -164,17 +168,13 @@ class Conf(object):
         r"""Makes Conf an iterator."""
         yield self.__dataclass_fields__
 
-    def clone(self):
-        r"""Recursively copies this Conf object."""
-        return copy.deepcopy(self)
-
     @staticmethod
     def _check_and_coerce_conf_value_type(
         replacement: Any,
         original: Any,
         casts: List[List[Any]] = [[(tuple, list), (list, tuple)]],
         valid_types: Dict = {tuple, list, dict, str, int, float, bool, type(None)},
-    ):
+    ) -> Any:
         """Checks that `replacement`, which is intended to replace `original` is of
         the right type. The type is correct if it matches exactly or is one of a few
         cases in which the type can be easily coerced.

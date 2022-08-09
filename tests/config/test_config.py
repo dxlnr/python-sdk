@@ -68,3 +68,19 @@ def test_find_keys() -> None:
         "client_id": 42,
     }
     assert conf._find_keys(attrs_4, "data_type") is None
+
+
+def test_check_and_coerce_conf_value_type() -> None:
+    r"""."""
+    testing_conf = Conf()
+    testing_conf.client_id = 42
+    testing_conf.participants = 10
+
+    custom_settings = {
+        "api": {"server_address": []},
+        "process": {"training_rounds": "10", "participants": 10},
+        "client_id": 42,
+    }
+    custom_conf = Conf.create_conf(custom_settings)
+
+    assert custom_conf == testing_conf

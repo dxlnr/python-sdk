@@ -30,6 +30,7 @@ from modalic.config import Conf
 from modalic.data.misc import get_dataset_length
 from modalic.logging.logging import logger
 from modalic.utils import shared
+from modalic.utils.misc import validate_config, validate_kwargs
 from modalic.utils.serde import parameters_to_weights
 
 
@@ -46,13 +47,23 @@ class Client(CommunicationLayer):
         self,
         trainer: Any,
         conf: Optional[Union[dict, Conf]] = None,
-        client_id: Optional[int] = 0,
+        # client_id: Optional[int] = 0,
+        **kwargs,
     ):
+        # Ensure argument validity.
+        validate_config(conf)
+        # These properties should be set by the user via keyword arguments.
+        allowed_kwargs = {"client_id", "dataset"}
+        validate_kwargs(kwargs, allowed_kwargs)
+
         self.trainer = trainer
         if conf is None or isinstance(conf, dict):
-            self.conf = Conf.create_conf(conf, client_id)
+            self.conf = Conf.create_conf(conf)
         else:
             self.conf = conf
+
+        if "client_id" in kwargs:
+            self.conf.client_id = kwargs["client_id"]
 
         # Setting all the internal necessary attributes.
         self._server_address = self.conf.server_address
