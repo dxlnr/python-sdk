@@ -38,6 +38,10 @@ class Conf(object):
     :param data_type: (Default: ``'F32'``) Models data type which defines the (de-)serialization of the model.
         Type is determined automatically for the endpoints.
     :param certificates: (Default: ``''``) TLS certificates for establishing secure channel with server.
+    :param save_state: (Default: ``False``) Defines if the serialized state of a client
+        should be saved. For this option to work, MinIO is required to up & running.
+    :param backoff_interval: (Default: ``1.0``) Retrying period. Defines the time interval in seconds
+        in that the client pings the server.
 
     :Example:
 
@@ -67,6 +71,8 @@ class Conf(object):
     training_rounds: int = 0
     data_type: str = "F32"
     certificates: str = ""
+    save_state: bool = False
+    backoff_interval: float = 1.0
 
     def _set_params(self, conf: dict[str, dict[str, Any]]) -> None:
         r"""Overwrites default parameters with external is stated.
@@ -98,6 +104,10 @@ class Conf(object):
             if value := self._find_keys(conf, "certificates"):
                 self.certificates = self._check_and_coerce_conf_value_type(
                     value, self.certificates
+                )
+            if value := self._find_keys(conf, "save_state"):
+                self.certificates = self._check_and_coerce_conf_value_type(
+                    value, self.save_state
                 )
 
     def _find_keys(self, blob: Dict[str, dict[str, Any]], key_str: str = "") -> Any:
@@ -181,8 +191,8 @@ class Conf(object):
 
         :param replacement: Intended replacement parameter.
         :param original: Value to be replaced.
-        :param casts: List
-
+        :param casts:
+        :param valid_types:
         """
         original_type = type(original)
         replacement_type = type(replacement)
@@ -206,7 +216,7 @@ class Conf(object):
                     return False, None
 
             for cast_pair in casts:
-                for (from_type, to_type) in casts:
+                for (from_type, to_type) in cast_pair:
                     converted, converted_value = conditional_cast(from_type, to_type)
                     if converted:
                         return converted_value

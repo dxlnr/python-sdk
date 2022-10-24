@@ -51,6 +51,7 @@ def main():
             "grpcio>=1.43.0",
             "grpcio-tools>=1.43.0",
             "toml>=0.10.2",
+            "backoff>=2.2.1",
         ],
         rust_extensions=[
             RustExtension(
