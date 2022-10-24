@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 import platform
 import sys
+import os
 
 from setuptools import setup
 
 from setuptools_rust import Binding, RustExtension
+
+from tools.prebuild import build_deps
+
 
 python_min_version = (3, 8, 0)
 python_min_version_str = ".".join(map(str, python_min_version))
@@ -34,19 +38,29 @@ try:
 except ImportError:
     bdist_wheel = None
 
+cwd = os.path.dirname(os.path.abspath(__file__))
 
-setup(
-    install_requires=[
-        "numpy>=1.23.0",
-        "grpcio>=1.43.0",
-        "grpcio-tools>=1.43.0",
-        "toml>=0.10.2",
-    ],
-    rust_extensions=[
-        RustExtension(
-            {"mosaic": "modalic.bin.mosaic"},
-            "modules/mosaic/Cargo.toml",
-            binding=Binding.Exec
-        )
-    ],
-)
+
+def main():
+    # prebuilding dependencies
+    build_deps(cwd)
+
+    setup(
+        install_requires=[
+            "numpy>=1.23.0",
+            "grpcio>=1.43.0",
+            "grpcio-tools>=1.43.0",
+            "toml>=0.10.2",
+        ],
+        rust_extensions=[
+            RustExtension(
+                {"mosaic": "modalic.bin.mosaic"},
+                "modules/mosaic/Cargo.toml",
+                binding=Binding.Exec,
+            )
+        ],
+    )
+
+
+if __name__ == "__main__":
+    main()

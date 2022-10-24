@@ -23,6 +23,14 @@ from modalic.server.server import run_server
 # Simulation API
 from modalic.simulation import ClientPool
 
+# module level doc-string
+__doc__ = """
+modalic - Federated Learning Operations Platform
+================================================
+
+"""
+
+
 __all__ = [
     "PytorchClient",
     "TfClient",
