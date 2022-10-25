@@ -1,0 +1,241 @@
+#  Copyright (c) modalic 2022. All Rights Reserved.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at:
+#
+#       https://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+#  or implied. See the License for the specific language governing
+#  permissions and limitations under the License.
+
+"""Base Client Object."""
+import threading
+from abc import abstractmethod
+from logging import DEBUG, ERROR, INFO, WARNING
+from typing import Any, List, Optional, Union
+
+import backoff
+import numpy as np
+
+from modalic.client.api import Client
+from modalic.client.mosaic_python_sdk import mosaic_python_sdk
+from modalic.config import Conf
+from modalic.logging.logging import logger
+
+
+class InternalClient(threading.Thread):
+    r"""Client object implements all the functionality that enables Federated Learning.
+    It serves also for a base class for the specific child classes that implement
+    specific functions for specific ML frameworks.
+
+    :param client: Custom Client object.
+    :param conf: :class:`modalic.Conf` that stores all the parameters concerning
+        the Federated Learning process.
+    :param state:
+    """
+
+    def __init__(
+        self,
+        client: Client,
+        conf: Optional[Union[dict, Conf]] = None,
+        state: Optional[List[int]] = None,
+    ):
+        # Configuration init.
+        #
+        if conf is None or isinstance(conf, dict):
+            self.conf = Conf.create_conf(conf)
+        else:
+            self.conf = conf
+        # Setting all the internal necessary attributes.
+        self._server_address = self.conf.server_address
+        self._training_rounds = self.conf.training_rounds
+        self._round_id = 0
+        self._model_shape = self._get_model_shape()
+        self._dtype = self._get_model_dtype()
+
+        # Internal client
+        #
+        # Implements the internal logic that makes the client able to
+        # process the Modalic Federated Learning protocol.
+        self._mosaic_client = mosaic_python_sdk.Client(
+            self.conf.server_address, 1.0, state
+        )
+
+        # Client API
+        #
+        # https://github.com/python/cpython/blob/3.9/Lib/multiprocessing/process.py#L80
+        # stores the Client class with its args and kwargs.
+        #
+        # Based on composition over inheritance.
+        self._client = client
+        # Instantiate global model to None.
+        self._global_model = None
+        # State instigating that an error occured while fetching a global model
+        # from the aggregation server.
+        self._error_on_fetch_global_model = False
+        # threading internals
+        self._exit_event = threading.Event()
+
+        # Primitive lock objects. Once a thread has acquired a lock,
+        # subsequent attempts to acquire it block, until it is released;
+        # any thread may release it.
+        self._step_lock = threading.Lock()
+        super().__init__(daemon=True)
+
+    @property
+    def server_address(self) -> int:
+        r"""Returns the server address the client uses to connect."""
+        return self._server_address
+
+    @property
+    def backoff_interval(self) -> float:
+        r"""Returns the internal backoff interval."""
+        return self.conf.backoff_interval
+
+    @property
+    def dtype(self) -> str:
+        r"""Returns the underlying data type that is set via Conf."""
+        return self._dtype
+
+    @property
+    def round_id(self) -> int:
+        r"""Holds state of the training round the local model is in."""
+        return self._round_id
+
+    @property
+    def model_shape(self) -> List[np.ndarray]:
+        r"""Returns the shape of model architecture the client holds."""
+        return self._model_shape
+
+    @abstractmethod
+    def serialize_local_model(self) -> list:
+        r"""
+        Serializes the local model into a `list` data type. The data type of the
+        elements must match the data type attached as metadata.
+        :returns: The local model (self.model) as a `list`.
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def deserialize_global_model(self, global_model: list) -> Any:
+        r"""
+        Deserializes the `global_model` from a `list` to a specific model type.
+        The data type of the elements matches the data type defined.
+        If no global model exists (usually in the first round), the method is
+        not called.
+
+        :param global_model: The global model.
+        :returns:
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _on_new_global_model(self, model):
+        r"""."""
+        raise NotImplementedError()
+
+    def _fetch_global_model(self):
+        r"""
+        :raises GlobalModelUnavailable:
+        :raises GlobalModelDataTypeError:
+        """
+        try:
+            global_model = self._mosaic_client.global_model()
+        except (
+            mosaic_python_sdk.GlobalModelUnavailable,
+            mosaic_python_sdk.GlobalModelDataTypeError,
+        ) as err:
+            self._error_on_fetch_global_model = True
+            logger.log(WARNING, f"Failed to fetch global model. {err}.")
+        else:
+            if global_model is not None:
+                self._global_model = self._client.deserialize_global_model(global_model)
+            else:
+                self._global_model = None
+            self._error_on_fetch_global_model = False
+
+    def _set_local_model(self, local_model: List[Any]):
+        r"""Sets a local model. This method can be called at any time. Internally the
+        participant first caches the local model.
+
+        If a local model is already in the cache and `set_local_model` is called
+        with a new local model,
+        the current cached local model will be replaced by the new one.
+
+        :param local_model: The local model in the form of a list. The data type of the
+            elements must match the data type defined in the coordinator configuration.
+        :raises LocalModelDataTypeError: If the data type of the local model
+            does not match the data type used for the actual model.
+        """
+        try:
+            self._mosaic_client.set_model(local_model)
+        except (mosaic_python_sdk.UninitializedClient):
+            self._exit_event.set()
+
+    def run(self):
+        r"""."""
+        self._client = self._client()
+
+        try:
+            self._run()
+        except Exception as err:
+            logger.log(ERROR, f"Exception during runtime. {err}.")
+            self._exit_event.set()
+
+    def _run(self):
+        r"""."""
+        while not self._exit_event.is_set():
+            self._step()
+
+    def _step(self):
+        r"""."""
+
+        @backoff.on_predicate(
+            backoff.constant, jitter=None, interval=self.conf.backoff_interval
+        )
+        def _step_unwrapped(self):
+            r"""."""
+            with self._step_lock:
+                self._mosaic_client.step()
+
+                if (
+                    self._mosaic_client.new_global_model()
+                    or self._error_on_fetch_global_model
+                ):
+                    self._fetch_global_model()
+
+                    if not self._error_on_fetch_global_model:
+                        self._client._on_new_global_model(self._global_model)
+
+                if (
+                    self._mosaic_client.should_set_model()
+                    and not self._error_on_fetch_global_model
+                ):
+                    self._train()
+
+        _step_unwrapped()
+
+    def _train(self):
+        r"""Runs a single training step."""
+        logger.log(INFO, "Client starts training.")
+        # `train` function is implemented by external devs.
+        #
+        local_update = self._client.train(self._global_model)
+        try:
+            self._set_local_model(local_update)
+        except (mosaic_python_sdk.LocalModelDataTypeError,) as err:
+            logger.log(WARNING, f"failed to set local model. {err}.")
+
+    def stop(self) -> None:
+        r"""Stopping the client. State will be saved if enabled."""
+        self._exit_event.set()
+
+        with self._step_lock:
+            if self.conf.save_state:
+                state = self._mosaic_client.save()
+                logger.log(DEBUG, f"Client state {state} saved.")
+            logger.log(WARNING, "Client stopped.")

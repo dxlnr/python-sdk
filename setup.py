@@ -38,6 +38,7 @@ try:
 except ImportError:
     bdist_wheel = None
 
+# Project root.
 cwd = os.path.dirname(os.path.abspath(__file__))
 
 
