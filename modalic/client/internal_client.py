@@ -198,7 +198,7 @@ class InternalClient(threading.Thread):
         try:
             self._run()
         except Exception as err:
-            logger.log(ERROR, f"Exception during runtime. {err}.")
+            logger.log(ERROR, f"Exception during client runtime : {err}.")
             self._exit_event.set()
 
     def _run(self):

@@ -14,7 +14,7 @@
 """Spawn Client."""
 from typing import Optional
 
-from modalic.client import Client, InternalClient
+from modalic.client import Client, InternalClient, mosaic_python_sdk
 from modalic.config import Conf
 
 
@@ -22,6 +22,11 @@ def spawn_client(client: Client, conf: Optional[Conf] = None):
     r"""
     :param client:
     """
+    # Init the internal logger.
+    #
+    # Logs the underlying logical steps. Particularly helpful for debugging.
+    mosaic_python_sdk.init_logging()
+
     # Internal Client which implements the backend Federated protocol logic.
     #
     modalic_client = InternalClient(client, conf)
