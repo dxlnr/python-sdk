@@ -12,7 +12,7 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 
-"""Base Client Object."""
+"""Client Object API."""
 import threading
 from abc import abstractmethod
 from logging import DEBUG, ERROR, INFO, WARNING
@@ -20,11 +20,12 @@ from typing import Any, List, Optional, Union
 
 import backoff
 import numpy as np
+from mosaic_python_sdk import mosaic_python_sdk
 
-from modalic.client.api import Client
-from modalic.client.mosaic_python_sdk import mosaic_python_sdk
 from modalic.config import Conf
 from modalic.logging.logging import logger
+
+from .client import Client
 
 
 class InternalClient(threading.Thread):
@@ -50,13 +51,6 @@ class InternalClient(threading.Thread):
             self.conf = Conf.create_conf(conf)
         else:
             self.conf = conf
-        # Setting all the internal necessary attributes.
-        self._server_address = self.conf.server_address
-        self._training_rounds = self.conf.training_rounds
-        self._round_id = 0
-        self._model_shape = self._get_model_shape()
-        self._dtype = self._get_model_dtype()
-
         # Internal client
         #
         # Implements the internal logic that makes the client able to
@@ -72,8 +66,19 @@ class InternalClient(threading.Thread):
         #
         # Based on composition over inheritance.
         self._client = client
-        # Instantiate global model to None.
+
+        # Setting all the internal necessary attributes.
+        #
+        self._server_address = self.conf.server_address
+        self._training_rounds = self.conf.training_rounds
+        self._round_id = 0
+        # Instantiate global & local model to None.
         self._global_model = None
+        self._local_model = None
+        #
+        self._model_shape = self._get_model_shape()
+        self._dtype = self._get_model_dtype()
+
         # State instigating that an error occured while fetching a global model
         # from the aggregation server.
         self._error_on_fetch_global_model = False
@@ -111,17 +116,29 @@ class InternalClient(threading.Thread):
         r"""Returns the shape of model architecture the client holds."""
         return self._model_shape
 
-    @abstractmethod
-    def serialize_local_model(self) -> list:
+    def _get_model_shape(self) -> List[List[int]]:
+        r"""Extracts the shape of the custom implemented model.
+
+        :returns: List of List of ints representing the model shape.
+            Each indivdual list is the shape of a tensor storing the values of
+            in each model layer.
+            (Example: [[1, 4], [1]])
+        """
+        return self._client._get_model_shape()
+
+    def _get_model_dtype(self) -> str:
+        r"""Extracts the data type of the custom implemented model."""
+        return self._client._get_model_dtype()
+
+    def _serialize_local_model(self) -> List[Any]:
         r"""
         Serializes the local model into a `list` data type. The data type of the
         elements must match the data type attached as metadata.
         :returns: The local model (self.model) as a `list`.
         """
-        raise NotImplementedError()
+        return self._client._serialize_local_model()
 
-    @abstractmethod
-    def deserialize_global_model(self, global_model: list) -> Any:
+    def _deserialize_global_model(self, global_model: List[Any]) -> Any:
         r"""
         Deserializes the `global_model` from a `list` to a specific model type.
         The data type of the elements matches the data type defined.
@@ -131,7 +148,7 @@ class InternalClient(threading.Thread):
         :param global_model: The global model.
         :returns:
         """
-        raise NotImplementedError()
+        return self._client._deserialize_global_model()
 
     @abstractmethod
     def _on_new_global_model(self, model):
@@ -153,7 +170,7 @@ class InternalClient(threading.Thread):
             logger.log(WARNING, f"Failed to fetch global model. {err}.")
         else:
             if global_model is not None:
-                self._global_model = self._client.deserialize_global_model(global_model)
+                self._global_model = self._deserialize_global_model(global_model)
             else:
                 self._global_model = None
             self._error_on_fetch_global_model = False
@@ -178,8 +195,6 @@ class InternalClient(threading.Thread):
 
     def run(self):
         r"""."""
-        self._client = self._client()
-
         try:
             self._run()
         except Exception as err:
@@ -217,12 +232,12 @@ class InternalClient(threading.Thread):
                 ):
                     self._train()
 
-        _step_unwrapped()
+        _step_unwrapped(self)
 
     def _train(self):
         r"""Runs a single training step."""
         logger.log(INFO, "Client starts training.")
-        # `train` function is implemented by external devs.
+        # Calling the `train` function of the custom client.
         #
         local_update = self._client.train(self._global_model)
         try:

@@ -13,6 +13,9 @@
 #  permissions and limitations under the License.
 import sys
 
+# Version bump
+from ._version import __version__
+
 # Client APIs for main frameworks
 if "torch" in sys.modules:
     from modalic.api.torch import PytorchClient
@@ -27,9 +30,10 @@ if "torch" in sys.modules:
 if "tensorflow" in sys.modules:
     from modalic.api.tf import tf_train
 
-# Configuration
 # Client Endpoint
-from modalic.client.api import Client
+from modalic.client import Client
+
+# Configuration
 from modalic.config import Conf
 
 # Invoke Aggregation Server
@@ -37,6 +41,9 @@ from modalic.server.server import run_server
 
 # Simulation API
 from modalic.simulation import ClientPool
+
+# Function Endpoint.
+from .spawn import spawn_client
 
 # module level doc-string
 __doc__ = """

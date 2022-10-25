@@ -36,8 +36,8 @@ def all_equal_list(iterator: List[Any]) -> bool:
 
 
 def validate_kwargs(
-    kwargs: Dict[Any],
-    allowed_kwargs: Dict[str],
+    kwargs: Dict[Any, Any],
+    allowed_kwargs: Dict[str, str],
     error_message="Keyword argument not understood:",
 ) -> None:
     r"""Checks that all keyword arguments are in the set of allowed keys.

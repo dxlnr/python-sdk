@@ -15,14 +15,28 @@
 from abc import abstractmethod
 from typing import Any, List
 
-from modalic.client.client import InternalClient
 
-
-class Client(InternalClient):
+class Client:
     r"""."""
 
     def __init__(self):
         pass
+
+    @abstractmethod
+    def _get_model_shape(self) -> List[List[int]]:
+        r"""Extracts the shape of the custom implemented model.
+
+        :returns: List of List of ints representing the model shape.
+            Each indivdual list is the shape of a tensor storing the values of
+            in each model layer.
+            (Example: [[1, 4], [1]])
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _get_model_dtype(self) -> str:
+        r"""Extracts the data type of the custom implemented model."""
+        raise NotImplementedError()
 
     @abstractmethod
     def serialize_local_model(self) -> List[Any]:
@@ -46,6 +60,7 @@ class Client(InternalClient):
         """
         raise NotImplementedError()
 
+    @abstractmethod
     def train(self) -> Any:
         r"""."""
         raise NotImplementedError()

@@ -30,7 +30,7 @@ from modalic.logging.logging import logger
 class Conf(object):
     r"""Configuration object class that stores the parameters regarding the federated learning process.
 
-    :param server_address: (Default: ``'[::]:8080'``) GRPC endpoint for the aggregation server.
+    :param server_address: (Default: ``'http://127.0.0.1:8080'``) HTTP endpoint for the aggregation server.
     :param client_id: (Default: ``0``) Client identifier which must be unique.
     :param timeout: (Default: ``0``) Defines a timeout length in seconds which is mainly used
         for simulating some waiting periode after each training round. Should always be non-negative.
@@ -48,7 +48,7 @@ class Conf(object):
     Two main ways to construct a Conf object.
         >>> # via dictionary
         >>> custom_dict = {
-        >>>     "api": {"server_address": "[::]:8080"},
+        >>>     "api": {"server_address": "http://127.0.0.1:8080"},
         >>>     "process":
         >>>         {"training_rounds": 10, "timeout": 5.0},
         >>> }
@@ -56,7 +56,7 @@ class Conf(object):
         >>> # ----------------------------------------------
         >>> # via .toml (example config.toml below)
         >>> [api]
-        >>> server_address = "[::]:8080"
+        >>> server_address = "http://127.0.0.1:8080"
         >>>
         >>> [process]
         >>> training_rounds = 10
@@ -65,7 +65,7 @@ class Conf(object):
         >>> #
         >>> conf = Conf.merge_from_toml(path)
     """
-    server_address: str = "[::]:8080"
+    server_address: str = "http://127.0.0.1:8080"
     client_id: int = 0
     timeout: float = 0.0
     training_rounds: int = 0

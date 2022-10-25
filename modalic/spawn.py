@@ -12,16 +12,19 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 """Spawn Client."""
+from typing import Optional
+
 from modalic.client import Client, InternalClient
+from modalic.config import Conf
 
 
-def spawn_client(client: Client):
+def spawn_client(client: Client, conf: Optional[Conf] = None):
     r"""
     :param client:
     """
     # Internal Client which implements the backend Federated protocol logic.
     #
-    modalic_client = InternalClient(client)
+    modalic_client = InternalClient(client, conf)
     # Spawns the InternalClient in a separate thread by using threading library.
     # `start` calls the `run` method of `InternalClient`.
     #
