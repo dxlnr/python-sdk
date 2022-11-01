@@ -11,14 +11,14 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
-"""Spawn Client."""
+"""Spawn & run a Client."""
 from typing import Optional
 
 from modalic.client import Client, InternalClient, mosaic_python_sdk
 from modalic.config import Conf
 
 
-def spawn_client(client: Client, conf: Optional[Conf] = None):
+def run_client(client: Client, conf: Optional[Conf] = None):
     r"""
     :param client:
     """

@@ -14,6 +14,7 @@
 
 """Custom Logger."""
 import logging
+import time
 from typing import Dict
 
 
@@ -31,12 +32,12 @@ class CustomFormatter(logging.Formatter):
         r"""Returns a custom format string."""
         return (
             self.faint
-            + "%(asctime)s "
+            + "%(asctime)s.%(msecs)06dZ "
             + self.reset
             + color
             + " %(levelname)s"
             + self.reset
-            + " : %(message)s"
+            + " %(message)s"
             + self.reset
         )
 
@@ -53,7 +54,7 @@ class CustomFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         r"""."""
         log_fmt = self.custom_format().get(record.levelno)
-        formatter = logging.Formatter(log_fmt)
+        formatter = logging.Formatter(fmt=log_fmt, datefmt="%Y-%m-%dT%H:%M:%S")
         return formatter.format(record)
 
 
@@ -65,5 +66,7 @@ logger.setLevel(level=logging.INFO)
 handler = logging.StreamHandler()
 handler.setLevel(level=logging.INFO)
 handler.setFormatter(CustomFormatter())
+# adjust time settings to UTC.
+logging.Formatter.converter = time.gmtime
 
 logger.addHandler(handler)

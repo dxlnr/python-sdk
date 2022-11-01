@@ -43,7 +43,7 @@ from modalic.server.server import run_server
 from modalic.simulation import ClientPool
 
 # Function Endpoint.
-from .spawn import spawn_client
+from .run import run_client
 
 # module level doc-string
 __doc__ = """
@@ -61,4 +61,5 @@ __all__ = [
     "torch_train",
     "tf_train",
     "run_server",
+    "run_client",
 ]
