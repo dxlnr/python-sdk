@@ -54,6 +54,7 @@ modalic - Federated Learning Operations Platform
 
 
 __all__ = [
+    "Client",
     "PytorchClient",
     "TfClient",
     "Conf",

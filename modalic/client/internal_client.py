@@ -14,13 +14,18 @@
 
 """Client Object API."""
 import threading
-from abc import abstractmethod
 from logging import DEBUG, ERROR, INFO, WARNING
 from typing import Any, List, Optional, Union
 
 import backoff
 import numpy as np
-from mosaic_python_sdk import mosaic_python_sdk
+
+try:
+    from mosaic_python_sdk import mosaic_python_sdk
+except ImportError:
+    import warnings
+
+    warnings.warn("ImportError: .so bindings mosaic_python_sdk could not be imported.")
 
 from modalic.config import Conf
 from modalic.logging.logging import logger
@@ -148,15 +153,18 @@ class InternalClient(threading.Thread):
         :param global_model: The global model.
         :returns:
         """
+        global_model = global_model
         return self._client._deserialize_global_model()
 
-    @abstractmethod
-    def _on_new_global_model(self, model):
-        r"""."""
-        raise NotImplementedError()
+    def _with_latest_global_model(self, model):
+        r"""Handles the cases when the latest global model was fetched.
+        This function can be used for e.g. storing the model locally.
+        """
+        model = model
 
-    def _fetch_global_model(self):
-        r"""
+    def _fetch_global_model(self) -> None:
+        r"""Fetches the latest global model exposed by the server.
+
         :raises GlobalModelUnavailable:
         :raises GlobalModelDataTypeError:
         """
@@ -175,7 +183,7 @@ class InternalClient(threading.Thread):
                 self._global_model = None
             self._error_on_fetch_global_model = False
 
-    def _set_local_model(self, local_model: List[Any]):
+    def _set_local_model(self, local_model: List[Any]) -> None:
         r"""Sets a local model. This method can be called at any time. Internally the
         participant first caches the local model.
 
@@ -193,7 +201,7 @@ class InternalClient(threading.Thread):
         except (mosaic_python_sdk.UninitializedClient):
             self._exit_event.set()
 
-    def run(self):
+    def run(self) -> None:
         r"""."""
         try:
             self._run()
@@ -201,22 +209,32 @@ class InternalClient(threading.Thread):
             logger.log(ERROR, f"Exception during client runtime : {err}.")
             self._exit_event.set()
 
-    def _run(self):
-        r"""."""
+    def _run(self) -> None:
+        r"""Internal `run` function which performs looping internal `step` function
+        until an exit event is triggered.
+        """
         while not self._exit_event.is_set():
             self._step()
 
-    def _step(self):
-        r"""."""
+    def _step(self) -> None:
+        r"""Performs a single `step`. The client calls its internal state engine
+        which then requests a new task by the server.
+
+        The engine sets internal states which determine which task will be performed.
+        """
 
         @backoff.on_predicate(
             backoff.constant, jitter=None, interval=self.conf.backoff_interval
         )
-        def _step_unwrapped(self):
+        def _step_unwrapped(self) -> None:
             r"""."""
             with self._step_lock:
+                # Internal request for determining the latest task.
+                #
+                # Handled by the modalic python binding object `mosaic_client`.
                 self._mosaic_client.step()
 
+                # Get latest global model.
                 if (
                     self._mosaic_client.new_global_model()
                     or self._error_on_fetch_global_model
@@ -224,8 +242,9 @@ class InternalClient(threading.Thread):
                     self._fetch_global_model()
 
                     if not self._error_on_fetch_global_model:
-                        self._client._on_new_global_model(self._global_model)
+                        self._with_latest_global_model(self._global_model)
 
+                # Training branch as the latest task.
                 if (
                     self._mosaic_client.should_set_model()
                     and not self._error_on_fetch_global_model
@@ -234,14 +253,16 @@ class InternalClient(threading.Thread):
 
         _step_unwrapped(self)
 
-    def _train(self):
+    def _train(self) -> None:
         r"""Runs a single training step."""
         logger.log(INFO, "Client starts training.")
         # Calling the `train` function of the custom client.
         #
         local_update = self._client.train(self._global_model)
+        # Convert the model into serialized data format.
+        local_update_ser = self._client.serialize_local_model(local_update)
         try:
-            self._set_local_model(local_update)
+            self._set_local_model(local_update_ser)
         except (mosaic_python_sdk.LocalModelDataTypeError,) as err:
             logger.log(WARNING, f"failed to set local model. {err}.")
 

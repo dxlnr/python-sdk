@@ -2,3 +2,4 @@ include modules/mosaic/Cargo.toml
 include modules/mosaic/build.rs
 recursive-include modules/mosaic/proto *
 recursive-include modules/mosaic/src *
+include modalic/client/*.so *

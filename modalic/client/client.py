@@ -39,7 +39,7 @@ class Client:
         raise NotImplementedError()
 
     @abstractmethod
-    def serialize_local_model(self) -> List[Any]:
+    def serialize_local_model(self, local_model: Any) -> List[Any]:
         r"""
         Serializes the local model into a `list` of values with the constant data type.
         The data type of the elements must match the data type attached as metadata.
@@ -61,6 +61,6 @@ class Client:
         raise NotImplementedError()
 
     @abstractmethod
-    def train(self) -> Any:
+    def train(self, global_model: Any) -> Any:
         r"""."""
         raise NotImplementedError()
