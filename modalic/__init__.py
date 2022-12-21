@@ -11,16 +11,20 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
+import importlib
 import sys
 
 # Version bump
 from ._version import __version__
 
 # Client APIs for main frameworks
-if "torch" in sys.modules:
+if importlib.util.find_spec("torch") is not None:
     from modalic.api.torch import PytorchClient
 
-if "tensorflow" in sys.modules:
+    # Expose torch specific functions
+    from modalic.platforms.torch import serialize_torch_model
+
+if importlib.util.find_spec("tensorflow") is not None:
     from modalic.api.tf import TfClient
 
 # Decorators
@@ -56,6 +60,7 @@ modalic - Federated Learning Operations Platform
 __all__ = [
     "Client",
     "PytorchClient",
+    "serialize_torch_model",
     "TfClient",
     "Conf",
     "ClientPool",
