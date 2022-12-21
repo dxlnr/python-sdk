@@ -51,13 +51,14 @@ def main():
             "numpy>=1.23.0",
             "grpcio>=1.43.0",
             "grpcio-tools>=1.43.0",
+            "protobuf==3.20",
             "toml>=0.10.2",
             "backoff>=2.2.1",
         ],
         rust_extensions=[
             RustExtension(
-                {"mosaic": "modalic.bin.mosaic"},
-                "modules/mosaic/Cargo.toml",
+                {"aggregator": "modalic.bin.aggregator"},
+                "modules/mosaic/mosaic/Cargo.toml",
                 binding=Binding.Exec,
             )
         ],

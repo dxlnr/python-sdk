@@ -135,13 +135,13 @@ class InternalClient(threading.Thread):
         r"""Extracts the data type of the custom implemented model."""
         return self._client._get_model_dtype()
 
-    def _serialize_local_model(self) -> List[Any]:
+    def _serialize_local_model(self, local_model: Any) -> List[Any]:
         r"""
         Serializes the local model into a `list` data type. The data type of the
         elements must match the data type attached as metadata.
         :returns: The local model (self.model) as a `list`.
         """
-        return self._client._serialize_local_model()
+        return self._client.serialize_local_model(local_model)
 
     def _deserialize_global_model(self, global_model: List[Any]) -> Any:
         r"""
@@ -153,8 +153,7 @@ class InternalClient(threading.Thread):
         :param global_model: The global model.
         :returns:
         """
-        global_model = global_model
-        return self._client._deserialize_global_model()
+        return self._client.deserialize_global_model(global_model)
 
     def _with_latest_global_model(self, model):
         r"""Handles the cases when the latest global model was fetched.
@@ -260,7 +259,7 @@ class InternalClient(threading.Thread):
         #
         local_update = self._client.train(self._global_model)
         # Convert the model into serialized data format.
-        local_update_ser = self._client.serialize_local_model(local_update)
+        local_update_ser = self._serialize_local_model(local_update)
         try:
             self._set_local_model(local_update_ser)
         except (mosaic_python_sdk.LocalModelDataTypeError,) as err:

@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
-
+"""API for calling Aggregation Server"""
 import os
 import sys
 
@@ -32,25 +32,25 @@ def find_bin_path() -> str:
         os.path.join(curr_path, "bin"),
         # editable installation, no copying is performed.
         os.path.join(curr_path, os.path.pardir, "bin"),
-        # search for mosaic binary from a system prefix, if available.  This should be the last
-        # option.
+        # search for mosaic aggregator binary from a system prefix, if available.
+        # This should be the last option.
         os.path.join(sys.prefix, "bin"),
     ]
 
     if sys.platform == "win32":
         pass
     if sys.platform.startswith(("linux", "freebsd", "emscripten")):
-        bin_path = [os.path.join(p, "mosaic") for p in bin_path]
+        bin_path = [os.path.join(p, "aggregator") for p in bin_path]
     if sys.platform == "darwin":
-        pass
+        bin_path = [os.path.join(p, "aggregator") for p in bin_path]
     if sys.platform == "cygwin":
-        pass
+        bin_path = [os.path.join(p, "aggregator") for p in bin_path]
 
-    mosaic = [
+    aggregator = [
         file for file in bin_path if os.path.exists(file) and os.path.isfile(file)
     ]
 
-    if not mosaic:
+    if not aggregator:
         link = "https://github.com/modalic/mosaic"
         excpt = (
             "Cannot find binary for executing the server in the candidate path. "
@@ -65,4 +65,4 @@ def find_bin_path() -> str:
             + " for installing aggregation server Mosaic of Modalic."
         )
         raise ServerBinaryNotFound(excpt)
-    return mosaic[0]
+    return aggregator[0]

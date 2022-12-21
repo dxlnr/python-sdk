@@ -13,9 +13,21 @@
 #  permissions and limitations under the License.
 """Torch specific Helper Functions"""
 import itertools
+from collections import OrderedDict
+from typing import List
 
 import numpy as np
-import torch.nn as nn
+import torch
+
+from modalic.utils.misc import all_equal_list
+from modalic.utils.serde import _indexing
+
+
+def _float_to_np_ndarray(tensor: list, layer_shape: List[np.ndarray]) -> list:
+    r"""Deserialize NumPy ndarray from u8 bytes."""
+    layers = np.split(np.array(tensor), _indexing([np.prod(s) for s in layer_shape]))
+
+    return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
 
 
 def _np_ndarray_to_float(ndarray: np.ndarray) -> list:
@@ -29,11 +41,66 @@ def _ser_np_weights(weights: list) -> list:
     return list(itertools.chain(*layers))
 
 
-def serialize_torch_model(model: nn.Module) -> list:
-    """Serializes torch model as `py list`.
+def serialize_torch_model(model: torch.nn.Module) -> list:
+    r"""Serializes torch model as `py list`.
 
     :param model: Torch model.
     :returns: One level list of py floats.
     """
     weights = [val.cpu().numpy() for _, val in model.state_dict().items()]
     return _ser_np_weights(weights)
+
+
+def deserialize_torch_model(
+    model: torch.nn.Module, tensor: list, layer_shape: List[np.ndarray]
+) -> torch.nn.Module:
+    """Deserializes a py list to a torch model and sets the weights in the given model.
+
+    :param model: Torch model.
+    :param tensor: List of float representing the model weights.
+    :layer_shape: Shape of the model which should be reconstructed.
+    """
+    weights = _float_to_np_ndarray(tensor, layer_shape)
+
+    state_dict = OrderedDict(
+        {k: torch.tensor(v) for k, v in zip(model.state_dict().keys(), weights)}
+    )
+    model.load_state_dict(state_dict, strict=True)
+    return model
+
+
+def get_torch_model_dtype(model: torch.nn.Module) -> str:
+    r"""Extracts the data type of the pytorch model.
+
+    :param model: Pytorch model object.
+    :returns: dtype: Torch data type of the model.
+    :raises ValueError:
+    :raises TypeError:
+    """
+    if isinstance(model, torch.nn.Module):
+        dtype_list = [layer[1].dtype for layer in list(model.state_dict().items())]
+        if torch_type := all_equal_list(dtype_list):
+            return torch_type
+        else:
+            raise ValueError(
+                f"Found inconsistent data type for {model}. \
+            Mixed precision policy is not allowed at this point. \
+            Consider reimplementing model with consistent data type above all layers."
+            )
+    else:
+        raise TypeError(
+            f"Unknown model type: {type(model)}. Consider inheriting from torch.torch.nn.Module."
+        )
+
+
+def get_torch_model_shape(model: torch.nn.Module) -> List[np.ndarray]:
+    r"""Extracts the shape of the pytorch model.
+
+    :param model: Pytorch model object.
+    :returns: List of np.ndarray which contains the shape (size)
+        of each individual layer of the model.
+    """
+    return [
+        np.array(model.state_dict()[param_tensor].size())
+        for param_tensor in model.state_dict().keys()
+    ]

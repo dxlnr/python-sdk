@@ -17,12 +17,16 @@ import sys
 # Version bump
 from ._version import __version__
 
-# Client APIs for main frameworks
+# Client APIs for main ML frameworks.
 if importlib.util.find_spec("torch") is not None:
     from modalic.api.torch import PytorchClient
 
-    # Expose torch specific functions
-    from modalic.platforms.torch import serialize_torch_model
+    # Expose torch specific functions.
+    from modalic.platforms.torch import (
+        deserialize_torch_model,
+        get_torch_model_shape,
+        serialize_torch_model,
+    )
 
 if importlib.util.find_spec("tensorflow") is not None:
     from modalic.api.tf import TfClient
@@ -61,6 +65,8 @@ __all__ = [
     "Client",
     "PytorchClient",
     "serialize_torch_model",
+    "deserialize_torch_model",
+    "get_torch_model_shape",
     "TfClient",
     "Conf",
     "ClientPool",
