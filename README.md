@@ -32,21 +32,27 @@ Both can be started via SDK. Currently Pytorch \& Tensorflow are supported as fr
 
 ```python
 # (1) Run the aggregation server with configuration using .toml
-cfg = toml.load(".toml")
+cfg = toml.load("${configPATH}.toml")
 modalic.run_server(cfg)
+```
+The *.toml* file can be used to control hyperparameters for the aggregation server.
+```toml
+# -c configs/config.toml
 
-  # .toml
-  #
-  # [api]
-  # server_address = "[::]:8080"
-  #
-  # [model]
-  # data_type = "F32"
-  #
-  # [process]
-  # training_rounds = 10
-  # participants = 3
-  # strategy = "FedAvg"
+# REST API settings.
+[api]
+# The address to which the REST API of the server
+# will be bound. All requests should be sent to this address.
+server_address = "127.0.0.1:8080"
+
+# Hyperparameter controlling the Federated Learning training process.
+[protocol]
+# Defines the number of training rounds (global epochs) 
+# that will be performed.
+training_rounds = 10
+# Sets the number of participants & local models 
+# one global epoch should at least contain.
+participants = 2
 ```
 
 Construct the client logic using a framework of choice. The Pytorch approach uses an object-oriented paradigm while the Tensorflow examples applies a functional one. Both paradigm are available in both frameworks vice versa.

@@ -44,8 +44,8 @@ def check_submodules(root_path: str):
 
     def check_for_files(folder, files):
         if not any(os.path.exists(os.path.join(folder, f)) for f in files):
-            report("Could not find any of {} in {}".format(", ".join(files), folder))
-            report("Did you run 'git submodule update --init --recursive ?")
+            print("Could not find any of {} in {}".format(", ".join(files), folder))
+            print("Did you run 'git submodule update --init --recursive ?")
             sys.exit(1)
 
     def not_exists_or_empty(folder):
@@ -68,4 +68,4 @@ def check_submodules(root_path: str):
             print("Please run:\n\tgit submodule update --init --recursive")
             sys.exit(1)
     for folder in folders:
-        check_for_files(folder, ["Cargo.toml"])
+        check_for_files(folder, ["mosaic/Cargo.toml"])

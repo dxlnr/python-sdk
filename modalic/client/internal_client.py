@@ -129,11 +129,11 @@ class InternalClient(threading.Thread):
             in each model layer.
             (Example: [[1, 4], [1]])
         """
-        return self._client._get_model_shape()
+        return self._client.get_model_shape()
 
     def _get_model_dtype(self) -> str:
         r"""Extracts the data type of the custom implemented model."""
-        return self._client._get_model_dtype()
+        return self._client.get_model_dtype()
 
     def _serialize_local_model(self, local_model: Any) -> List[Any]:
         r"""

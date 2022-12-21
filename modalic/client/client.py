@@ -19,11 +19,8 @@ from typing import Any, List
 class Client:
     r"""."""
 
-    def __init__(self):
-        pass
-
     @abstractmethod
-    def _get_model_shape(self) -> List[List[int]]:
+    def get_model_shape(self) -> List[List[int]]:
         r"""Extracts the shape of the custom implemented model.
 
         :returns: List of List of ints representing the model shape.
@@ -34,7 +31,7 @@ class Client:
         raise NotImplementedError()
 
     @abstractmethod
-    def _get_model_dtype(self) -> str:
+    def get_model_dtype(self) -> str:
         r"""Extracts the data type of the custom implemented model."""
         raise NotImplementedError()
 

@@ -1,21 +1,9 @@
-import argparse
-import sys
-
+"""Client Implementation"""
 import torch
 import torch.nn as nn
 from data import Dataloader, load_partition_data_mnist
 
 import modalic
-
-
-def create_arg_parser():
-    r"""Get arguments from command lines."""
-    parser = argparse.ArgumentParser(description="Client parser.")
-    parser.add_argument(
-        "--client_id", metavar="N", type=int, help="an integer specifing the client ID."
-    )
-
-    return parser
 
 
 class CNN(nn.Module):
@@ -49,10 +37,11 @@ class CNN(nn.Module):
         return output, x
 
 
-class Trainer(object):
+class FLClient(modalic.Client):
     r"""Trainer class object to perform the Learning.
 
-    :param device: (torch.device) Model running device. GPUs are recommended for model training and inference.
+    :param device: (torch.device) Model running device.
+        GPUs are recommended for model training and inference.
     :param dataset: (data.Dataloader) Custom Dataloader object.
     :param epochs: (int) Epochs hyperparameter.
     """
@@ -61,7 +50,7 @@ class Trainer(object):
         self,
         device: torch.device,
         dataset: Dataloader,
-        epochs: int = 1,
+        epochs: int = 5,
     ):
         self.device = device
         self.dataset = dataset
@@ -80,7 +69,7 @@ class Trainer(object):
 
         running_loss = 0.0
         for epoch in range(0, self.epochs):
-            for i, (images, labels) in enumerate(self.trainloader):
+            for _, (images, labels) in enumerate(self.trainloader):
                 self.optimizer.zero_grad()
                 output, _ = self.model.forward(images)
 
@@ -89,33 +78,39 @@ class Trainer(object):
                 self.optimizer.step()
                 running_loss += loss.item()
 
-        return self.model, running_loss / len(self.trainloader)
+            print(
+                f"\t[epoch {epoch + 1}] loss: {running_loss / len(self.trainloader):.3f}"
+            )
+
+        return self.model
+
+    def serialize_local_model(self, model):
+        return modalic.serialize_torch_model(model)
+
+    def deserialize_global_model(self, global_model):
+        self.model = modalic.deserialize_torch_model(
+            self.model, global_model, self._get_model_shape()
+        )
+
+    def get_model_shape(self):
+        return modalic.get_torch_model_shape(self.model)
+
+    def get_model_dtype(self):
+        pass
 
 
 def main():
-    arg_parser = create_arg_parser()
-    args = arg_parser.parse_args(sys.argv[1:])
-
+    # Define the computational device for torch.
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    train_data, train_labels, test_data, test_labels = load_partition_data_mnist(
-        num_splits=100
-    )
+    print("Preparing dataset.")
+    train_data, train_labels, _, _ = load_partition_data_mnist(num_splits=25)
 
-    client = modalic.PytorchClient(
-        Trainer(
-            device,
-            Dataloader(
-                train_data[args.client_id - 1], train_labels[args.client_id - 1]
-            ),
-        ),
-        args.client_id,
-        conf={
-            "api": {"server_address": "[::]:8080"},
-            "process": {"training_rounds": 10, "timeout": 5.0},
-        },
-    )
-    client.train()
+    print("Preparing Federated Learning Client.\n")
+    client = FLClient(device, Dataloader(train_data[0], train_labels[0]))
+
+    # Start the FL Client
+    modalic.run_client(client)
 
 
 if __name__ == "__main__":
