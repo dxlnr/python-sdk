@@ -16,17 +16,16 @@
 </p>
 
 Python SDK library for using the **Modalic Federated Learning Operations Platform**.
-The SDK library serves as convenient interface for performing Federated Learning with the most common Machine Learning frameworks
-like [Pytorch](https://github.com/pytorch/pytorch) written in the Python programming language.
-As an API layer it enables an individual client application to take part within a Federated Learning setup.
-The coordination of a distributed Machine Learning process solving a particular problem,
-is done by a central server or service provider which can be started via Python script using the SDK.
+
+The SDK library serves as convenient interface for performing Federated Learning with the most common Machine Learning frameworks like [Pytorch](https://github.com/pytorch/pytorch) or [Tensorflow](https://github.com/tensorflow/tensorflow) written in the Python programming language.
+As an additional software layer within a Machine Learning pipeline, the SKD enables an individual client application to take part within a Federated Learning setup.
+The coordination of a distributed Machine Learning process solving a particular problem, is done by a central server or service provider which can be started via Python script using the SDK.
 
 As the main entrypoint to a production ready FLOps Platform, this software package aims for all developers and ML practitioners that want to run ML use cases in distributed fashion.
 
 ## Usage
 In order to run a Federated Learning procedure two main entities have to instantiated. The client logic and the aggregation server application.
-Both can be started via SDK. Currently Pytorch \& Tensorflow are supported as framework to construct the ML architecture.
+Both can be started via the SDK. Currently Pytorch \& Tensorflow are supported as framework to construct the ML architecture.
 
 #### Run the Aggregation Server
 
@@ -55,29 +54,50 @@ training_rounds = 10
 participants = 2
 ```
 
-Construct the client logic using a framework of choice. The Pytorch approach uses an object-oriented paradigm while the Tensorflow examples applies a functional one. Both paradigm are available in both frameworks vice versa.
+For implementing the client logic a framework of choice can be used.
 
 #### Pytorch
 
 ```python
 # (2) Construct the client logic.
+import modalic
 
-# Define a Trainer object that contains all the ML logic.
-class Trainer():
+# Define a FLClient object that implements all the ML logic and will
+# used as an input to an internal modalic client which enables the 
+# program to connect to the server an perform training in distributed fashion.
+class FLClient(modalic.Client):
 
-  def __init__():
+  def __init__(self, dataset, ...):
     self.model = Net()
     self.dataset = torch.utils.data.DataLoader(dataset, batch_size=32)
     ...
 
-  def train():
-    ...
+  def train(self):
+    for epoch in range(0, self.epochs):
+        for images, labels in self.trainloader:
+            ...
 
-# Put the Modalic client layer on top of the ML logic.
-client = modalic.PytorchClient(Trainer())
+    return self.model
+
+  def serialize_local_model(self, model):
+      return modalic.serialize_torch_model(model)
+
+  def deserialize_global_model(self, global_model):
+      self.model = modalic.deserialize_torch_model(
+          self.model, global_model, self._get_model_shape()
+      )
+
+  def get_model_shape(self):
+      return modalic.get_torch_model_shape(self.model)
+
+  def get_model_dtype(self):
+      ...
+
+# Construct the client layer..
+client = FLClient(...)
 
 # (3) Run training for single client.
-client.run()
+modalic.run_client(client)
 ```
 
 #### Tensorflow
@@ -100,12 +120,10 @@ model = tf.keras.Model(...)
 train(model, x_train, y_train)
 ```
 
-Please keep in mind that this code snippet shows only the logic and the general idea. For more details,
-check out the */examples* folder that contains more in-depth and complete instruction sets and examples that are actually actionable.
+Please keep in mind that this code snippet shows only the logic and the general idea. For more details, check out the */examples* folder that contains more in-depth and complete instruction sets and examples that are actually actionable.
 
 ## Installation
 
-### Binaries
 The latest release of Modalic Python SDK can be installed via pip:
 ```bash
 pip install modalic

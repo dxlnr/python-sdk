@@ -12,12 +12,14 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 """Client API."""
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any, List
 
 
-class Client:
-    r"""."""
+class Client(ABC):
+    r"""An abstract API Object for implementing the actual Machine & Deep Learning logic
+    and attach it to an internal modalic client which implements the logic of Federated Learning.
+    """
 
     @abstractmethod
     def get_model_shape(self) -> List[List[int]]:

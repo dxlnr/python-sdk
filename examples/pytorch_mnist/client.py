@@ -1,4 +1,6 @@
 """Client Implementation"""
+import random
+
 import torch
 import torch.nn as nn
 from data import Dataloader, load_partition_data_mnist
@@ -107,7 +109,12 @@ def main():
     train_data, train_labels, _, _ = load_partition_data_mnist(num_splits=25)
 
     print("Preparing Federated Learning Client.\n")
-    client = FLClient(device, Dataloader(train_data[0], train_labels[0]))
+    client = FLClient(
+        device,
+        Dataloader(
+            train_data[random.randint(0, 25)], train_labels[random.randint(0, 25)]
+        ),
+    )
 
     # Start the FL Client
     modalic.run_client(client)

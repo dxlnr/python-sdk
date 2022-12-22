@@ -28,6 +28,7 @@ docs/build
 
 #examples
 examples/tensorflow_cifar10
+examples/pytorch_nlp_func
 
 #wheels
 wheelhouse/*

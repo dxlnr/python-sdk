@@ -19,8 +19,27 @@ from modalic.config import Conf
 
 
 def run_client(client: Client, conf: Optional[Conf] = None):
-    r"""
-    :param client:
+    r"""The main endpoint on the client side. This function will intialize an
+    internal modalic client and starts it in a separate thread.
+
+    :param client: Custom Client object designed by the developer outside of modalic.
+        An example can be seen down below:
+        >>> class FLClient(modalic.Client):
+        >>>     def __init__(self, dataset):
+        >>>         self.model = Net()
+                    self.dataset = torch.utils.data.DataLoader(dataset, batch_size=32)
+                    ...
+
+        >>>     def train(self):
+        >>>         ...
+        >>>     get_model_shape(self):
+        >>>         ...
+        >>>     get_model_dtype(self):
+        >>>         ...
+        >>>     serialize_local_model(self):
+        >>>         ...
+        >>>     deserialize_global_model(self):
+        >>>         ...
     """
     # Init the internal logger.
     #
@@ -34,7 +53,6 @@ def run_client(client: Client, conf: Optional[Conf] = None):
     # `start` calls the `run` method of `InternalClient`.
     #
     # https://docs.python.org/3.8/library/threading.html#threading.Thread.start
-    # https://docs.python.org/3.8/library/threading.html#threading.Thread.run
     modalic_client.start()
 
     # Join the main thread.
