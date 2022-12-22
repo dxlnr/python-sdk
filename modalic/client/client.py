@@ -18,7 +18,8 @@ from typing import Any, List
 
 class Client(ABC):
     r"""An abstract API Object for implementing the actual Machine & Deep Learning logic
-    and attach it to an internal modalic client which implements the logic of Federated Learning.
+    and attach it to an internal modalic client which implements the logic
+    of Federated Learning.
     """
 
     @abstractmethod
