@@ -1,6 +1,5 @@
-import argparse
+"""Client Implementation"""
 import os
-import sys
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
@@ -9,43 +8,54 @@ import tensorflow as tf
 import modalic
 
 
-def create_arg_parser():
-    r"""Get arguments from command lines."""
-    parser = argparse.ArgumentParser(description="Client parser.")
-    parser.add_argument(
-        "--client_id", metavar="N", type=int, help="an integer specifing the client ID."
-    )
+class TFFLClient(modalic.Client):
+    r"""Client object implementing the Machine Learning logic using tensorflow."""
 
-    return parser
+    def __init__(self):
+        # Set important hyperparameters.
+        self.batch_size = 32
+        self.epochs = 5
 
+        # Load the CIFAR-10 dataset using tf.keras.
+        (self.x_train, self.y_train), (_, _) = tf.keras.datasets.cifar10.load_data()
 
-# Parsing the command-line arguments
-arg_parser = create_arg_parser()
-args = arg_parser.parse_args(sys.argv[1:])
+        # Initialize & compile the MobileNetV2 model.
+        self.model = tf.keras.applications.MobileNetV2(
+            (32, 32, 3), classes=10, weights=None
+        )
+        self.model.compile(
+            "adam", "sparse_categorical_crossentropy", metrics=["accuracy"]
+        )
 
-# Modalic configuration
-cfg = {
-    "api": {"server_address": "[::]:8080"},
-    "process": {"training_rounds": 5, "timeout": 5.0},
-}
-conf = modalic.Conf.create_conf(cfg, cid=args.client_id)
+    def train(self, model):
+        if model is not None:
+            self.model = model
 
+        self.model.fit(
+            self.x_train, self.y_train, batch_size=self.batch_size, epochs=self.epochs
+        )
+        return self.model
 
-# wrap custom train function with modalic.tf_train
-@modalic.tf_train(conf)
-def train(model, x_train, y_train):
-    model.fit(x_train, y_train, batch_size=32, epochs=1)
-    return model
+    def serialize_local_model(self, model):
+        return modalic.serialize_tf_keras_model(model)
+
+    def deserialize_global_model(self, global_model):
+        self.model = modalic.deserialize_tf_keras_model(
+            self.model, global_model, self._get_model_shape()
+        )
+
+    def get_model_shape(self):
+        return modalic.get_tf_keras_model_shape(self.model)
+
+    def get_model_dtype(self):
+        pass
 
 
 def main():
-    # Load the MobileNetV2 and CIFAR-10 dataset
-    model = tf.keras.applications.MobileNetV2((32, 32, 3), classes=10, weights=None)
-    model.compile("adam", "sparse_categorical_crossentropy", metrics=["accuracy"])
+    print("Preparing Federated Learning Client.\n")
+    tffl_client = TFFLClient()
 
-    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
-
-    train(model, x_train, y_train)
+    modalic.run_client(tffl_client)
 
 
 if __name__ == "__main__":

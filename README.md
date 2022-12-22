@@ -105,19 +105,40 @@ modalic.run_client(client)
 ```python
 # (2) Construct the client logic.
 
-# Wrap the custom defined train function with modalic.tf_train.
-@modalic.tf_train(...)
-def train(model, x_train, y_train):
-    model.fit(x_train, y_train, batch_size=32, epochs=1)
-    return model
+class FLClient(modalic.Client):
+
+  def __init__(self, dataset, ...):
+    # Initialize & compile the MobileNetV2 model.
+    self.model = tf.keras.applications.MobileNetV2((32, 32, 3), classes=10, weights=None)
+    # Load the CIFAR-10 dataset using tf.keras.
+    (self.x_train, self.y_train), (_, _) = tf.keras.datasets.cifar10.load_data()
     ...
 
-# Define the model & data
-model = tf.keras.Model(...)
-...
+  def train(self):
+    ...
+    self.model.fit(self.x_train, self.y_train, batch_size=self.batch_size, epochs=self.epochs)
+    ...
+    return self.model
 
-# (3) Run training for single client simply via.
-train(model, x_train, y_train)
+  def serialize_local_model(self, model):
+      return modalic.serialize_tf_keras_model(model)
+
+  def deserialize_global_model(self, global_model):
+      self.model = modalic.deserialize_tf_keras_model(
+          self.model, global_model, self._get_model_shape()
+      )
+
+  def get_model_shape(self):
+      return modalic.get_tf_keras_model_shape(self.model)
+
+  def get_model_dtype(self):
+      ...
+
+# Construct the client layer..
+client = FLClient(...)
+
+# (3) Run training for single client.
+modalic.run_client(client)
 ```
 
 Please keep in mind that this code snippet shows only the logic and the general idea. For more details, check out the */examples* folder that contains more in-depth and complete instruction sets and examples that are actually actionable.

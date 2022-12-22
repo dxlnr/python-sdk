@@ -1,3 +1,4 @@
+"""Server Endpoint"""
 import argparse
 
 import modalic
