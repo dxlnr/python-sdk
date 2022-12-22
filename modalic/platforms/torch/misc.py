@@ -12,33 +12,14 @@
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
 """Torch specific Helper Functions"""
-import itertools
 from collections import OrderedDict
 from typing import List
 
 import numpy as np
 import torch
 
+from modalic.platforms.common.serde import _float_to_np_ndarray, _ser_np_weights
 from modalic.utils.misc import all_equal_list
-from modalic.utils.serde import _indexing
-
-
-def _float_to_np_ndarray(tensor: list, layer_shape: List[np.ndarray]) -> list:
-    r"""Deserialize NumPy ndarray from u8 bytes."""
-    layers = np.split(np.array(tensor), _indexing([np.prod(s) for s in layer_shape]))
-
-    return [np.reshape(layer, shapes) for layer, shapes in zip(layers, layer_shape)]
-
-
-def _np_ndarray_to_float(ndarray: np.ndarray) -> list:
-    r"""Serialize NumPy ndarray to list of u8 bytes."""
-    return [float(single) for single in np.nditer(ndarray)]
-
-
-def _ser_np_weights(weights: list) -> list:
-    r"""Serialize NumPy ndarray to bytes."""
-    layers = [_np_ndarray_to_float(ndarray) for ndarray in weights]
-    return list(itertools.chain(*layers))
 
 
 def serialize_torch_model(model: torch.nn.Module) -> list:

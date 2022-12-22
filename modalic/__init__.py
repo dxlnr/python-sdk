@@ -31,6 +31,13 @@ if importlib.util.find_spec("torch") is not None:
 if importlib.util.find_spec("tensorflow") is not None:
     from modalic.api.tf import TfClient
 
+    # Expose tf keras specific functions.
+    from modalic.platforms.tf import (
+        deserialize_tf_keras_model,
+        get_tf_keras_model_shape,
+        serialize_tf_keras_model,
+    )
+
 # Decorators
 if "torch" in sys.modules:
     from modalic.api.torch import torch_train
@@ -68,6 +75,9 @@ __all__ = [
     "deserialize_torch_model",
     "get_torch_model_shape",
     "TfClient",
+    "deserialize_tf_keras_model",
+    "get_tf_keras_model_shape",
+    "serialize_tf_keras_model",
     "Conf",
     "ClientPool",
     "torch_train",
