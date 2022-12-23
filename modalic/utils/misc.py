@@ -22,7 +22,7 @@ def all_equal_list(iterator: List[Any]) -> bool:
     r"""Checks list if all elements are equal.
 
     :param iterator: Input list object.
-    :returns: Returns the consistent element if all elements in the list are equal otherwise None.
+    :returns: The consistent element if all elements in the list are equal otherwise None.
     """
     iterator = iter(iterator)
     try:
