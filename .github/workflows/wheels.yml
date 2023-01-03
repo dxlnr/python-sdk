@@ -66,7 +66,8 @@ jobs:
           CIBW_BEFORE_ALL: >
             pip install --upgrade pip &&
             pip install -U setuptools &&
-            pip install -U setuptools-rust
+            pip install -U setuptools-rust &&
+            pip install -U maturin
           CIBW_BEFORE_BUILD_LINUX: >
             curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=nightly --profile=minimal -y &&
             rustup component add rustfmt &&

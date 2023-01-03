@@ -39,19 +39,19 @@ def prebuild_w_maturin(
     # go back.
     os.chdir(root_path)
 
-    static_lib_file = "/target/release/libmosaic_python_sdk.so"
-    # copy to destination.
-    try:
-        subprocess.check_call(
-            [
-                "scp",
-                path + static_lib_file,
-                root_path + "/modalic/client/mosaic_python_sdk.so",
-            ],
-            cwd=path,
-        )
-    except Exception as err:
-        print(f"copying {path + static_lib_file} failed: {err}.")
+    # static_lib_file = "/target/release/libmosaic_python_sdk.so"
+    # # copy to destination.
+    # try:
+    #     subprocess.check_call(
+    #         [
+    #             "scp",
+    #             path + static_lib_file,
+    #             root_path + "/modalic/client/mosaic_python_sdk.so",
+    #         ],
+    #         cwd=path,
+    #     )
+    # except Exception as err:
+    #     print(f"copying {path + static_lib_file} failed: {err}.")
 
 
 def build_deps(root_path: str):

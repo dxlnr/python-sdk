@@ -3,7 +3,7 @@ import platform
 import sys
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from setuptools_rust import Binding, RustExtension
 
@@ -44,7 +44,7 @@ cwd = os.path.dirname(os.path.abspath(__file__))
 
 def main():
     # prebuilding dependencies
-    build_deps(cwd)
+    # build_deps(cwd)
 
     setup(
         install_requires=[
@@ -57,11 +57,17 @@ def main():
         ],
         rust_extensions=[
             RustExtension(
+                "modalic.client.mosaic_python_sdk",
+                path="modules/mosaic/mosaic-bindings/python/Cargo.toml",
+                binding=Binding.PyO3,
+            ),
+            RustExtension(
                 {"aggregator": "modalic.bin.aggregator"},
                 "modules/mosaic/mosaic/Cargo.toml",
                 binding=Binding.Exec,
-            )
+            ),
         ],
+        packages=find_packages(exclude=["tests*", "examples*", "tools*"]),
     )
 
 

@@ -1,5 +1,5 @@
-include modules/mosaic/Cargo.toml
-include modules/mosaic/build.rs
-recursive-include modules/mosaic/proto *
-recursive-include modules/mosaic/src *
-include modalic/client/*.so *
+include modules/mosaic/mosaic/Cargo.toml
+recursive-include modules/mosaic/mosaic *
+
+include modules/mosaic/mosaic-bindings/python/Cargo.toml
+recursive-include modules/mosaic/mosaic-bindings/python/src *

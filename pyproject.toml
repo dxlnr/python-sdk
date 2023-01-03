@@ -9,9 +9,6 @@ filterwarnings = [
   "ignore::DeprecationWarning"
 ]
 
-# [project.optional-dependencies]
-# dev = ["black", "pytest"]
-
 [tool.tox]
 name = "modalic"
 authors = ["Daniel Illner <daniel.illner@outlook.de>"]
@@ -26,7 +23,6 @@ envlist = py38,py39,py310
 line-length = 88
 target-version = ["py38", "py39", "py310"]
 exclude = '''
-  modalic/client/proto/
   /(
       \.eggs/
     | \.git/
@@ -42,30 +38,19 @@ exclude = '''
 [tool.isort]
 profile = "black"
 
-[tool.mypy]
-ignore_missing_imports = true
-strict = true
-exclude = ["modalic/client/common/proto/", "modalic/utils/protocol.py"]
-allow_untyped_calls = true
-
-[[tool.mypy.overrides]]
-module = "grpc.*"
-follow_imports = "skip"
-follow_imports_for_stubs = true
-
 # [tool.cibuildwheel]
 # build = ["cp38-*", "cp39-*", "cp310-*"]
 # skip = ["*-win32", "*-musllinux_i686", "*-i686-unknown-linux-musl"]
 # environment = { PATH="$HOME/.cargo/bin:$PATH" }
 # manylinux-x86_64-image = "manylinux2014"
 # manylinux-i686-image = "manylinux2014"
-# before-all = "pip install --upgrade pip && pip install -U setuptools && pip install -U setuptools-rust"
+# before-all = "pip install --upgrade pip && pip install -U setuptools && pip install -U setuptools-rust && pip install -U maturin"
 
 # [tool.cibuildwheel.linux]
 # before-all = [
 #   "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=nightly --profile=minimal -y",
 #   "rustup component add rustfmt",
-#   "chmod +x scripts/build_openssl.sh && ./scripts/build_openssl.sh",
+#   # "chmod +x scripts/build_openssl.sh && ./scripts/build_openssl.sh",
 #   "chmod +x scripts/install_dependencies.sh",
 #   "./scripts/install_dependencies.sh",
 # ]

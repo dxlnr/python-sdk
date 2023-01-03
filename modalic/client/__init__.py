@@ -11,10 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 #  or implied. See the License for the specific language governing
 #  permissions and limitations under the License.
-
-from mosaic_python_sdk import mosaic_python_sdk
-
 from .client import Client
 from .internal_client import InternalClient
 
-__all__ = ["Client", "InternalClient", "mosaic_python_sdk"]
+__all__ = ["Client", "InternalClient"]

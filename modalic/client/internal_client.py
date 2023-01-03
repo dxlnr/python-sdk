@@ -21,7 +21,7 @@ import backoff
 import numpy as np
 
 try:
-    from mosaic_python_sdk import mosaic_python_sdk
+    from modalic.client import mosaic_python_sdk
 except ImportError:
     import warnings
 
