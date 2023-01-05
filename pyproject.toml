@@ -38,26 +38,26 @@ exclude = '''
 [tool.isort]
 profile = "black"
 
-# [tool.cibuildwheel]
-# build = ["cp38-*", "cp39-*", "cp310-*"]
-# skip = ["*-win32", "*-musllinux_i686", "*-i686-unknown-linux-musl"]
-# environment = { PATH="$HOME/.cargo/bin:$PATH" }
-# manylinux-x86_64-image = "manylinux2014"
-# manylinux-i686-image = "manylinux2014"
-# before-all = "pip install --upgrade pip && pip install -U setuptools && pip install -U setuptools-rust && pip install -U maturin"
+[tool.cibuildwheel]
+build = ["cp38-*", "cp39-*", "cp310-*"]
+skip = ["*-win32", "*-musllinux_i686", "*-i686-unknown-linux-musl"]
+environment = { PATH="$HOME/.cargo/bin:$PATH" }
+manylinux-x86_64-image = "manylinux2014"
+manylinux-i686-image = "manylinux2014"
+before-all = "pip install --upgrade pip && pip install -U setuptools && pip install -U setuptools-rust"
 
-# [tool.cibuildwheel.linux]
-# before-all = [
-#   "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=nightly --profile=minimal -y",
-#   "rustup component add rustfmt",
-#   # "chmod +x scripts/build_openssl.sh && ./scripts/build_openssl.sh",
-#   "chmod +x scripts/install_dependencies.sh",
-#   "./scripts/install_dependencies.sh",
-# ]
+[tool.cibuildwheel.linux]
+before-all = [
+  "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=nightly --profile=minimal -y",
+  "rustup component add rustfmt",
+  "chmod +x scripts/build_openssl.sh && ./scripts/build_openssl.sh",
+  "chmod +x scripts/install_dependencies.sh",
+  "./scripts/install_dependencies.sh",
+]
 
-# [tool.cibuildwheel.macos]
-# archs = ["x86_64", "arm64"]
-# before-all = [
-#   "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=beta -y",
-#   "rustup component add rustfmt"
-# ]
+[tool.cibuildwheel.macos]
+archs = ["x86_64", "arm64"]
+before-all = [
+  "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=beta -y",
+  "rustup component add rustfmt"
+]

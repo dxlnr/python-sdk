@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 from setuptools_rust import Binding, RustExtension
 
-from tools.prebuild import build_deps
+from tools.prebuild import check_submodules
 
 
 python_min_version = (3, 8, 0)
@@ -43,9 +43,9 @@ cwd = os.path.dirname(os.path.abspath(__file__))
 
 
 def main():
-    # prebuilding dependencies
-    # build_deps(cwd)
-
+    # Make sure external packages are present.
+    check_submodules(cwd)
+    
     setup(
         install_requires=[
             "numpy>=1.23.0",
@@ -63,7 +63,7 @@ def main():
             ),
             RustExtension(
                 {"aggregator": "modalic.bin.aggregator"},
-                "modules/mosaic/mosaic/Cargo.toml",
+                "modules/mosaic/mosaic/aggregator/Cargo.toml",
                 binding=Binding.Exec,
             ),
         ],

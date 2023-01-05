@@ -1,5 +1,5 @@
-include modules/mosaic/mosaic/Cargo.toml
-recursive-include modules/mosaic/mosaic *
+include modules/mosaic/mosaic/aggregator/Cargo.toml
+recursive-include modules/mosaic/mosaic/aggregator/src *
 
 include modules/mosaic/mosaic-bindings/python/Cargo.toml
 recursive-include modules/mosaic/mosaic-bindings/python/src *
