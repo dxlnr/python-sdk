@@ -66,8 +66,7 @@ jobs:
           CIBW_BEFORE_ALL: >
             pip install --upgrade pip &&
             pip install -U setuptools &&
-            pip install -U setuptools-rust &&
-            pip install -U maturin
+            pip install -U setuptools-rust
           CIBW_BEFORE_BUILD_LINUX: >
             curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=nightly --profile=minimal -y &&
             rustup component add rustfmt &&
@@ -78,7 +77,8 @@ jobs:
 
           CIBW_BEFORE_BUILD_MACOS: >
             curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=beta -y &&
-            rustup component add rustfmt
+            rustup component add rustfmt &&
+            rustup target add aarch64-apple-darwin
 
       - uses: actions/upload-artifact@v3
         with:

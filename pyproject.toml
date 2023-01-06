@@ -59,5 +59,6 @@ before-all = [
 archs = ["x86_64", "arm64"]
 before-all = [
   "curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=beta -y",
-  "rustup component add rustfmt"
+  "rustup component add rustfmt",
+  "rustup target add aarch64-apple-darwin"
 ]
