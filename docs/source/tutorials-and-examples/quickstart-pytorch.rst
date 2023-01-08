@@ -93,8 +93,8 @@ The server itself is then started by adding the following line:
 Client Side
 -----------
 
-The individual logic for the client is implemented in the :code:`client.py` file. Besides some necessary dependencies,
-there is the possiblity to alter the client ID via commandline argument using a parser.
+The individual logic for the client is implemented in the :code:`client.py` file. 
+First import the necessary dependencies.
 
 .. code-block:: python
 
@@ -106,16 +106,6 @@ there is the possiblity to alter the client ID via commandline argument using a 
     from data import Dataloader, load_partition_data_mnist
 
     import modalic
-
-
-    def create_arg_parser():
-        r"""Get arguments from command lines."""
-        parser = argparse.ArgumentParser(description="Client parser.")
-        parser.add_argument(
-            "--client_id", metavar="N", type=int, help="an integer specifing the client ID."
-        )
-
-        return parser
 
 The Deep Learning model architecture is defined as
 
@@ -151,51 +141,70 @@ The Deep Learning model architecture is defined as
         output = self.out(x)
         return output, x
 
-And as the last element for performing the training is the Trainer object itself.
+And as the last element for performing the training is to implement the Client itself inherenting from :ref:`modalic.Client <modalic-client>`.
 
 .. code-block:: python
 
-    class Trainer(object):
-    r"""Trainer class object to perform the Learning.
+    class FLClient(modalic.Client):
+        r"""Trainer class object to perform the Learning.
 
-    :param device: (torch.device) Model running device. GPUs are recommended for model training and inference.
-    :param dataset: (data.Dataloader) Custom Dataloader object.
-    :param epochs: (int) Epochs hyperparameter.
-    """
+        :param device: (torch.device) Model running device.
+            GPUs are recommended for model training and inference.
+        :param dataset: (data.Dataloader) Custom Dataloader object.
+        :param epochs: (int) Epochs hyperparameter.
+        """
 
-    def __init__(
-        self,
-        device: torch.device,
-        dataset: Dataloader,
-        epochs: int = 1,
-    ):
-        self.device = device
-        self.dataset = dataset
-        self.epochs = epochs
+        def __init__(
+            self,
+            device: torch.device,
+            dataset: Dataloader,
+            epochs: int = 5,
+        ):
+            self.device = device
+            self.dataset = dataset
+            self.epochs = epochs
 
-        self.trainloader = torch.utils.data.DataLoader(
-            self.dataset, batch_size=32, shuffle=True
-        )
+            self.trainloader = torch.utils.data.DataLoader(
+                self.dataset, batch_size=32, shuffle=True
+            )
 
-        self.model = CNN()
-        self.loss = nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
+            self.model = CNN()
+            self.loss = nn.CrossEntropyLoss()
+            self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
 
-    def train(self):
-        self.model.train()
+        def train(self):
+            self.model.train()
 
-        running_loss = 0.0
-        for epoch in range(0, self.epochs):
-            for i, (images, labels) in enumerate(self.trainloader):
-                self.optimizer.zero_grad()
-                output, _ = self.model.forward(images)
+            running_loss = 0.0
+            for epoch in range(0, self.epochs):
+                for _, (images, labels) in enumerate(self.trainloader):
+                    self.optimizer.zero_grad()
+                    output, _ = self.model.forward(images)
 
-                loss = self.loss(output, labels.long())
-                loss.backward()
-                self.optimizer.step()
-                running_loss += loss.item()
+                    loss = self.loss(output, labels.long())
+                    loss.backward()
+                    self.optimizer.step()
+                    running_loss += loss.item()
 
-        return self.model, running_loss / len(self.trainloader)
+                print(
+                    f"\t[epoch {epoch + 1}] loss: {running_loss / len(self.trainloader):.3f}"
+                )
+
+            return self.model
+
+        def serialize_local_model(self, model):
+            return modalic.serialize_torch_model(model)
+
+        def deserialize_global_model(self, global_model):
+            self.model = modalic.deserialize_torch_model(
+                self.model, global_model, self._get_model_shape()
+            )
+
+        def get_model_shape(self):
+            return modalic.get_torch_model_shape(self.model)
+
+        def get_model_dtype(self):
+            pass
 
 Main Function
 -------------
@@ -205,31 +214,24 @@ The last code block brings everything together and defines the the :code:`main` 
 .. code-block:: python
 
     def main():
-        arg_parser = create_arg_parser()
-        args = arg_parser.parse_args(sys.argv[1:])
-
+        # Define the computational device for torch.
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-        train_data, train_labels, test_data, test_labels = load_partition_data_mnist(
-            num_splits=100
-        )
+        print("Preparing dataset.")
+        train_data, train_labels, _, _ = load_partition_data_mnist(num_splits=25)
 
-        client = modalic.PytorchClient(
-            Trainer(
-                device,
-                Dataloader(
-                    train_data[args.client_id - 1], train_labels[args.client_id - 1]
-                ),
+        print("Preparing Federated Learning Client.\n")
+        client = FLClient(
+            device,
+            Dataloader(
+                train_data[random.randint(0, 25)], train_labels[random.randint(0, 25)]
             ),
-            conf={
-                "api": {"server_address": "[::]:8080"},
-                "process": {"training_rounds": 10, "timeout": 5.0},
-            },
-            args.client_id,
         )
-        client.train()
 
-In the style of object-oriented programming, the modalic `PytorchClient <modalic-pytorch-client>`_ is used. The client implements
+        # Start the FL Client
+        modalic.run_client(client)
+
+In the style of object-oriented programming the :ref:`modalic.Client <modalic-client>` is used as endpoint. The client will be used as input to the  implements
 all the logic which is necessary to perform training in a federated fashion. The client contains a (custom) trainer object which has to implement a :code:`train()`
 function. In addition, all the necessary hyperparameter are set via custom `Configuration <modalic-conf-apiref>`_ object.
 

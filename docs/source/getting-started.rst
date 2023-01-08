@@ -27,12 +27,42 @@ defined but rather lets the developer control the stack entirely.
 SDK Endpoints
 -------------
 
-There are basically two main endpoints that enable the client's ability to participate in a Federated Learning
-procedure. The two different possibilities of integrating FL into one's Machine Learning stack,
-represent two different programming paradigms, one object-oriented and one functional.
+There is basically one main endpoint that enable the client's ability to participate in a Federated Learning
+procedure. Integrating FL into one's Machine Learning stack, is done by implementing the ML logic by using the :ref:`modalic.Client <modalic-client>`.
 
-If the object-oriented programming style is preferred, the :ref:`PytorchClient <modalic-pytorch-client>` and :ref:`TfClient <modalic-tf-client>` can be used.
-If the functional paradigm is preferred, :ref:`@modalic.torch_train <modalic-torch-decor-apiref>` and :ref:`@modalic.tf_train <modalic-tf-decor-apiref>` can be applied.
+.. code-block:: python
+
+  # Define a FLClient object that implements all the ML logic and will
+  # used as an input to an internal modalic client which enables the 
+  # program to connect to the server an perform training in distributed fashion.
+  class FLClient(modalic.Client):
+
+    def __init__(self, dataset, ...):
+      self.model = Net()
+      self.dataset = dataset
+      ...
+
+    def train(self):
+      for epoch in range(0, self.epochs):
+          for images, labels in self.dataset:
+              ...
+
+      return self.model
+
+    def serialize_local_model(self, model):
+        ...
+
+    def deserialize_global_model(self, global_model):
+        ...
+
+    def get_model_shape(self):
+        ...
+
+    def get_model_dtype(self):
+        ...
+
+  # Construct the client layer.
+  client = FLClient(...)
 
 Aggregation Server
 ------------------

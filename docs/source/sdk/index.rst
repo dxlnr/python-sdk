@@ -7,42 +7,37 @@ The essential components provided by the Python SDK library are listed below. It
 two main Machine Learning Frameworks `Pytorch <https://github.com/pytorch/pytorch>`_ \& `TensorFlow <https://github.com/tensorflow/tensorflow>`_.
 Each framework has their own API endpoint and can be used in object-oriented or procedural fashion.
 
-.. _modalic-pytorch-apiref:
+.. _modalic-client-apiref:
 
-Pytorch API
+Client API
 -----------
 
-.. _modalic-pytorch-client:
+.. _modalic-client:
 
-modalic.PytorchClient
-~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: modalic.api.torch.pytorch_client.PytorchClient
+modalic.Client
+~~~~~~~~~~~~~~
+.. autoclass:: modalic.client.client.Client
     :members:
 
-.. _modalic-torch-decor-apiref:
 
-Functional Training Decorator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autofunction:: modalic.api.torch.torch_train
+Internal Client
+---------------
 
+.. _modalic-internal-client:
 
-.. _modalic-tf-apiref:
-
-TensorFlow API
---------------
-
-.. _modalic-tf-client:
-
-modalic.TfClient
-~~~~~~~~~~~~~~~~
-.. autoclass:: modalic.api.tf.tf_client.TfClient
+modalic.client.InternalClient
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autoclass:: modalic.client.internal_client.InternalClient
     :members:
 
-.. _modalic-tf-decor-apiref:
+Running the Client
+------------------
 
-Functional Training Decorator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autofunction:: modalic.api.tf.tf_train
+.. _modalic-run-client:
+
+modalic.run_client
+~~~~~~~~~~~~~~~~~~
+.. autofunction:: modalic.run.run_client
 
 
 .. _modalic-server-apiref:

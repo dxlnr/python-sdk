@@ -3,7 +3,7 @@ Tutorials and Examples
 
 Below, you can find a number of tutorials and examples for using Modalic MLOps Federated Learning Platform.
 
-Please note, only `PyTorch <https://pytorch.org/>`_ is fully supported.
+Please note, `PyTorch <https://pytorch.org/>`_ and `Tensorflow <https://www.tensorflow.org/>`_ are fully supported.
 
 
 Pytorch Examples
@@ -13,4 +13,4 @@ Pytorch Examples
     :maxdepth: 1
 
     quickstart-pytorch
-    pytorch-nlp-func
+    quickstart-tf
